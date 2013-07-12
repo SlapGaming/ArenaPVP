@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Events.EventJoinGame;
+import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinGame;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
+import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaGamemode;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 
@@ -24,20 +25,20 @@ public class Arena {
 	
 	FileConfiguration arenaConfig;
 	
-	public Arena(ArenaPVP arenaPVP, ArenaManager arenaManager, String arenaName){
+	public Arena(ArenaPVP arenaPVP, ArenaManager arenaManager, String arenaName, String gamemodeName){
 		this.arenaName = arenaName;
 		arenaState = ArenaState.BEFORE_JOIN;
 		YamlStorage arenaStorage = new YamlStorage(arenaPVP, "maps", arenaName);
 		arenaConfig = arenaStorage.getConfig();
-		initializeGamemode();
-	}
-	
-	public void initializeGamemode(){
-		 gamemode = new Gamemode(arenaManager, this);
+		gamemode = ArenaGamemode.getGamemode(arenaManager, this, gamemodeName);
 	}
 	
 	public Gamemode getGamemode(){
 		return gamemode;
+	}
+	
+	public FileConfiguration getConfig(){
+		return arenaConfig;
 	}
 	
 	public boolean joinGame(Player player){

@@ -10,6 +10,7 @@ import me.naithantu.ArenaPVP.ArenaPVP;
 public class ArenaTeam {
 	ArenaPVP plugin;
 	String teamName;
+	int score = 0;
 	
 	List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
 	
@@ -28,6 +29,18 @@ public class ArenaTeam {
 	
 	public List<ArenaPlayer> getPlayers(){
 		return players;
+	}
+	
+	public void addScore(){
+		score++;
+	}
+	
+	public int getScore(){
+		return score;
+	}
+	
+	public void setScore(int score){
+		this.score = score;
 	}
 	
 	public void joinTeam(Player player){
