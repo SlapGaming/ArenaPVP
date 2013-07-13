@@ -15,70 +15,85 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class Arena {
+	ArenaPVP plugin;
 	ArenaManager arenaManager;
-	
+
 	List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
-	
+
 	String arenaName;
 	ArenaState arenaState;
 	Gamemode gamemode;
-	
+
+	YamlStorage arenaStorage;
 	FileConfiguration arenaConfig;
-	
-	public Arena(ArenaPVP arenaPVP, ArenaManager arenaManager, String arenaName, String gamemodeName){
+
+	public Arena(ArenaPVP plugin, ArenaManager arenaManager, String arenaName, String gamemodeName) {
+		this.plugin = plugin;
 		this.arenaName = arenaName;
 		arenaState = ArenaState.BEFORE_JOIN;
-		YamlStorage arenaStorage = new YamlStorage(arenaPVP, "maps", arenaName);
+		arenaStorage = new YamlStorage(plugin, "maps", arenaName);
 		arenaConfig = arenaStorage.getConfig();
-		gamemode = ArenaGamemode.getGamemode(arenaManager, this, gamemodeName);
 	}
-	
-	public Gamemode getGamemode(){
+
+	public String getArenaName() {
+		return arenaName;
+	}
+
+	public Gamemode getGamemode() {
 		return gamemode;
 	}
-	
-	public FileConfiguration getConfig(){
-		return arenaConfig;
+
+	public ArenaState getArenaState() {
+		return arenaState;
 	}
-	
-	public boolean joinGame(Player player){
+
+	public void initializeArena(String gamemodeName) {
+		// Create gamemode.
+		gamemode = ArenaGamemode.getGamemode(arenaManager, this, gamemodeName);
+
+		// Create teams with proper names.
+		for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
+			ArenaTeam team = new ArenaTeam(plugin, arenaConfig.getString("teams." + teamNumber));
+			teams.add(team);
+		}
+	}
+
+	public boolean joinGame(Player player) {
 		return joinGame(player, null);
 	}
-	
-	public boolean joinGame(Player player, String teamName){
-		ArenaTeam teamToJoin = null;
-		if(arenaState != ArenaState.BEFORE_JOIN){
-			if(teamName != null && getTeam(teamName) != null){
-				teamToJoin = getTeam(teamName);
-			} else {
-				for(ArenaTeam team: teams){
-					if(teamToJoin == null || team.getPlayers().size() < teamToJoin.getPlayers().size()){
+
+	public boolean joinGame(Player player, ArenaTeam teamToJoin) {
+		//TODO Don't do this here, do this in the basegamemode instead. Gamemodes might want to change this.
+		if (arenaState != ArenaState.BEFORE_JOIN) {
+			if (teamToJoin == null) {
+				for (ArenaTeam team : teams) {
+					if (teamToJoin == null || team.getPlayers().size() < teamToJoin.getPlayers().size()) {
 						teamToJoin = team;
 					}
 				}
 			}
-			
+
 			EventJoinGame event = new EventJoinGame(player, teamToJoin);
 			Bukkit.getServer().getPluginManager().callEvent(event);
-			if(!event.isCancelled()){
+			if (!event.isCancelled()) {
 				event.getTeam().joinTeam(player);
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	public void addTeam(ArenaTeam team){
+
+	public void addTeam(ArenaTeam team) {
 		teams.add(team);
 	}
-	
-	public List<ArenaTeam> getTeams(){
+
+	public List<ArenaTeam> getTeams() {
 		return teams;
 	}
-	
-	public ArenaTeam getTeam(String teamName){
-		for(ArenaTeam team: teams){
-			if(team.getTeamName().equals(teamName)){
+
+	public ArenaTeam getTeam(String teamName) {
+		for (ArenaTeam team : teams) {
+			if (team.getTeamName().equals(teamName)) {
 				return team;
 			}
 		}

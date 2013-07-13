@@ -1,6 +1,7 @@
 package me.naithantu.ArenaPVP.Commands;
 
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.Objects.ArenaManager;
 import me.naithantu.ArenaPVP.Util.Util;
 
 import org.bukkit.ChatColor;
@@ -14,11 +15,13 @@ public abstract class AbstractCommand {
 	protected CommandSender sender;
 	protected String[] args;
 	protected ArenaPVP plugin;
+	protected ArenaManager arenaManager;
 
-	protected AbstractCommand(CommandSender sender, String[] args, ArenaPVP plugin) {
+	protected AbstractCommand(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
 		this.sender = sender;
 		this.args = args;
 		this.plugin = plugin;
+		this.arenaManager = arenaManager;
 	}
 
 	protected void msg(CommandSender sender, String msg) {
