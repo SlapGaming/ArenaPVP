@@ -7,17 +7,20 @@ import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinGame;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaGamemode;
+import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSettings;
+import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class Arena {
 	ArenaPVP plugin;
 	ArenaManager arenaManager;
-
+	ArenaSpawns arenaSpawns;
+	ArenaSettings settings;
+	
 	List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
 
 	String arenaName;
@@ -33,6 +36,13 @@ public class Arena {
 		arenaState = ArenaState.BEFORE_JOIN;
 		arenaStorage = new YamlStorage(plugin, "maps", arenaName);
 		arenaConfig = arenaStorage.getConfig();
+		
+		arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaConfig);
+		settings = new ArenaSettings(arenaConfig);
+	}
+
+	public ArenaSpawns getArenaSpawns() {
+		return arenaSpawns;
 	}
 
 	public String getArenaName() {
@@ -49,7 +59,7 @@ public class Arena {
 
 	public void initializeArena(String gamemodeName) {
 		// Create gamemode.
-		gamemode = ArenaGamemode.getGamemode(arenaManager, this, gamemodeName);
+		gamemode = ArenaGamemode.getGamemode(arenaManager, this, settings, arenaSpawns, gamemodeName);
 
 		// Create teams with proper names.
 		for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
@@ -63,23 +73,13 @@ public class Arena {
 	}
 
 	public boolean joinGame(Player player, ArenaTeam teamToJoin) {
-		//TODO Don't do this here, do this in the basegamemode instead. Gamemodes might want to change this.
-		if (arenaState != ArenaState.BEFORE_JOIN) {
-			if (teamToJoin == null) {
-				for (ArenaTeam team : teams) {
-					if (teamToJoin == null || team.getPlayers().size() < teamToJoin.getPlayers().size()) {
-						teamToJoin = team;
-					}
-				}
-			}
-
-			EventJoinGame event = new EventJoinGame(player, teamToJoin);
-			Bukkit.getServer().getPluginManager().callEvent(event);
-			if (!event.isCancelled()) {
-				event.getTeam().joinTeam(player);
-				return true;
-			}
+		EventJoinGame event = new EventJoinGame(player, teamToJoin);
+		gamemode.onPlayerJoinArena(event);
+		if (!event.isCancelled()) {
+			event.getTeam().joinTeam(player, this);
+			return true;
 		}
+
 		return false;
 	}
 

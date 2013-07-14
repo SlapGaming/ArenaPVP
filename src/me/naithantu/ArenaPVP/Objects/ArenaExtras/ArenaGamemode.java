@@ -12,9 +12,9 @@ public class ArenaGamemode {
 	 * stick with coded in gamemodes for now, might switch to reflections later
 	 */
 
-	public static Gamemode getGamemode(ArenaManager arenaManager, Arena arena, String name) {
+	public static Gamemode getGamemode(ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, String name) {
 		if (name.equalsIgnoreCase("tdm")) {
-			return new TDM(arenaManager, arena);
+			return new TDM(arenaManager, arena, settings, arenaSpawns);
 		} else if (name.equalsIgnoreCase("somethingelse")) {
 			//Add more here durr
 		}
