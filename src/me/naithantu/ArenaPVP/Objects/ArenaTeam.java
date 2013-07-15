@@ -6,6 +6,8 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns.SpawnType;
+import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
 
 public class ArenaTeam {
 	ArenaPVP plugin;
@@ -45,7 +47,11 @@ public class ArenaTeam {
 	}
 	
 	public void joinTeam(Player player, Arena arena){
-		ArenaPlayer arenaPlayer = new ArenaPlayer(player.getName(), arena, this);
-		arenaPlayer.
+		ArenaPlayer arenaPlayer = new ArenaPlayer(player.getName(), arena, this);	
+		if(arena.getArenaState() == ArenaState.PLAYING){
+			arena.getArenaSpawns().respawnPlayer(arenaPlayer, SpawnType.PLAYER);
+		} else {
+			arena.getArenaSpawns().respawnPlayer(arenaPlayer, SpawnType.SPECTATOR);
+		}
 	}
 }

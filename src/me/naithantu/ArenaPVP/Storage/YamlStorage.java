@@ -1,14 +1,18 @@
 package me.naithantu.ArenaPVP.Storage;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.logging.Level;
 
 import me.naithantu.ArenaPVP.ArenaPVP;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.util.FileUtil;
 
 public class YamlStorage {
 	ArenaPVP plugin;
@@ -21,7 +25,6 @@ public class YamlStorage {
 		this.plugin = plugin;
 		this.path = path;
 		this.fileName = fileName + ".yml";
-		getConfig();
 	}
 
 	public void reloadConfig() {
@@ -62,6 +65,29 @@ public class YamlStorage {
 		}
 		if (!file.exists()) {
 			this.plugin.saveResource(fileName, false);
+		}
+	}
+	
+	public void copyDefaultConfig(){
+		if (file == null) {
+			file = new File(plugin.getDataFolder() + File.separator + path, fileName);
+		}
+		if(!file.exists()){
+			InputStream stream = getClass().getResourceAsStream("/arena.yml");
+			
+		    OutputStream resStreamOut;
+		    int readBytes;
+		    byte[] buffer = new byte[4096];
+		    try {
+		        resStreamOut = new FileOutputStream(file);
+		        while ((readBytes = stream.read(buffer)) > 0) {
+		            resStreamOut.write(buffer, 0, readBytes);
+		        }
+			    stream.close();
+			    resStreamOut.close();
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
 		}
 	}
 }

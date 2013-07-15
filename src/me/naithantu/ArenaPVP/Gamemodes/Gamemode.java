@@ -1,6 +1,6 @@
 package me.naithantu.ArenaPVP.Gamemodes;
 
-import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinGame;
+import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventRespawn;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.ArenaPlayerDamageEvent;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.ArenaPlayerDeathEvent;
@@ -58,7 +58,7 @@ public class Gamemode {
 	}
 
 	// Arena made events.
-	public void onPlayerJoinArena(EventJoinGame event) {
+	public void onPlayerJoinArena(EventJoinArena event) {
 		ArenaState arenaState = arena.getArenaState();
 		if (arenaState == ArenaState.WARMUP || arenaState == ArenaState.LOBBY) {
 			ArenaTeam teamToJoin = event.getTeam();

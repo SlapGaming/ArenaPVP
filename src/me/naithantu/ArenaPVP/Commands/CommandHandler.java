@@ -19,18 +19,26 @@ public class CommandHandler {
 		AbstractCommand commandObj = null;
 		if(args.length == 0){
 			commandObj = new CommandPVP(sender, args, plugin, arenaManager);
-		}
-		
-		//Remove first argument to make it easier for sub-commands to use args.
-		String newArgs[] = new String[args.length - 1];
-		for(int i = 0; i < args.length - 1; i++){
-			newArgs[i] = args[i + 1];
-		}
-		
-		String command = args[0];
-		if(command.equals("join")){
-			commandObj = new CommandPVP(sender, args, plugin, arenaManager);
-			//TODO Join command etc. here, copy/paste things from simplepvp
+		} else {
+			String command = args[0];
+
+			//Remove first argument to make it easier for sub-commands to use args.
+			String cmdArgs[] = new String[args.length - 1];
+			for(int i = 0; i < args.length - 1; i++){
+				cmdArgs[i] = args[i + 1];
+			}
+			
+			if(command.equals("allowjoin")){
+				commandObj = new CommandAllowjoin(sender, cmdArgs, plugin, arenaManager);
+			} else if (command.equals("create")){
+				commandObj = new CommandCreate(sender, cmdArgs, plugin, arenaManager);
+			}else if (command.equals("join")){
+				commandObj = new CommandJoin(sender, cmdArgs, plugin, arenaManager);
+			}else if (command.equals("start")){
+				commandObj = new CommandStart(sender, cmdArgs, plugin, arenaManager);
+			}else if (command.equals("teams")){
+				commandObj = new CommandTeams(sender, cmdArgs, plugin, arenaManager);
+			}
 		}
 		
 		if (commandObj != null) {

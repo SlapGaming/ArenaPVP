@@ -1,5 +1,7 @@
 package me.naithantu.ArenaPVP;
 
+import java.io.File;
+
 import me.naithantu.ArenaPVP.Commands.CommandHandler;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
 
@@ -15,6 +17,9 @@ public class ArenaPVP extends JavaPlugin {
 	public void onEnable(){
 		arenaManager = new ArenaManager();
 		commandHandler = new CommandHandler(this, arenaManager);
+		
+		//Create required directories
+		new File(getDataFolder() + File.separator + "maps").mkdirs();
 	}
 	
 	@Override

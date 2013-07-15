@@ -3,3 +3,6 @@ main: me.naithantu.ArenaPVP.ArenaPVP
 author: naithantu
 version: 0.1
 description: Customisable arena pvp system.
+commands:
+  pvp:
+    description: Main arenapvp command. Type /pvp for more info.

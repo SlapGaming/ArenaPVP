@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinGame;
+import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaGamemode;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSettings;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
+import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns.SpawnType;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -35,10 +36,13 @@ public class Arena {
 		this.arenaName = arenaName;
 		arenaState = ArenaState.BEFORE_JOIN;
 		arenaStorage = new YamlStorage(plugin, "maps", arenaName);
+		arenaStorage.copyDefaultConfig();
 		arenaConfig = arenaStorage.getConfig();
 		
 		arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaConfig);
 		settings = new ArenaSettings(arenaConfig);
+		
+		initializeArena(gamemodeName);
 	}
 
 	public ArenaSpawns getArenaSpawns() {
@@ -57,6 +61,10 @@ public class Arena {
 		return arenaState;
 	}
 
+	public void setArenaState(ArenaState arenaState){
+		this.arenaState = arenaState;
+	}
+	
 	public void initializeArena(String gamemodeName) {
 		// Create gamemode.
 		gamemode = ArenaGamemode.getGamemode(arenaManager, this, settings, arenaSpawns, gamemodeName);
@@ -73,7 +81,7 @@ public class Arena {
 	}
 
 	public boolean joinGame(Player player, ArenaTeam teamToJoin) {
-		EventJoinGame event = new EventJoinGame(player, teamToJoin);
+		EventJoinArena event = new EventJoinArena(player, teamToJoin);
 		gamemode.onPlayerJoinArena(event);
 		if (!event.isCancelled()) {
 			event.getTeam().joinTeam(player, this);
@@ -81,6 +89,14 @@ public class Arena {
 		}
 
 		return false;
+	}
+	
+	public void startGame(){
+		for(ArenaTeam team: teams){
+			for(ArenaPlayer arenaPlayer: team.getPlayers()){
+				arenaSpawns.respawnPlayer(arenaPlayer, SpawnType.PLAYER);
+			}
+		}
 	}
 
 	public void addTeam(ArenaTeam team) {
