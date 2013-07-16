@@ -3,6 +3,7 @@ package me.naithantu.ArenaPVP.Commands;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Objects.Arena;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
+import me.naithantu.ArenaPVP.Objects.ArenaTeam;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
 
 import org.bukkit.command.CommandSender;
@@ -16,6 +17,11 @@ public class CommandJoin extends AbstractCommand {
 
 	@Override
 	public boolean handle() {
+		if(!testPermission(sender, "join") && !testPermission(sender, "player")){
+			this.noPermission(sender);
+			return true;
+		}
+		
 		if (!(sender instanceof Player)) {
 			this.msg(sender, "That command can only be used in-game.");
 			return true;
@@ -25,7 +31,7 @@ public class CommandJoin extends AbstractCommand {
 
 		//Check how many arenas the player can join.
 		int availableArenas = 0;
-		for (Arena arena : arenaManager.getArenas()) {
+		for (Arena arena : arenaManager.getArenas().values()) {
 			if (arena.getArenaState() == ArenaState.LOBBY || arena.getArenaState() == ArenaState.WARMUP) {
 				availableArenas++;
 			}
@@ -44,28 +50,34 @@ public class CommandJoin extends AbstractCommand {
 				return true;
 			}
 
-			for (Arena arena : arenaManager.getArenas()) {
-				if (arena.getArenaName().equalsIgnoreCase(args[0])) {
-					if (args.length > 2) {
-						arena.joinGame(player, arena.getTeam(args[1]));
-					} else {
-						arena.joinGame(player);
-					}
-					return true;
+			if(arenaManager.getArenas().containsKey(args[0])){
+				Arena arena = arenaManager.getArenas().get(args[0]);
+				if (args.length >= 2) {
+					joinArena(arena, player, arena.getTeam(args[1]));
+				} else {
+					joinArena(arena, player, null);
 				}
+			} else {
+				this.msg(sender, "No arena with given name was found, type /pvp arenas to see available arenas.");
 			}
-			
-			this.msg(sender, "No arena with given name was found, type /pvp arenas to see available arenas.");
 			return true;
 		} else {
 			//If there is only arena
-			Arena arena = arenaManager.getArenas().get(0);
+			Arena arena = arenaManager.getFirstArena();
 			if (args.length > 0) {
-				arena.joinGame(player, arena.getTeam(args[0]));
+				joinArena(arena, player, arena.getTeams().get(0));
 			} else {
-				arena.joinGame(player);
+				joinArena(arena, player, null);
 			}
 		}
 		return true;
+	}
+	
+	public void joinArena(Arena arena, Player player, ArenaTeam team){
+		if(arena.joinGame(player, team)){
+			this.msg(sender, "You have joined arena " + arena.getArenaName() + "!");
+		} else {
+			this.msg(sender, "You were unable to join arena " + arena.getArenaName() + ", try a different arena!");
+		}
 	}
 }

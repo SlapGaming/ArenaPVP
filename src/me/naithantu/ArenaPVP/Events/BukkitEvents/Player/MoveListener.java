@@ -5,9 +5,10 @@ import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class MoveListener {
+public class MoveListener implements Listener {
 	ArenaManager arenaManager;
 
 	public MoveListener(ArenaManager arenaManager) {

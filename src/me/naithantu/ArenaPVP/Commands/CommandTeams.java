@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Objects.Arena;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
 import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
 import me.naithantu.ArenaPVP.Objects.ArenaTeam;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -23,6 +20,11 @@ public class CommandTeams extends AbstractCommand {
 
 	@Override
 	public boolean handle() {
+		if(!testPermission(sender, "teams") && !testPermission(sender, "player")){
+			this.noPermission(sender);
+			return true;
+		}
+		
 		if (!(sender instanceof Player)) {
 			this.msg(sender, "That command can only be used in-game.");
 			return true;

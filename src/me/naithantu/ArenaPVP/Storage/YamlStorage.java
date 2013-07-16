@@ -5,14 +5,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.logging.Level;
 
 import me.naithantu.ArenaPVP.ArenaPVP;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.util.FileUtil;
 
 public class YamlStorage {
 	ArenaPVP plugin;

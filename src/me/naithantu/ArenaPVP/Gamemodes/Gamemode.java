@@ -42,7 +42,20 @@ public class Gamemode {
 	}
 
 	public void onPlayerRespawn(ArenaPlayerRespawnEvent event) {
-		arenaSpawns.respawnPlayer(event.getArenaPlayer(), SpawnType.SPECTATOR);
+		System.out.println("Player respawn event!");
+		if(settings.getRespawnTime() == 0){
+			if(event.getArenaPlayer().getArena().getArenaState() != ArenaState.PLAYING){
+				event.setRespawnLocation(arenaSpawns.getRespawnLocation(event.getArenaPlayer(), SpawnType.SPECTATOR));
+			} else {
+				event.setRespawnLocation(arenaSpawns.getRespawnLocation(event.getArenaPlayer(), SpawnType.PLAYER));
+			}
+		} else {
+			if(event.getArenaPlayer().getArena().getArenaState() != ArenaState.PLAYING){
+				arenaSpawns.addRespawnTimer(event.getArenaPlayer(), SpawnType.SPECTATOR);
+			} else {
+				arenaSpawns.addRespawnTimer(event.getArenaPlayer(), SpawnType.PLAYER);
+			}
+		}
 	}
 
 	public void onPlayerDamage(ArenaPlayerDamageEvent event) {
@@ -67,6 +80,8 @@ public class Gamemode {
 					if (teamToJoin == null || team.getPlayers().size() < teamToJoin.getPlayers().size()) {
 						teamToJoin = team;
 					}
+					event.setTeam(teamToJoin);
+					return;
 				}
 			}
 		}

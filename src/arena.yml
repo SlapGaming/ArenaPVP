@@ -3,8 +3,8 @@ teams:
   1: Silver
 spawns:
   0:
-    - world:1:1:1:90:90
+    - world:1:70:1:90:90
   1:
-    - world:1:1:1:90:90
+    - world:1:70:1:90:90
   spectator:
-    - world:1:1:1:90:90
+    - world:1:70:1:90:90

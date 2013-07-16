@@ -38,6 +38,8 @@ public class CommandHandler {
 				commandObj = new CommandStart(sender, cmdArgs, plugin, arenaManager);
 			}else if (command.equals("teams")){
 				commandObj = new CommandTeams(sender, cmdArgs, plugin, arenaManager);
+			} else if (command.equals("select")){
+				commandObj = new CommandSelect(sender, cmdArgs, plugin, arenaManager);
 			}
 		}
 		

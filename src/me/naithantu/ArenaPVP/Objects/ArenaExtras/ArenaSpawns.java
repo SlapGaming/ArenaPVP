@@ -36,7 +36,8 @@ public class ArenaSpawns {
 		this.config = config;
 	}
 
-	public void respawnPlayer(ArenaPlayer arenaPlayer, SpawnType spawnType) {
+	public Location getRespawnLocation(ArenaPlayer arenaPlayer, SpawnType spawnType) {
+		System.out.println("getting respawn location");
 		Player player = Bukkit.getServer().getPlayer(arenaPlayer.getPlayerName());
 
 		String teamID;
@@ -45,7 +46,7 @@ public class ArenaSpawns {
 		} else if (spawnType == SpawnType.SPECTATOR) {
 			teamID = "spectator";
 		} else {
-			return;
+			return null;
 		}
 
 		List<String> stringLocations = config.getStringList("spawns." + teamID);
@@ -60,32 +61,32 @@ public class ArenaSpawns {
 		EventRespawn eventRespawn = new EventRespawn(player, spawnLocation, arenaPlayer);
 		arena.getGamemode().onPlayerArenaRespawn(eventRespawn);
 		if (!eventRespawn.isCancelled()) {
-			player.teleport(eventRespawn.getLocation());
+			System.out.println("returning correct location!");
+			return eventRespawn.getLocation();
 		}
+		return null;
 	}
 
-	public void addRespawnTimer(final ArenaPlayer arenaPlayer, final SpawnType spawnType){
+	public void addRespawnTimer(final ArenaPlayer arenaPlayer, final SpawnType spawnType) {
 		String playerName = arenaPlayer.getPlayerName();
-		if(respawnTimers.containsKey(playerName)){
+		if (respawnTimers.containsKey(playerName)) {
 			scheduler.cancelTask(respawnTimers.get(playerName));
 		}
-		
-		if(settings.getRespawnTime() == 0){
-			respawnPlayer(arenaPlayer, spawnType);
-		} else {
-			int taskID = scheduler.scheduleSyncDelayedTask(plugin, new Runnable(){
-				@Override
-				public void run() {
-					respawnTimers.remove(arenaPlayer);
-					arenaPlayer.setPlayerState(ArenaPlayerState.PLAYING);
-					respawnPlayer(arenaPlayer, spawnType);
+
+		int taskID = scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				respawnTimers.remove(arenaPlayer);
+				arenaPlayer.setPlayerState(ArenaPlayerState.PLAYING);
+				Location location;
+				if((location = getRespawnLocation(arenaPlayer, spawnType)) != null){
+					Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(location);
 				}
-			}, settings.getRespawnTime());
-			respawnTimers.put(playerName, taskID);
-			arenaPlayer.setPlayerState(ArenaPlayerState.RESPAWNING);
-		}
-		
-		
+			}
+		}, settings.getRespawnTime());
+		respawnTimers.put(playerName, taskID);
+		arenaPlayer.setPlayerState(ArenaPlayerState.RESPAWNING);
+
 	}
 
 	public enum SpawnType {

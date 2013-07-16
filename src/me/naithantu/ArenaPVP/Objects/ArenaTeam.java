@@ -46,12 +46,14 @@ public class ArenaTeam {
 		this.score = score;
 	}
 	
-	public void joinTeam(Player player, Arena arena){
-		ArenaPlayer arenaPlayer = new ArenaPlayer(player.getName(), arena, this);	
+	public void joinTeam(Player player, ArenaManager arenaManager, Arena arena){
+		ArenaPlayer arenaPlayer = new ArenaPlayer(player.getName(), arena, this);
+		arenaManager.addPlayer(arenaPlayer);
+		players.add(arenaPlayer);
 		if(arena.getArenaState() == ArenaState.PLAYING){
-			arena.getArenaSpawns().respawnPlayer(arenaPlayer, SpawnType.PLAYER);
+			player.teleport(arena.getArenaSpawns().getRespawnLocation(arenaPlayer, SpawnType.PLAYER));
 		} else {
-			arena.getArenaSpawns().respawnPlayer(arenaPlayer, SpawnType.SPECTATOR);
+			player.teleport(arena.getArenaSpawns().getRespawnLocation(arenaPlayer, SpawnType.SPECTATOR));
 		}
 	}
 }

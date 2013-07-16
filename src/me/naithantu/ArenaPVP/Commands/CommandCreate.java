@@ -1,5 +1,7 @@
 package me.naithantu.ArenaPVP.Commands;
 
+import java.io.File;
+
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Objects.Arena;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
@@ -15,6 +17,11 @@ public class CommandCreate extends AbstractCommand {
 
 	@Override
 	public boolean handle() {
+		if(!testPermission(sender, "create") && !testPermission(sender, "admin")){
+			this.noPermission(sender);
+			return true;
+		}
+		
 		if (!(sender instanceof Player)) {
 			this.msg(sender, "That command can only be used in-game.");
 			return true;
@@ -27,8 +34,18 @@ public class CommandCreate extends AbstractCommand {
 
 		Player player = (Player) sender;
 		
-		Arena arena = new Arena(plugin, arenaManager, args[0], "tdm");
-		arenaManager.getArenas().add(arena);
+		String arenaName = args[0].toLowerCase();
+				
+		File file = new File(plugin.getDataFolder() + File.separator + "maps", arenaName);
+		if(file.exists()){
+			this.msg(sender, "An arena with that name already exists!");
+			return true;
+		}
+		
+		Arena arena = new Arena(plugin, arenaManager, arenaName, "tdm");
+		arenaManager.getArenas().put(arenaName, arena);
+		
+		this.msg(sender, "Created a new arena with name " + arenaName + "!");
 		return true;
 	}
 }
