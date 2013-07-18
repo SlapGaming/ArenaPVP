@@ -37,7 +37,6 @@ public class ArenaSpawns {
 	}
 
 	public Location getRespawnLocation(ArenaPlayer arenaPlayer, SpawnType spawnType) {
-		System.out.println("getting respawn location");
 		Player player = Bukkit.getServer().getPlayer(arenaPlayer.getPlayerName());
 
 		String teamID;
@@ -61,7 +60,6 @@ public class ArenaSpawns {
 		EventRespawn eventRespawn = new EventRespawn(player, spawnLocation, arenaPlayer);
 		arena.getGamemode().onPlayerArenaRespawn(eventRespawn);
 		if (!eventRespawn.isCancelled()) {
-			System.out.println("returning correct location!");
 			return eventRespawn.getLocation();
 		}
 		return null;

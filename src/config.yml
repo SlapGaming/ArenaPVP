@@ -1,0 +1,6 @@
+# 
+# Main ArenaPVP config
+#
+
+#Location players will be placed at when the game ends.
+spawnlocation: null

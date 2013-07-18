@@ -26,6 +26,11 @@ public class CommandJoin extends AbstractCommand {
 			this.msg(sender, "That command can only be used in-game.");
 			return true;
 		}
+		
+		if(arenaManager.getPlayerByName(sender.getName()) != null){
+			this.msg(sender, "You are already in a game, you can leave with /pvp leave!");
+			return true;
+		}
 
 		Player player = (Player) sender;
 

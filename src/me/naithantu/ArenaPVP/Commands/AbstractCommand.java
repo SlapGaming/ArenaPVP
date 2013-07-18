@@ -25,11 +25,7 @@ public abstract class AbstractCommand {
 	}
 
 	protected void msg(CommandSender sender, String msg) {
-		if (sender instanceof Player) {
-			sender.sendMessage(Util.getHeader() + msg);
-		} else {
-			sender.sendMessage("[PVP] " + msg);
-		}
+		Util.msg(sender, msg);
 	}
 
 	protected void badMsg(CommandSender sender, String msg) {

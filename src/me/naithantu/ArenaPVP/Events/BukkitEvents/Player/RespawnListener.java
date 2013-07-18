@@ -21,7 +21,10 @@ public class RespawnListener implements Listener {
 		Player player = event.getPlayer();
 		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
 		if(arenaPlayer != null){
-			arenaPlayer.getArena().getGamemode().onPlayerRespawn(new ArenaPlayerRespawnEvent(event, arenaPlayer));
+			ArenaPlayerRespawnEvent arenaEvent = new ArenaPlayerRespawnEvent(event, arenaPlayer);
+			arenaPlayer.getArena().getGamemode().onPlayerRespawn(arenaEvent);
+			event.setRespawnLocation(arenaEvent.getRespawnLocation());
+
 		}
 	}
 }

@@ -4,10 +4,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class Util {
-	public static String getHeader(){
-		return ChatColor.DARK_RED + "[PVP] " + ChatColor.WHITE;
+	public static void msg(CommandSender sender, String msg) {
+		if (sender instanceof Player) {
+			sender.sendMessage(ChatColor.DARK_RED + "[PVP] " + ChatColor.WHITE + msg);
+		} else {
+			sender.sendMessage("[PVP] " + msg);
+		}
 	}
 	
 	public static Location getLocationFromString(String string){

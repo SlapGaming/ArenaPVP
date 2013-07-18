@@ -42,7 +42,7 @@ public class CommandTeams extends AbstractCommand {
 			for(ArenaPlayer teamPlayer: team.getPlayers()){
 				teamPlayers.add(teamPlayer.getPlayerName());
 			}
-			this.msg(sender, Joiner.on(",").join(teamPlayers));
+			this.msg(sender, team.getTeamName() + ": " + Joiner.on(",").join(teamPlayers));
 		}
 		return true;
 	}

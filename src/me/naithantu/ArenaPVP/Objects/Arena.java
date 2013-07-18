@@ -5,6 +5,7 @@ import java.util.List;
 
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
+import me.naithantu.ArenaPVP.Events.ArenaEvents.EventLeaveArena;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaGamemode;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSettings;
@@ -12,8 +13,10 @@ import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns.SpawnType;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
+import me.naithantu.ArenaPVP.Util.Util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -24,6 +27,7 @@ public class Arena {
 	ArenaSettings settings;
 	
 	List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
+	String nickName;
 
 	String arenaName;
 	ArenaState arenaState;
@@ -43,8 +47,13 @@ public class Arena {
 		
 		arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaConfig);
 		settings = new ArenaSettings(arenaConfig);
+		nickName = arenaConfig.getString("nickname");
 		
 		initializeArena(gamemodeName);
+	}
+	
+	public String getNickName() {
+		return nickName;
 	}
 
 	public ArenaSpawns getArenaSpawns() {
@@ -93,15 +102,33 @@ public class Arena {
 		return false;
 	}
 	
+	public void leaveGame(ArenaPlayer arenaPlayer, ArenaTeam teamToLeave){
+		EventLeaveArena event = new EventLeaveArena(arenaPlayer);
+		gamemode.onPlayerLeaveArena(event);
+		if(!event.isCancelled()) {
+			arenaPlayer.getTeam().leaveTeam(arenaManager, arenaPlayer);
+		}
+		return;
+	}
+	
 	public void startGame(){
-		System.out.println("starting game.");
 		for(ArenaTeam team: teams){
-			System.out.println("going through team: " + team.getTeamName());
 			for(ArenaPlayer arenaPlayer: team.getPlayers()){
-				System.out.println("Teleporting: " + arenaPlayer.getPlayerName());
 				Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(arenaSpawns.getRespawnLocation(arenaPlayer, SpawnType.PLAYER));
 			}
 		}
+	}
+	
+	public void stopGame() {
+		Location spawnLocation = Util.getLocationFromString("spawnlocation");
+		for(ArenaTeam team: teams){
+			for(ArenaPlayer arenaPlayer: team.getPlayers()){
+				String playerName = arenaPlayer.getPlayerName();
+				Bukkit.getPlayer(playerName).teleport(spawnLocation);
+				arenaManager.getAllPlayers().remove(playerName);
+			}
+		}
+		arenaManager.getArenas().remove(arenaName);
 	}
 
 	public void addTeam(ArenaTeam team) {

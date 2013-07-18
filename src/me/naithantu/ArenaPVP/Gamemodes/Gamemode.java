@@ -1,6 +1,8 @@
 package me.naithantu.ArenaPVP.Gamemodes;
 
+import me.naithantu.ArenaPVP.Commands.AbstractCommand;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
+import me.naithantu.ArenaPVP.Events.ArenaEvents.EventLeaveArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventRespawn;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.ArenaPlayerDamageEvent;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.ArenaPlayerDeathEvent;
@@ -13,7 +15,9 @@ import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSettings;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns.SpawnType;
+import me.naithantu.ArenaPVP.Util.Util;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -30,6 +34,13 @@ public class Gamemode {
 		this.settings = settings;
 		this.arenaSpawns = arenaSpawns;
 	}
+	
+	public void sendScore(CommandSender sender, ArenaPlayer arenaPlayer){
+		Util.msg(sender, "Score:");
+		for(ArenaTeam team: arena.getTeams()){
+			Util.msg(sender, "Team " + team.getTeamName() + ":" + team.getScore());
+		}
+	}
 
 	public void onPlayerDeath(ArenaPlayerDeathEvent event) {
 		Player player = event.getEntity();
@@ -42,18 +53,18 @@ public class Gamemode {
 	}
 
 	public void onPlayerRespawn(ArenaPlayerRespawnEvent event) {
-		System.out.println("Player respawn event!");
+		ArenaPlayer arenaPlayer = event.getArenaPlayer();
 		if(settings.getRespawnTime() == 0){
-			if(event.getArenaPlayer().getArena().getArenaState() != ArenaState.PLAYING){
-				event.setRespawnLocation(arenaSpawns.getRespawnLocation(event.getArenaPlayer(), SpawnType.SPECTATOR));
+			if(arenaPlayer.getArena().getArenaState() != ArenaState.PLAYING){
+				event.setRespawnLocation(arenaSpawns.getRespawnLocation(arenaPlayer, SpawnType.SPECTATOR));
 			} else {
-				event.setRespawnLocation(arenaSpawns.getRespawnLocation(event.getArenaPlayer(), SpawnType.PLAYER));
+				event.setRespawnLocation(arenaSpawns.getRespawnLocation(arenaPlayer, SpawnType.PLAYER));
 			}
 		} else {
-			if(event.getArenaPlayer().getArena().getArenaState() != ArenaState.PLAYING){
-				arenaSpawns.addRespawnTimer(event.getArenaPlayer(), SpawnType.SPECTATOR);
+			if(arenaPlayer.getArena().getArenaState() != ArenaState.PLAYING){
+				arenaSpawns.addRespawnTimer(arenaPlayer, SpawnType.SPECTATOR);
 			} else {
-				arenaSpawns.addRespawnTimer(event.getArenaPlayer(), SpawnType.PLAYER);
+				arenaSpawns.addRespawnTimer(arenaPlayer, SpawnType.PLAYER);
 			}
 		}
 	}
@@ -87,8 +98,16 @@ public class Gamemode {
 		}
 		event.setCancelled(true);
 	}
+	
+	public void onPlayerLeaveArena(EventLeaveArena event){
+		
+	}
 
 	public void onPlayerArenaRespawn(EventRespawn event) {
 
+	}
+
+	public AbstractCommand executeCommand(String command) {
+		return null;
 	}
 }

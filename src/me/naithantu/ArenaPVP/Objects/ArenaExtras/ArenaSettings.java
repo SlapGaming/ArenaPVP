@@ -11,7 +11,7 @@ public class ArenaSettings {
 	int outOfBoundsTime;
 	
 	boolean friendlyFire;
-	boolean forcePvpChat;
+	boolean autojoinPvpChat;
 	boolean outOfBoundsArea;
 	boolean autoBalance;
 	
@@ -27,7 +27,7 @@ public class ArenaSettings {
 		outOfBoundsTime = config.getInt("outofboundstime");
 
 		friendlyFire = config.getBoolean("friendlyfire");
-		forcePvpChat = config.getBoolean("forcepvpchat");
+		autojoinPvpChat = config.getBoolean("autojoinpvpchat");
 		outOfBoundsArea = config.getBoolean("outofboundsarea");
 		autoBalance = config.getBoolean("autobalance");
 	}
@@ -53,7 +53,7 @@ public class ArenaSettings {
 	}
 
 	public boolean isForcePvpChat() {
-		return forcePvpChat;
+		return autojoinPvpChat;
 	}
 
 	public boolean isOutOfBoundsArea() {
@@ -85,7 +85,7 @@ public class ArenaSettings {
 	}
 
 	public void setForcePvpChat(boolean forcePvpChat) {
-		this.forcePvpChat = forcePvpChat;
+		this.autojoinPvpChat = forcePvpChat;
 	}
 
 	public void setOutOfBoundsArea(boolean outOfBoundsArea) {
