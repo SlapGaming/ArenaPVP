@@ -29,6 +29,6 @@ public class Util {
 	}
 	
 	public static String getStringFromLocation(Location location){
-		return location.getWorld() + ":" + location.getX() + ":" + location.getY() + ":" + location.getZ() + ":" + location.getYaw() + ":" + location.getPitch();
+		return location.getWorld().getName() + ":" + location.getX() + ":" + location.getY() + ":" + location.getZ() + ":" + location.getYaw() + ":" + location.getPitch();
 	}
 }

@@ -3,7 +3,6 @@ package me.naithantu.ArenaPVP.Objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -60,10 +59,10 @@ public class ArenaTeam {
 		}
 	}
 	
-	public void leaveTeam(ArenaManager arenaManager, ArenaPlayer arenaPlayer){
+	public void leaveTeam(ArenaManager arenaManager, ArenaPlayer arenaPlayer, Player player){
 		arenaManager.removePlayer(arenaPlayer);
 		players.remove(arenaPlayer);
 		Location spawnLocation = Util.getLocationFromString(plugin.getConfig().getString("spawnlocation"));
-		Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(spawnLocation);
+		player.teleport(spawnLocation);
 	}
 }

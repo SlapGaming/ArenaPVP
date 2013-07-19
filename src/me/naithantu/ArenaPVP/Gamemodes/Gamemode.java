@@ -78,7 +78,9 @@ public class Gamemode {
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {
-
+		//TODO Create EventPlayerLeaveArena
+		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(event.getPlayer().getName());
+		arenaPlayer.getArena().leaveGame(arenaPlayer, arenaPlayer.getTeam());
 	}
 
 	// Arena made events.

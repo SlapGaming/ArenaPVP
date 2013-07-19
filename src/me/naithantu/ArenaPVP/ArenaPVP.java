@@ -44,6 +44,7 @@ public class ArenaPVP extends JavaPlugin {
 		
 		//Create required directories
 		new File(getDataFolder() + File.separator + "maps").mkdirs();
+		new File(getDataFolder() + File.separator + "players").mkdirs();
 	}
 	
 	@Override
@@ -62,8 +63,10 @@ public class ArenaPVP extends JavaPlugin {
 	
 	public void generateConfig(){
 		Configuration config = getConfig();
-		if(config.getString("spawnlocation") == null)
+		if(config.getString("spawnlocation") == null){
 			config.set("spawnlocation", Util.getStringFromLocation(Bukkit.getWorld("world").getSpawnLocation()));
+			saveConfig();
+		}
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {

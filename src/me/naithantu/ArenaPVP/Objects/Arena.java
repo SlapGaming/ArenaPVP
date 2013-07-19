@@ -17,8 +17,11 @@ import me.naithantu.ArenaPVP.Util.Util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 public class Arena {
 	ArenaPVP plugin;
@@ -95,6 +98,18 @@ public class Arena {
 		EventJoinArena event = new EventJoinArena(player, teamToJoin);
 		gamemode.onPlayerJoinArena(event);
 		if (!event.isCancelled()) {
+			//Save players inventory and then clear it.
+			PlayerInventory inventory = player.getInventory();
+
+			YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
+			Configuration playerConfig = playerStorage.getConfig();
+			playerConfig.set("inventory", inventory.getContents());
+			playerConfig.set("armor", inventory.getArmorContents());
+			playerStorage.saveConfig();
+			
+			inventory.clear();
+			inventory.setArmorContents(new ItemStack[4]);
+			
 			event.getTeam().joinTeam(player, arenaManager, this);
 			return true;
 		}
@@ -102,11 +117,31 @@ public class Arena {
 		return false;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void leaveGame(ArenaPlayer arenaPlayer, ArenaTeam teamToLeave){
 		EventLeaveArena event = new EventLeaveArena(arenaPlayer);
 		gamemode.onPlayerLeaveArena(event);
 		if(!event.isCancelled()) {
-			arenaPlayer.getTeam().leaveTeam(arenaManager, arenaPlayer);
+			Player player = Bukkit.getPlayer(arenaPlayer.getPlayerName());
+			//Clear players inventory and then load saved inventory.
+			PlayerInventory inventory = player.getInventory();
+			
+			inventory.clear();
+			inventory.setArmorContents(new ItemStack[4]);
+			
+			YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
+			Configuration playerConfig = playerStorage.getConfig();
+			
+			List<ItemStack> inventoryContents = (List<ItemStack>) playerConfig.getList("inventory");
+			List<ItemStack> armorContents = (List<ItemStack>) playerConfig.getList("armor");
+
+			inventory.setContents(inventoryContents.toArray(new ItemStack[36]));
+			inventory.setArmorContents(armorContents.toArray(new ItemStack[4]));
+			playerConfig.set("inventory", null);
+			playerConfig.set("armor", null);
+			playerStorage.saveConfig();
+			
+			arenaPlayer.getTeam().leaveTeam(arenaManager, arenaPlayer, player);
 		}
 		return;
 	}

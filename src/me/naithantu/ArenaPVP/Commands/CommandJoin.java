@@ -5,8 +5,10 @@ import me.naithantu.ArenaPVP.Objects.Arena;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
 import me.naithantu.ArenaPVP.Objects.ArenaTeam;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
+import me.naithantu.ArenaPVP.Storage.YamlStorage;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
 public class CommandJoin extends AbstractCommand {
