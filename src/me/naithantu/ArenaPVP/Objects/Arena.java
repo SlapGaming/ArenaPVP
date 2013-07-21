@@ -12,6 +12,7 @@ import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSettings;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns.SpawnType;
+import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaUtil;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
 
@@ -28,6 +29,7 @@ public class Arena {
 	ArenaManager arenaManager;
 	ArenaSpawns arenaSpawns;
 	ArenaSettings settings;
+	ArenaUtil arenaUtil;
 	
 	List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
 	String nickName;
@@ -48,9 +50,11 @@ public class Arena {
 		arenaStorage.copyDefaultConfig();
 		arenaConfig = arenaStorage.getConfig();
 		
-		arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaConfig);
-		settings = new ArenaSettings(arenaConfig);
 		nickName = arenaConfig.getString("nickname");
+		
+		settings = new ArenaSettings(arenaConfig);
+		arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaConfig);
+		arenaUtil = new ArenaUtil(this);
 		
 		initializeArena(gamemodeName);
 	}
@@ -81,17 +85,13 @@ public class Arena {
 	
 	public void initializeArena(String gamemodeName) {
 		// Create gamemode.
-		gamemode = ArenaGamemode.getGamemode(arenaManager, this, settings, arenaSpawns, gamemodeName);
+		gamemode = ArenaGamemode.getGamemode(plugin, arenaManager, this, settings, arenaSpawns, arenaUtil, arenaStorage, gamemodeName);
 
 		// Create teams with proper names.
 		for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
 			ArenaTeam team = new ArenaTeam(plugin, arenaConfig.getString("teams." + teamNumber));
 			teams.add(team);
 		}
-	}
-
-	public boolean joinGame(Player player) {
-		return joinGame(player, null);
 	}
 
 	public boolean joinGame(Player player, ArenaTeam teamToJoin) {
@@ -110,6 +110,7 @@ public class Arena {
 			inventory.clear();
 			inventory.setArmorContents(new ItemStack[4]);
 			
+			Util.msg(player, "You joined team " + event.getTeam().getTeamName() + "!");
 			event.getTeam().joinTeam(player, arenaManager, this);
 			return true;
 		}
@@ -147,15 +148,21 @@ public class Arena {
 	}
 	
 	public void startGame(){
+		arenaUtil.sendMessageAll("You have been telepored to your teams spawn point, let the games begin!");
 		for(ArenaTeam team: teams){
 			for(ArenaPlayer arenaPlayer: team.getPlayers()){
-				Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(arenaSpawns.getRespawnLocation(arenaPlayer, SpawnType.PLAYER));
+				Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(arenaSpawns.getRespawnLocation(Bukkit.getPlayer(arenaPlayer.getPlayerName()), arenaPlayer, SpawnType.PLAYER));
 			}
 		}
+		arenaState = ArenaState.PLAYING;
 	}
 	
-	public void stopGame() {
-		Location spawnLocation = Util.getLocationFromString("spawnlocation");
+	public void stopGame(ArenaTeam winTeam) {
+		if(winTeam != null){
+			arenaUtil.sendMessageAll("Team " + winTeam.getTeamName() + " has won the game!");
+		}
+		
+		Location spawnLocation = Util.getLocationFromString(plugin.getConfig().getString("spawnlocation"));
 		for(ArenaTeam team: teams){
 			for(ArenaPlayer arenaPlayer: team.getPlayers()){
 				String playerName = arenaPlayer.getPlayerName();

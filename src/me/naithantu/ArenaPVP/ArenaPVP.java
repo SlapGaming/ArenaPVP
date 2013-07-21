@@ -10,6 +10,7 @@ import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DeathListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.MoveListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.QuitListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.RespawnListener;
+import me.naithantu.ArenaPVP.Objects.Arena;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
 import me.naithantu.ArenaPVP.Util.Util;
 
@@ -45,11 +46,15 @@ public class ArenaPVP extends JavaPlugin {
 		//Create required directories
 		new File(getDataFolder() + File.separator + "maps").mkdirs();
 		new File(getDataFolder() + File.separator + "players").mkdirs();
+		new File(getDataFolder() + File.separator + "classes" + File.separator + "inventory").mkdirs();
+		new File(getDataFolder() + File.separator + "classes" + File.separator + "armor").mkdirs();
 	}
 	
 	@Override
 	public void onDisable(){
-		
+		for(Arena arena: arenaManager.getArenas().values()){
+			arena.stopGame(null);
+		}
 	}
 	
 	public void registerListeners(){
@@ -58,7 +63,7 @@ public class ArenaPVP extends JavaPlugin {
 		pm.registerEvents(new DeathListener(arenaManager), this);
 		pm.registerEvents(new MoveListener(arenaManager), this);
 		pm.registerEvents(new QuitListener(arenaManager), this);
-		pm.registerEvents(new RespawnListener(arenaManager), this);
+		pm.registerEvents(new RespawnListener(this, arenaManager), this);
 	}
 	
 	public void generateConfig(){

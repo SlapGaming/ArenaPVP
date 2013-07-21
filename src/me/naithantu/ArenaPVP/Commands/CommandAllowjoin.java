@@ -4,7 +4,9 @@ import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Objects.Arena;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
+import me.naithantu.ArenaPVP.Util.Util;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class CommandAllowjoin extends AbstractCommand {
@@ -34,10 +36,9 @@ public class CommandAllowjoin extends AbstractCommand {
 		}
 
 		if (availableArenas > 1) {
-			// If there are several arenas, find out what arena players want to
-			// join.
+			// If there are several arenas, find out what arena players want to enable.
 			if (args.length == 0) {
-				this.msg(sender, "There are currently several arenas to enable, please specify the arena you want to join.");
+				this.msg(sender, "There are currently several arenas to enable, please specify the arena you want to enable.");
 				this.msg(sender, "/pvp allowjoin <arenaname> <teamname>");
 				return true;
 			}
@@ -60,5 +61,6 @@ public class CommandAllowjoin extends AbstractCommand {
 	public void enableArena(Arena arena) {
 		arena.setArenaState(ArenaState.LOBBY);
 		this.msg(sender, "Players can now join arena " + arena.getArenaName() + "!");
+		Util.broadcast("Type " + ChatColor.AQUA + "/pvp join " + ChatColor.WHITE + "to join arena " + arena.getNickName() + " (Gamemode: " + arena.getGamemode().getName() + ")!");
 	}
 }

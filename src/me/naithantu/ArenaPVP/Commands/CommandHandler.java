@@ -42,10 +42,14 @@ public class CommandHandler {
 				commandObj = new CommandLeave(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("maps")) {
 				commandObj = new CommandMaps(sender, cmdArgs, plugin, arenaManager);
+			} else if (command.equals("score")) {
+				commandObj = new CommandScore(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("select")) {
 				commandObj = new CommandSelect(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("start")) {
 				commandObj = new CommandStart(sender, cmdArgs, plugin, arenaManager);
+			} else if (command.equals("stop")) {
+				commandObj = new CommandStop(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("teams")) {
 				commandObj = new CommandTeams(sender, cmdArgs, plugin, arenaManager);
 			} else {

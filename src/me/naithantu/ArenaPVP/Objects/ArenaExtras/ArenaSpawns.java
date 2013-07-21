@@ -36,8 +36,8 @@ public class ArenaSpawns {
 		this.config = config;
 	}
 
-	public Location getRespawnLocation(ArenaPlayer arenaPlayer, SpawnType spawnType) {
-		Player player = Bukkit.getServer().getPlayer(arenaPlayer.getPlayerName());
+	public Location getRespawnLocation(Player player, ArenaPlayer arenaPlayer, SpawnType spawnType) {
+		 //player is hier null
 
 		String teamID;
 		if (spawnType == SpawnType.PLAYER) {
@@ -57,7 +57,7 @@ public class ArenaSpawns {
 		}
 
 		Location spawnLocation = Util.getLocationFromString(stringLocations.get(locationIndex));
-		EventRespawn eventRespawn = new EventRespawn(player, spawnLocation, arenaPlayer);
+		EventRespawn eventRespawn = new EventRespawn(player, spawnLocation, arenaPlayer, spawnType);
 		arena.getGamemode().onPlayerArenaRespawn(eventRespawn);
 		if (!eventRespawn.isCancelled()) {
 			return eventRespawn.getLocation();
@@ -65,7 +65,7 @@ public class ArenaSpawns {
 		return null;
 	}
 
-	public void addRespawnTimer(final ArenaPlayer arenaPlayer, final SpawnType spawnType) {
+	public void addRespawnTimer(final Player player, final ArenaPlayer arenaPlayer, final SpawnType spawnType) {
 		String playerName = arenaPlayer.getPlayerName();
 		if (respawnTimers.containsKey(playerName)) {
 			scheduler.cancelTask(respawnTimers.get(playerName));
@@ -77,7 +77,7 @@ public class ArenaSpawns {
 				respawnTimers.remove(arenaPlayer);
 				arenaPlayer.setPlayerState(ArenaPlayerState.PLAYING);
 				Location location;
-				if((location = getRespawnLocation(arenaPlayer, spawnType)) != null){
+				if ((location = getRespawnLocation(player, arenaPlayer, spawnType)) != null) {
 					Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(location);
 				}
 			}

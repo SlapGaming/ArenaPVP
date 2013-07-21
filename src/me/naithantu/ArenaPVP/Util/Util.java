@@ -8,6 +8,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Util {
+	public static void broadcast(String msg){
+		Bukkit.getServer().broadcastMessage(ChatColor.DARK_RED + "[PVP] " + ChatColor.WHITE + msg);
+	}
+	
 	public static void msg(CommandSender sender, String msg) {
 		if (sender instanceof Player) {
 			sender.sendMessage(ChatColor.DARK_RED + "[PVP] " + ChatColor.WHITE + msg);

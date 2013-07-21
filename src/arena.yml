@@ -8,6 +8,17 @@ spawns:
     - world:1:70:1:90:90
   spectator:
     - world:1:70:1:90:90
+classes:
+  0:
+    inventory:
+      - default
+    armor:
+      - default
+  1:
+    inventory:
+      - default
+    armor:
+      - default
 maxplayers: 0
 respawntime: 0
 scorelimit: 30
@@ -16,3 +27,57 @@ friendlyfire: false
 autojoinpvpchat: true
 outofboundsarea: true
 autobalance: true
+inventory:
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+armor:
+- ==: org.bukkit.inventory.ItemStack
+  type: AIR
+  damage: -1
+  amount: 0
+- ==: org.bukkit.inventory.ItemStack
+  type: AIR
+  damage: -1
+  amount: 0
+- ==: org.bukkit.inventory.ItemStack
+  type: AIR
+  damage: -1
+  amount: 0
+- ==: org.bukkit.inventory.ItemStack
+  type: AIR
+  damage: -1
+  amount: 0

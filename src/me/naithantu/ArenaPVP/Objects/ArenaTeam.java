@@ -53,9 +53,9 @@ public class ArenaTeam {
 		arenaManager.addPlayer(arenaPlayer);
 		players.add(arenaPlayer);
 		if(arena.getArenaState() == ArenaState.PLAYING){
-			player.teleport(arena.getArenaSpawns().getRespawnLocation(arenaPlayer, SpawnType.PLAYER));
+			player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
 		} else {
-			player.teleport(arena.getArenaSpawns().getRespawnLocation(arenaPlayer, SpawnType.SPECTATOR));
+			player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
 		}
 	}
 	
