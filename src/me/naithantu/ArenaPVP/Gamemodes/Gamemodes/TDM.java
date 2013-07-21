@@ -1,12 +1,13 @@
 package me.naithantu.ArenaPVP.Gamemodes.Gamemodes;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.ArenaPlayerDeathEvent;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Objects.Arena;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
+import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
 import me.naithantu.ArenaPVP.Objects.ArenaTeam;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSettings;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns;
@@ -23,8 +24,9 @@ public class TDM extends Gamemode {
 		return "TDM";
 	}
 	
-	public void onPlayerDeath(ArenaPlayerDeathEvent event){
-		super.onPlayerDeath(event);
+	@Override
+	public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer){
+		super.onPlayerDeath(event, arenaPlayer);
 		Player killer = event.getEntity().getKiller();
 		if(killer != null){
 			ArenaTeam team = arenaManager.getPlayerByName(killer.getName()).getTeam();

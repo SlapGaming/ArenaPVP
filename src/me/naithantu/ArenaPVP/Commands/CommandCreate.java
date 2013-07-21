@@ -5,8 +5,10 @@ import java.io.File;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Objects.Arena;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
+import me.naithantu.ArenaPVP.Storage.YamlStorage;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
 public class CommandCreate extends AbstractCommand {
@@ -43,7 +45,12 @@ public class CommandCreate extends AbstractCommand {
 		}
 		
 		Arena arena = new Arena(plugin, arenaManager, arenaName, "tdm");
+		YamlStorage arenaStorage = arena.getArenaStorage();
+		Configuration arenaConfig = arenaStorage.getConfig();
+		arenaConfig.set("nickname", arenaName);
 		arenaManager.getArenas().put(arenaName, arena);
+		
+		
 		
 		this.msg(sender, "Created a new arena with name " + arenaName + "!");
 		return true;

@@ -20,7 +20,7 @@ public class MoveListener implements Listener {
 		Player player = event.getPlayer();
 		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
 		if (arenaPlayer != null) {
-			arenaPlayer.getArena().getGamemode().onPlayerMove(event);
+			arenaPlayer.getArena().getGamemode().onPlayerMove(event, arenaPlayer);
 		}
 	}
 }

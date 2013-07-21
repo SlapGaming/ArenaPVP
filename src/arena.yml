@@ -11,14 +11,106 @@ spawns:
 classes:
   0:
     inventory:
-      - default
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
     armor:
-      - default
+      - ==: org.bukkit.inventory.ItemStack
+        type: AIR
+        damage: -1
+        amount: 0
+      - ==: org.bukkit.inventory.ItemStack
+        type: AIR
+        damage: -1
+        amount: 0
+      - ==: org.bukkit.inventory.ItemStack
+        type: AIR
+        damage: -1
+        amount: 0
+      - ==: org.bukkit.inventory.ItemStack
+        type: AIR
+        damage: -1
+        amount: 0
   1:
     inventory:
-      - default
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
     armor:
-      - default
+      - ==: org.bukkit.inventory.ItemStack
+        type: AIR
+        damage: -1
+        amount: 0
+      - ==: org.bukkit.inventory.ItemStack
+        type: AIR
+        damage: -1
+        amount: 0
+      - ==: org.bukkit.inventory.ItemStack
+        type: AIR
+        damage: -1
+        amount: 0
+      - ==: org.bukkit.inventory.ItemStack
+        type: AIR
+        damage: -1
+        amount: 0
 maxplayers: 0
 respawntime: 0
 scorelimit: 30
@@ -27,57 +119,3 @@ friendlyfire: false
 autojoinpvpchat: true
 outofboundsarea: true
 autobalance: true
-inventory:
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-- null
-armor:
-- ==: org.bukkit.inventory.ItemStack
-  type: AIR
-  damage: -1
-  amount: 0
-- ==: org.bukkit.inventory.ItemStack
-  type: AIR
-  damage: -1
-  amount: 0
-- ==: org.bukkit.inventory.ItemStack
-  type: AIR
-  damage: -1
-  amount: 0
-- ==: org.bukkit.inventory.ItemStack
-  type: AIR
-  damage: -1
-  amount: 0

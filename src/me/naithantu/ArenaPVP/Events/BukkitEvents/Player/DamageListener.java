@@ -5,7 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import me.naithantu.ArenaPVP.Events.BukkitEvents.ArenaPlayerDamageEvent;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
 import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
 
@@ -22,7 +21,7 @@ public class DamageListener implements Listener {
 			Player player = (Player) event.getEntity();
 			ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
 			if(arenaPlayer != null){
-				arenaPlayer.getArena().getGamemode().onPlayerDamage(new ArenaPlayerDamageEvent(event, arenaPlayer));
+				arenaPlayer.getArena().getGamemode().onPlayerDamage(event, arenaPlayer);
 			}
 		}
 	}

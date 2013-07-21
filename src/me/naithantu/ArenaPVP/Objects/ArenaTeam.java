@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns.SpawnType;
@@ -12,16 +14,30 @@ import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Util.Util;
 
 public class ArenaTeam {
+	ItemStack[] inventory;
+	ItemStack[] armor;
+	
 	ArenaPVP plugin;
+	Configuration arenaConfig;
+	int teamNumber;
+	
 	String teamName;
 	
 	int score = 0;
 	
 	List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
 	
-	public ArenaTeam(ArenaPVP plugin, String teamName){
+	@SuppressWarnings("unchecked")
+	public ArenaTeam(ArenaPVP plugin, Configuration arenaConfig, int teamNumber){
 		this.plugin = plugin;
-		this.teamName = teamName;
+		this.arenaConfig = arenaConfig;
+		this.teamNumber = teamNumber;
+		
+		teamName = arenaConfig.getString("teams." + teamNumber);
+		List<ItemStack> inventoryContents = (List<ItemStack>) arenaConfig.getList("classes." + teamNumber + ".inventory");
+		inventory = inventoryContents.toArray(new ItemStack[36]);
+		List<ItemStack> armorContents = (List<ItemStack>) arenaConfig.getList("classes." + teamNumber + ".armor");
+		armor = armorContents.toArray(new ItemStack[4]);
 	}
 	
 	public String getTeamName(){
@@ -34,6 +50,14 @@ public class ArenaTeam {
 	
 	public List<ArenaPlayer> getPlayers(){
 		return players;
+	}
+	
+	public ItemStack[] getInventory(){
+		return inventory;
+	}
+	
+	public ItemStack[] getArmor(){
+		return armor;
 	}
 		
 	public void addScore(){

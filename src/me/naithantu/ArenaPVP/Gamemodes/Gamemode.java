@@ -1,15 +1,10 @@
 package me.naithantu.ArenaPVP.Gamemodes;
 
-import java.util.List;
-
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Commands.AbstractCommand;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventLeaveArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventRespawn;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.ArenaPlayerDamageEvent;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.ArenaPlayerDeathEvent;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.ArenaPlayerRespawnEvent;
 import me.naithantu.ArenaPVP.Objects.Arena;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
 import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
@@ -25,9 +20,14 @@ import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.PlayerInventory;
 
 public class Gamemode {
@@ -62,16 +62,15 @@ public class Gamemode {
 		}
 	}
 
-	public void onPlayerDeath(ArenaPlayerDeathEvent event) {
+	public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer) {
 		event.setDroppedExp(0);
 		event.setKeepLevel(true);
 		event.getDrops().clear();
 
-		arenaUtil.sendMessageAll(event.getDeathMessage());
+		arenaUtil.sendNoPrefixMessageAll(event.getDeathMessage());
 		event.setDeathMessage(null);
 
 		Player player = event.getEntity();
-		ArenaPlayer arenaPlayer = event.getArenaPlayer();
 
 		// Add death and kill to players.
 		arenaPlayer.getPlayerScore().addDeath();
@@ -79,14 +78,12 @@ public class Gamemode {
 			arenaManager.getPlayerByName(player.getKiller().getName()).getPlayerScore().addKill();
 	}
 
-	public void onPlayerRespawn(ArenaPlayerRespawnEvent event) {
-		ArenaPlayer arenaPlayer = event.getArenaPlayer();
+	public void onPlayerRespawn(PlayerRespawnEvent event, ArenaPlayer arenaPlayer) {
 		Player player = event.getPlayer();
 		if (settings.getRespawnTime() == 0) {
 			if (arenaPlayer.getArena().getArenaState() != ArenaState.PLAYING) {
 				event.setRespawnLocation(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
 			} else {
-				System.out.println("Changing respawn loc...");
 				event.setRespawnLocation(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
 			}
 		} else {
@@ -98,18 +95,29 @@ public class Gamemode {
 		}
 	}
 
-	public void onPlayerDamage(ArenaPlayerDamageEvent event) {
+	public void onPlayerDamage(EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
 
 	}
 
-	public void onPlayerMove(PlayerMoveEvent event) {
+	public void onPlayerMove(PlayerMoveEvent event, ArenaPlayer arenaPlayer) {
 
 	}
 
-	public void onPlayerQuit(PlayerQuitEvent event) {
+	public void onPlayerQuit(PlayerQuitEvent event, ArenaPlayer arenaPlayer) {
 		//TODO Create EventPlayerLeaveArena
-		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(event.getPlayer().getName());
 		arenaPlayer.getArena().leaveGame(arenaPlayer, arenaPlayer.getTeam());
+	}
+	
+	public void onPlayerDropItem(PlayerDropItemEvent event, ArenaPlayer arenaPlayer) {
+		Util.msg(event.getPlayer(), "You may not drop items!");
+		event.setCancelled(true);
+	}
+	
+	public void onPlayerInventoryClick(InventoryClickEvent event, ArenaPlayer arenaPlayer) {
+		if(event.getSlotType() == SlotType.ARMOR){
+			Util.msg((Player) event.getWhoClicked(), "You may not take off your armor!");
+			event.setCancelled(true);
+		}
 	}
 
 	// Arena made events.
@@ -134,17 +142,14 @@ public class Gamemode {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public void onPlayerArenaRespawn(final EventRespawn event) {
 		if (event.getSpawnType() == SpawnType.PLAYER) {
-			List<ItemStack> inventoryContents = (List<ItemStack>) arenaConfig.getList("inventory");
-			List<ItemStack> armorContents = (List<ItemStack>) arenaConfig.getList("armor");
-
-			System.out.println(event.getPlayer());
+			ArenaTeam team = event.getArenaPlayer().getTeam();
 			PlayerInventory inventory = event.getPlayer().getInventory();
 
-			inventory.setContents(inventoryContents.toArray(new ItemStack[36]));
-			inventory.setArmorContents(armorContents.toArray(new ItemStack[4]));
+			System.out.println("Adding inventory: " + team.getInventory());
+			inventory.setContents(team.getInventory());
+			inventory.setArmorContents(team.getArmor());
 		}
 	}
 

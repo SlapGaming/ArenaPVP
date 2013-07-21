@@ -66,6 +66,10 @@ public class Arena {
 	public ArenaSpawns getArenaSpawns() {
 		return arenaSpawns;
 	}
+	
+	public YamlStorage getArenaStorage() {
+		return arenaStorage;
+	}
 
 	public String getArenaName() {
 		return arenaName;
@@ -89,7 +93,7 @@ public class Arena {
 
 		// Create teams with proper names.
 		for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
-			ArenaTeam team = new ArenaTeam(plugin, arenaConfig.getString("teams." + teamNumber));
+			ArenaTeam team = new ArenaTeam(plugin, arenaConfig, Integer.parseInt(teamNumber));
 			teams.add(team);
 		}
 	}
@@ -107,6 +111,7 @@ public class Arena {
 			playerConfig.set("armor", inventory.getArmorContents());
 			playerStorage.saveConfig();
 			
+			System.out.println("Clearing inventory!");
 			inventory.clear();
 			inventory.setArmorContents(new ItemStack[4]);
 			

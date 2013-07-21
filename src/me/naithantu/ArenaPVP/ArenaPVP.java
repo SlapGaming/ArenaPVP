@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 import me.naithantu.ArenaPVP.Commands.CommandHandler;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DamageListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DeathListener;
+import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DropItemListener;
+import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.InventoryClickListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.MoveListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.QuitListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.RespawnListener;
@@ -61,6 +63,8 @@ public class ArenaPVP extends JavaPlugin {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new DamageListener(arenaManager), this);
 		pm.registerEvents(new DeathListener(arenaManager), this);
+		pm.registerEvents(new DropItemListener(arenaManager), this);
+		pm.registerEvents(new InventoryClickListener(arenaManager), this);
 		pm.registerEvents(new MoveListener(arenaManager), this);
 		pm.registerEvents(new QuitListener(arenaManager), this);
 		pm.registerEvents(new RespawnListener(this, arenaManager), this);

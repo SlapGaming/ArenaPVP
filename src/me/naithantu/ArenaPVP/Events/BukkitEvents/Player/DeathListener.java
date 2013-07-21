@@ -5,7 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import me.naithantu.ArenaPVP.Events.BukkitEvents.ArenaPlayerDeathEvent;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
 import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
 
@@ -21,7 +20,7 @@ public class DeathListener implements Listener {
 		Player player = event.getEntity();
 		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
 		if(arenaPlayer != null){
-			arenaPlayer.getArena().getGamemode().onPlayerDeath(new ArenaPlayerDeathEvent(event, arenaPlayer));
+			arenaPlayer.getArena().getGamemode().onPlayerDeath(event, arenaPlayer);
 		}
 	}
 }
