@@ -24,6 +24,13 @@ public class YamlStorage {
 		this.path = path;
 		this.fileName = fileName + ".yml";
 	}
+	
+	public boolean exists(){
+		File tempFile = new File(plugin.getDataFolder() + File.separator + path, fileName);
+		if(tempFile.exists())
+			return true;
+		return false;
+	}
 
 	public void reloadConfig() {
 		if (file == null) {

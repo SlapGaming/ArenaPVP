@@ -9,13 +9,12 @@ import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DamageListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DeathListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DropItemListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.InventoryClickListener;
+import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.JoinListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.MoveListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.QuitListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.RespawnListener;
 import me.naithantu.ArenaPVP.Objects.Arena;
 import me.naithantu.ArenaPVP.Objects.ArenaManager;
-import me.naithantu.ArenaPVP.Util.Util;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -28,11 +27,11 @@ public class ArenaPVP extends JavaPlugin {
 	ArenaManager arenaManager;
 	
 	Logger logger;
-		
+			
 	@Override
 	public void onEnable(){
 		logger = getLogger();
-		
+			
 		File configFile = new File(getDataFolder(), "config.yml");
 		if (!configFile.exists()) {
 			logger.log(Level.INFO, "No config found, generating default config.");
@@ -50,7 +49,7 @@ public class ArenaPVP extends JavaPlugin {
 		new File(getDataFolder() + File.separator + "players").mkdirs();
 		new File(getDataFolder() + File.separator + "classes" + File.separator + "inventory").mkdirs();
 		new File(getDataFolder() + File.separator + "classes" + File.separator + "armor").mkdirs();
-	}
+		}
 	
 	@Override
 	public void onDisable(){
@@ -65,6 +64,7 @@ public class ArenaPVP extends JavaPlugin {
 		pm.registerEvents(new DeathListener(arenaManager), this);
 		pm.registerEvents(new DropItemListener(arenaManager), this);
 		pm.registerEvents(new InventoryClickListener(arenaManager), this);
+		pm.registerEvents(new JoinListener(arenaManager), this);
 		pm.registerEvents(new MoveListener(arenaManager), this);
 		pm.registerEvents(new QuitListener(arenaManager), this);
 		pm.registerEvents(new RespawnListener(this, arenaManager), this);
@@ -72,10 +72,7 @@ public class ArenaPVP extends JavaPlugin {
 	
 	public void generateConfig(){
 		Configuration config = getConfig();
-		if(config.getString("spawnlocation") == null){
-			config.set("spawnlocation", Util.getStringFromLocation(Bukkit.getWorld("world").getSpawnLocation()));
-			saveConfig();
-		}
+		
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {

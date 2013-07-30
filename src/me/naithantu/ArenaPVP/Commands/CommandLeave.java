@@ -30,7 +30,8 @@ public class CommandLeave extends AbstractCommand {
 			return true;
 		}
 
-		arenaPlayer.getArena().leaveGame(arenaPlayer, arenaPlayer.getTeam());
+		arenaPlayer.getArena().leaveGame(arenaPlayer);
+		this.msg(sender, "You left the game!");
 		return true;
 	}
 }

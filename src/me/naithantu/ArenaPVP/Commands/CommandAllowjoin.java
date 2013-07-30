@@ -61,6 +61,6 @@ public class CommandAllowjoin extends AbstractCommand {
 	public void enableArena(Arena arena) {
 		arena.setArenaState(ArenaState.LOBBY);
 		this.msg(sender, "Players can now join arena " + arena.getArenaName() + "!");
-		Util.broadcast("Type " + ChatColor.AQUA + "/pvp join " + ChatColor.WHITE + "to join arena " + arena.getNickName() + " (Gamemode: " + arena.getGamemode().getName() + ")!");
+		Util.broadcast("Type " + ChatColor.AQUA + "/pvp join " + ChatColor.WHITE + "to join arena " + arena.getNickName() + ChatColor.WHITE + " (Gamemode: " + arena.getGamemode().getName() + ")!");
 	}
 }

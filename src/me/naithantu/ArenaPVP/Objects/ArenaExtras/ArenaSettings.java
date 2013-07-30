@@ -9,7 +9,8 @@ public class ArenaSettings {
 	int respawnTime;
 	int scoreLimit;
 	int outOfBoundsTime;
-	
+	int spawnProtection;
+
 	boolean friendlyFire;
 	boolean autojoinPvpChat;
 	boolean outOfBoundsArea;
@@ -25,6 +26,7 @@ public class ArenaSettings {
 		respawnTime = config.getInt("respawntime");
 		scoreLimit = config.getInt("scorelimit");
 		outOfBoundsTime = config.getInt("outofboundstime");
+		spawnProtection = config.getInt("spawnprotection");
 
 		friendlyFire = config.getBoolean("friendlyfire");
 		autojoinPvpChat = config.getBoolean("autojoinpvpchat");
@@ -46,6 +48,10 @@ public class ArenaSettings {
 
 	public int getOutOfBoundsTime() {
 		return outOfBoundsTime;
+	}
+	
+	public int getSpawnProtection() {
+		return spawnProtection;
 	}
 
 	public boolean isFriendlyFire() {
@@ -80,6 +86,10 @@ public class ArenaSettings {
 		this.outOfBoundsTime = outOfBoundsTime;
 	}
 
+	public void setSpawnProtection(int spawnProtection) {
+		this.spawnProtection = spawnProtection;
+	}
+	
 	public void setFriendlyFire(boolean friendlyFire) {
 		this.friendlyFire = friendlyFire;
 	}

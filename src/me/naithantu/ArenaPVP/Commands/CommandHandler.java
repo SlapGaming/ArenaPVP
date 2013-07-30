@@ -44,7 +44,9 @@ public class CommandHandler {
 				commandObj = new CommandMaps(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("saveinventory")) {
 				commandObj = new CommandSaveInventory(sender, cmdArgs, plugin, arenaManager);
-			} else if (command.equals("score")) {
+			} else if (command.equals("saveschematic")) {
+				commandObj = new CommandSaveSchematic(sender, cmdArgs, plugin, arenaManager);
+			}else if (command.equals("score")) {
 				commandObj = new CommandScore(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("select")) {
 				commandObj = new CommandSelect(sender, cmdArgs, plugin, arenaManager);

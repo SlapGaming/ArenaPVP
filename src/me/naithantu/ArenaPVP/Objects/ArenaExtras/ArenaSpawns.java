@@ -37,8 +37,6 @@ public class ArenaSpawns {
 	}
 
 	public Location getRespawnLocation(Player player, ArenaPlayer arenaPlayer, SpawnType spawnType) {
-		 //player is hier null
-
 		String teamID;
 		if (spawnType == SpawnType.PLAYER) {
 			teamID = Integer.toString(arena.getTeams().indexOf(arenaPlayer.getTeam()));
@@ -81,10 +79,9 @@ public class ArenaSpawns {
 					Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(location);
 				}
 			}
-		}, settings.getRespawnTime());
+		}, settings.getRespawnTime() * 20);
 		respawnTimers.put(playerName, taskID);
 		arenaPlayer.setPlayerState(ArenaPlayerState.RESPAWNING);
-
 	}
 
 	public enum SpawnType {

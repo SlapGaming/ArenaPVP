@@ -48,6 +48,7 @@ public class CommandCreate extends AbstractCommand {
 		YamlStorage arenaStorage = arena.getArenaStorage();
 		Configuration arenaConfig = arenaStorage.getConfig();
 		arenaConfig.set("nickname", arenaName);
+		arenaStorage.saveConfig();
 		arenaManager.getArenas().put(arenaName, arena);
 		
 		

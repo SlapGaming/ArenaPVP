@@ -1,5 +1,7 @@
 package me.naithantu.ArenaPVP.Objects;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +19,17 @@ import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+
+import com.sk89q.worldedit.CuboidClipboard;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.data.DataException;
+import com.sk89q.worldedit.schematic.SchematicFormat;
 
 public class Arena {
 	ArenaPVP plugin;
@@ -30,8 +37,9 @@ public class Arena {
 	ArenaSpawns arenaSpawns;
 	ArenaSettings settings;
 	ArenaUtil arenaUtil;
-	
+
 	List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
+	List<String> offlinePlayers = new ArrayList<String>();
 	String nickName;
 
 	String arenaName;
@@ -49,16 +57,16 @@ public class Arena {
 		arenaStorage = new YamlStorage(plugin, "maps", arenaName);
 		arenaStorage.copyDefaultConfig();
 		arenaConfig = arenaStorage.getConfig();
-		
+
 		nickName = arenaConfig.getString("nickname");
-		
+
 		settings = new ArenaSettings(arenaConfig);
 		arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaConfig);
 		arenaUtil = new ArenaUtil(this);
-		
+
 		initializeArena(gamemodeName);
 	}
-	
+
 	public String getNickName() {
 		return nickName;
 	}
@@ -66,7 +74,11 @@ public class Arena {
 	public ArenaSpawns getArenaSpawns() {
 		return arenaSpawns;
 	}
-	
+
+	public ArenaSettings getSettings() {
+		return settings;
+	}
+
 	public YamlStorage getArenaStorage() {
 		return arenaStorage;
 	}
@@ -79,14 +91,18 @@ public class Arena {
 		return gamemode;
 	}
 
+	public List<String> getOfflinePlayers() {
+		return offlinePlayers;
+	}
+
 	public ArenaState getArenaState() {
 		return arenaState;
 	}
 
-	public void setArenaState(ArenaState arenaState){
+	public void setArenaState(ArenaState arenaState) {
 		this.arenaState = arenaState;
 	}
-	
+
 	public void initializeArena(String gamemodeName) {
 		// Create gamemode.
 		gamemode = ArenaGamemode.getGamemode(plugin, arenaManager, this, settings, arenaSpawns, arenaUtil, arenaStorage, gamemodeName);
@@ -102,78 +118,85 @@ public class Arena {
 		EventJoinArena event = new EventJoinArena(player, teamToJoin);
 		gamemode.onPlayerJoinArena(event);
 		if (!event.isCancelled()) {
-			//Save players inventory and then clear it.
-			PlayerInventory inventory = player.getInventory();
+			Util.msg(player, "You joined team " + event.getTeam().getTeamName() + "!");
 
+			//Teleport first to avoid problems with MVInventories
 			YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
 			Configuration playerConfig = playerStorage.getConfig();
-			playerConfig.set("inventory", inventory.getContents());
-			playerConfig.set("armor", inventory.getArmorContents());
-			playerStorage.saveConfig();
-			
-			System.out.println("Clearing inventory!");
-			inventory.clear();
-			inventory.setArmorContents(new ItemStack[4]);
-			
-			Util.msg(player, "You joined team " + event.getTeam().getTeamName() + "!");
+			playerConfig.set("location", Util.getStringFromLocation(player.getLocation()));
 			event.getTeam().joinTeam(player, arenaManager, this);
+
+			Util.playerJoin(player, playerStorage);
 			return true;
 		}
 
 		return false;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public void leaveGame(ArenaPlayer arenaPlayer, ArenaTeam teamToLeave){
+
+	public void leaveGame(ArenaPlayer arenaPlayer) {
 		EventLeaveArena event = new EventLeaveArena(arenaPlayer);
 		gamemode.onPlayerLeaveArena(event);
-		if(!event.isCancelled()) {
+		if (!event.isCancelled()) {
 			Player player = Bukkit.getPlayer(arenaPlayer.getPlayerName());
-			//Clear players inventory and then load saved inventory.
-			PlayerInventory inventory = player.getInventory();
-			
-			inventory.clear();
-			inventory.setArmorContents(new ItemStack[4]);
-			
-			YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
-			Configuration playerConfig = playerStorage.getConfig();
-			
-			List<ItemStack> inventoryContents = (List<ItemStack>) playerConfig.getList("inventory");
-			List<ItemStack> armorContents = (List<ItemStack>) playerConfig.getList("armor");
-
-			inventory.setContents(inventoryContents.toArray(new ItemStack[36]));
-			inventory.setArmorContents(armorContents.toArray(new ItemStack[4]));
-			playerConfig.set("inventory", null);
-			playerConfig.set("armor", null);
-			playerStorage.saveConfig();
-			
+			if (player != null) {
+				YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
+				Configuration playerConfig = playerStorage.getConfig();
+				if (player.isDead()) {
+					playerConfig.set("hastoleave", true);
+					playerStorage.saveConfig();
+				} else {
+					Util.playerLeave(player, playerStorage);
+					player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
+					playerConfig.set("location", null);
+				}
+			}
 			arenaPlayer.getTeam().leaveTeam(arenaManager, arenaPlayer, player);
 		}
 		return;
 	}
-	
-	public void startGame(){
+
+	public void startGame() {
 		arenaUtil.sendMessageAll("You have been telepored to your teams spawn point, let the games begin!");
-		for(ArenaTeam team: teams){
-			for(ArenaPlayer arenaPlayer: team.getPlayers()){
+		for (ArenaTeam team : teams) {
+			for (ArenaPlayer arenaPlayer : team.getPlayers()) {
 				Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(arenaSpawns.getRespawnLocation(Bukkit.getPlayer(arenaPlayer.getPlayerName()), arenaPlayer, SpawnType.PLAYER));
 			}
 		}
 		arenaState = ArenaState.PLAYING;
 	}
-	
+
 	public void stopGame(ArenaTeam winTeam) {
-		if(winTeam != null){
+		if (winTeam != null) {
 			arenaUtil.sendMessageAll("Team " + winTeam.getTeamName() + " has won the game!");
 		}
-		
-		Location spawnLocation = Util.getLocationFromString(plugin.getConfig().getString("spawnlocation"));
-		for(ArenaTeam team: teams){
-			for(ArenaPlayer arenaPlayer: team.getPlayers()){
-				String playerName = arenaPlayer.getPlayerName();
-				Bukkit.getPlayer(playerName).teleport(spawnLocation);
-				arenaManager.getAllPlayers().remove(playerName);
+
+		for (ArenaTeam team : teams) {
+			int teamSize = team.getPlayers().size();
+			for (int i = 0; i < teamSize; i++) {
+				leaveGame(team.getPlayers().get(0));
 			}
+		}
+		
+		File schematic = new File(plugin.getDataFolder() + File.separator + "maps", arenaName + ".schematic");
+		if(schematic.exists()){
+			EditSession editSession = new EditSession(new BukkitWorld(Bukkit.getWorld(arenaConfig.getString("schematicworld"))), 999999999);
+			SchematicFormat format = SchematicFormat.getFormat(schematic);
+			
+			CuboidClipboard cuboidClipboard;
+			try {
+				cuboidClipboard = format.load(schematic);
+			} catch (IOException | DataException e) {
+				e.printStackTrace();
+				return;
+			}
+
+			try {
+				Vector pos = cuboidClipboard.getOrigin();
+				cuboidClipboard.place(editSession, pos, false);
+			} catch (MaxChangedBlocksException e) {
+				e.printStackTrace();
+			}
+			System.out.println("Pasted arena!");
 		}
 		arenaManager.getArenas().remove(arenaName);
 	}

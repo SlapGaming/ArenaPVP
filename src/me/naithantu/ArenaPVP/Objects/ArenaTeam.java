@@ -3,7 +3,6 @@ package me.naithantu.ArenaPVP.Objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns.SpawnType;
 import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
-import me.naithantu.ArenaPVP.Util.Util;
 
 public class ArenaTeam {
 	ItemStack[] inventory;
@@ -73,11 +71,19 @@ public class ArenaTeam {
 	}
 	
 	public void joinTeam(Player player, ArenaManager arenaManager, Arena arena){
-		ArenaPlayer arenaPlayer = new ArenaPlayer(player.getName(), arena, this);
+		ArenaPlayer arenaPlayer = new ArenaPlayer(plugin, player.getName(), arena, this);
 		arenaManager.addPlayer(arenaPlayer);
+		joinTeam(player, arenaManager, arena, arenaPlayer);
+	}
+	
+	public void joinTeam(Player player, ArenaManager arenaManager, Arena arena, ArenaPlayer arenaPlayer){
 		players.add(arenaPlayer);
 		if(arena.getArenaState() == ArenaState.PLAYING){
-			player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
+			if (arena.getSettings().getRespawnTime() == 0) {
+					player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
+			} else {
+					arena.getArenaSpawns().addRespawnTimer(player, arenaPlayer, SpawnType.PLAYER);
+			}
 		} else {
 			player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
 		}
@@ -86,7 +92,5 @@ public class ArenaTeam {
 	public void leaveTeam(ArenaManager arenaManager, ArenaPlayer arenaPlayer, Player player){
 		arenaManager.removePlayer(arenaPlayer);
 		players.remove(arenaPlayer);
-		Location spawnLocation = Util.getLocationFromString(plugin.getConfig().getString("spawnlocation"));
-		player.teleport(spawnLocation);
 	}
 }

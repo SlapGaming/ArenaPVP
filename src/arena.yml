@@ -115,6 +115,7 @@ maxplayers: 0
 respawntime: 0
 scorelimit: 30
 outofboundstime: 5
+spawnprotection: 1
 friendlyfire: false
 autojoinpvpchat: true
 outofboundsarea: true
