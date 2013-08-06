@@ -1,20 +1,23 @@
-package me.naithantu.ArenaPVP.Objects;
+package me.naithantu.ArenaPVP.Arena;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaArea;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaGamemode;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSettings;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventLeaveArena;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaGamemode;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSettings;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns.SpawnType;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaUtil;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
 
@@ -37,6 +40,7 @@ public class Arena {
 	ArenaSpawns arenaSpawns;
 	ArenaSettings settings;
 	ArenaUtil arenaUtil;
+	ArenaArea arenaArea;
 
 	List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
 	List<String> offlinePlayers = new ArrayList<String>();
@@ -63,6 +67,7 @@ public class Arena {
 		settings = new ArenaSettings(arenaConfig);
 		arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaConfig);
 		arenaUtil = new ArenaUtil(this);
+		arenaArea = new ArenaArea(plugin, this, settings, arenaConfig);
 
 		initializeArena(gamemodeName);
 	}
@@ -79,6 +84,10 @@ public class Arena {
 		return settings;
 	}
 
+	public ArenaArea getArenaArea(){
+		return arenaArea;
+	}
+	
 	public YamlStorage getArenaStorage() {
 		return arenaStorage;
 	}
@@ -169,11 +178,13 @@ public class Arena {
 		if (winTeam != null) {
 			arenaUtil.sendMessageAll("Team " + winTeam.getTeamName() + " has won the game!");
 		}
-
+		
 		for (ArenaTeam team : teams) {
-			int teamSize = team.getPlayers().size();
-			for (int i = 0; i < teamSize; i++) {
-				leaveGame(team.getPlayers().get(0));
+			Iterator<ArenaPlayer> iterator = team.getPlayers().iterator();
+			while(iterator.hasNext()){
+				ArenaPlayer arenaPlayer = iterator.next();
+				arenaPlayer.getTimers().cancelAllTimers();
+				leaveGame(arenaPlayer);
 			}
 		}
 		
@@ -196,7 +207,6 @@ public class Arena {
 			} catch (MaxChangedBlocksException e) {
 				e.printStackTrace();
 			}
-			System.out.println("Pasted arena!");
 		}
 		arenaManager.getArenas().remove(arenaName);
 	}

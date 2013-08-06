@@ -5,8 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import me.naithantu.ArenaPVP.Objects.ArenaManager;
-import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
+import me.naithantu.ArenaPVP.ArenaManager;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 public class JoinListener implements Listener {
 	ArenaManager arenaManager;

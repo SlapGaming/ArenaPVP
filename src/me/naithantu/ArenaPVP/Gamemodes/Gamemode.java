@@ -1,20 +1,21 @@
 package me.naithantu.ArenaPVP.Gamemodes;
 
+import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.Arena.ArenaTeam;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaArea;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSettings;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
 import me.naithantu.ArenaPVP.Commands.AbstractCommand;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventLeaveArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventRespawn;
-import me.naithantu.ArenaPVP.Objects.Arena;
-import me.naithantu.ArenaPVP.Objects.ArenaManager;
-import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
-import me.naithantu.ArenaPVP.Objects.ArenaTeam;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaPlayerState;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSettings;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaState;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaSpawns.SpawnType;
-import me.naithantu.ArenaPVP.Objects.ArenaExtras.ArenaUtil;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
 
@@ -41,6 +42,7 @@ public class Gamemode {
 	protected Arena arena;
 	protected ArenaSettings settings;
 	protected ArenaSpawns arenaSpawns;
+	protected ArenaArea arenaArea;
 	protected ArenaUtil arenaUtil;
 	protected YamlStorage arenaStorage;
 	protected Configuration arenaConfig;
@@ -53,6 +55,7 @@ public class Gamemode {
 		this.arenaSpawns = arenaSpawns;
 		this.arenaUtil = arenaUtil;
 		this.arenaStorage = arenaStorage;
+		arenaArea = arena.getArenaArea();
 		arenaConfig = arenaStorage.getConfig();
 	}
 
@@ -90,7 +93,7 @@ public class Gamemode {
 				event.setRespawnLocation(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
 			} else {
 				event.setRespawnLocation(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
-				arena.getArenaSpawns().addRespawnTimer(player, arenaPlayer, SpawnType.PLAYER);
+				arenaPlayer.getTimers().startRespawnTimer(player, SpawnType.PLAYER);
 			}
 		} else {
 			event.setRespawnLocation(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
@@ -104,7 +107,7 @@ public class Gamemode {
 		}
 
 		//All mob version Player damage is fine, check if damager is a player.
-		if (damager instanceof Player) {	
+		if (damager instanceof Player) {
 			//Block damage if arena or player isn't playing.
 			if (arena.getArenaState() != ArenaState.PLAYING || arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
 				event.setCancelled(true);
@@ -120,9 +123,9 @@ public class Gamemode {
 							event.setCancelled(true);
 						}
 					}
-					
+
 					//Block pvp spawn protection damage.
-					if (arenaPlayer.hasSpawnProtection()){
+					if (arenaPlayer.getTimers().hasSpawnProtection()) {
 						event.setCancelled(true);
 					}
 				}
@@ -131,7 +134,9 @@ public class Gamemode {
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event, ArenaPlayer arenaPlayer) {
-
+		if(settings.isOutOfBoundsArea()){
+			arenaArea.handleMove(arenaPlayer, event.getPlayer(), event.getTo());
+		}
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event, ArenaPlayer arenaPlayer) {
@@ -145,6 +150,7 @@ public class Gamemode {
 		player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
 		playerConfig.set("location", null);
 
+		arenaPlayer.getTimers().cancelAllTimers();
 		arenaPlayer.getTeam().getPlayers().remove(arenaPlayer);
 		arena.getOfflinePlayers().add(player.getName());
 	}
@@ -160,7 +166,7 @@ public class Gamemode {
 			playerConfig.set("location", Util.getStringFromLocation(player.getLocation()));
 
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				public void run(){
+				public void run() {
 					player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
 					Util.playerJoin(player, playerStorage);
 					arenaPlayer.getTeam().joinTeam(player, arenaManager, arena, arenaPlayer);
@@ -205,8 +211,8 @@ public class Gamemode {
 
 	public void onPlayerArenaRespawn(final EventRespawn event) {
 		if (event.getSpawnType() == SpawnType.PLAYER) {
-			event.getArenaPlayer().giveSpawnProtection();
-			
+			event.getArenaPlayer().getTimers().giveSpawnProtection();
+
 			ArenaTeam team = event.getArenaPlayer().getTeam();
 			PlayerInventory inventory = event.getPlayer().getInventory();
 

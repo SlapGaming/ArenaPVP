@@ -3,9 +3,9 @@ package me.naithantu.ArenaPVP.Commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Objects.ArenaManager;
-import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 public class CommandHandler {
 	ArenaPVP plugin;

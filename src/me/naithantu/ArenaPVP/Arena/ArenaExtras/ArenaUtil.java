@@ -1,10 +1,10 @@
-package me.naithantu.ArenaPVP.Objects.ArenaExtras;
+package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
 import org.bukkit.Bukkit;
 
-import me.naithantu.ArenaPVP.Objects.Arena;
-import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
-import me.naithantu.ArenaPVP.Objects.ArenaTeam;
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Util.Util;
 
 public class ArenaUtil {

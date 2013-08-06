@@ -1,7 +1,7 @@
 package me.naithantu.ArenaPVP.Events.ArenaEvents;
 
+import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Events.CustomEvent;
-import me.naithantu.ArenaPVP.Objects.ArenaTeam;
 
 import org.bukkit.entity.Player;
 

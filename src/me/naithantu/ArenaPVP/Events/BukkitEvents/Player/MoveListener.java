@@ -1,7 +1,7 @@
 package me.naithantu.ArenaPVP.Events.BukkitEvents.Player;
 
-import me.naithantu.ArenaPVP.Objects.ArenaManager;
-import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
+import me.naithantu.ArenaPVP.ArenaManager;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

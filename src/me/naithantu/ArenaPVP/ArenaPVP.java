@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Commands.CommandHandler;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DamageListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DeathListener;
@@ -13,12 +14,10 @@ import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.JoinListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.MoveListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.QuitListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.RespawnListener;
-import me.naithantu.ArenaPVP.Objects.Arena;
-import me.naithantu.ArenaPVP.Objects.ArenaManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -71,7 +70,7 @@ public class ArenaPVP extends JavaPlugin {
 	}
 	
 	public void generateConfig(){
-		Configuration config = getConfig();
+		//Configuration config = getConfig();
 		
 	}
 	

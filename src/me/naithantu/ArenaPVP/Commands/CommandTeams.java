@@ -3,10 +3,11 @@ package me.naithantu.ArenaPVP.Commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Objects.ArenaManager;
-import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
-import me.naithantu.ArenaPVP.Objects.ArenaTeam;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.Arena.ArenaTeam;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

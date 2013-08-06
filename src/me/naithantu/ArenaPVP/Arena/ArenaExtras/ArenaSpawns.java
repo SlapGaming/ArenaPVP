@@ -1,4 +1,4 @@
-package me.naithantu.ArenaPVP.Objects.ArenaExtras;
+package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,11 +10,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventRespawn;
-import me.naithantu.ArenaPVP.Objects.Arena;
-import me.naithantu.ArenaPVP.Objects.ArenaManager;
-import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
 import me.naithantu.ArenaPVP.Util.Util;
 
 public class ArenaSpawns {
@@ -63,7 +63,7 @@ public class ArenaSpawns {
 		return null;
 	}
 
-	public void addRespawnTimer(final Player player, final ArenaPlayer arenaPlayer, final SpawnType spawnType) {
+	/*public void addRespawnTimer(final Player player, final ArenaPlayer arenaPlayer, final SpawnType spawnType) {
 		String playerName = arenaPlayer.getPlayerName();
 		if (respawnTimers.containsKey(playerName)) {
 			scheduler.cancelTask(respawnTimers.get(playerName));
@@ -82,7 +82,13 @@ public class ArenaSpawns {
 		}, settings.getRespawnTime() * 20);
 		respawnTimers.put(playerName, taskID);
 		arenaPlayer.setPlayerState(ArenaPlayerState.RESPAWNING);
-	}
+	}*/
+	
+	/*public void cancelRespawns(){
+		for(int id: respawnTimers.values()){
+			scheduler.cancelTask(id);
+		}
+	}*/
 
 	public enum SpawnType {
 		SPECTATOR, PLAYER

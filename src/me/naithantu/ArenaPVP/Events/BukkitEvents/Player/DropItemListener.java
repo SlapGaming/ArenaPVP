@@ -5,8 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
-import me.naithantu.ArenaPVP.Objects.ArenaManager;
-import me.naithantu.ArenaPVP.Objects.ArenaPlayer;
+import me.naithantu.ArenaPVP.ArenaManager;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 public class DropItemListener implements Listener {
 	ArenaManager arenaManager;
@@ -17,7 +17,6 @@ public class DropItemListener implements Listener {
 
 	@EventHandler
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		System.out.println("Item drop!");
 		Player player = event.getPlayer();
 		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
 		if (arenaPlayer != null) {

@@ -1,4 +1,4 @@
-package me.naithantu.ArenaPVP.Objects.ArenaExtras;
+package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
 public enum ArenaState {
 	BEFORE_JOIN, LOBBY, WARMUP, PLAYING, FINISHED

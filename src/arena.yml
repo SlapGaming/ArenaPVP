@@ -114,9 +114,9 @@ classes:
 maxplayers: 0
 respawntime: 0
 scorelimit: 30
-outofboundstime: 5
+outofboundstime: 3
 spawnprotection: 1
 friendlyfire: false
 autojoinpvpchat: true
-outofboundsarea: true
+outofboundsarea: false
 autobalance: true

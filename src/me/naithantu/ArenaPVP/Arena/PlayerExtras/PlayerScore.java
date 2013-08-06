@@ -1,4 +1,4 @@
-package me.naithantu.ArenaPVP.Objects;
+package me.naithantu.ArenaPVP.Arena.PlayerExtras;
 
 public class PlayerScore {
 

@@ -1,6 +1,9 @@
-package me.naithantu.ArenaPVP.Objects;
+package me.naithantu.ArenaPVP;
 
 import java.util.HashMap;
+
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 public class ArenaManager {
 	HashMap<String, Arena> arenas = new HashMap<String, Arena>();
