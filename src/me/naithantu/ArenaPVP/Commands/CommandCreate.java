@@ -44,7 +44,7 @@ public class CommandCreate extends AbstractCommand {
 			return true;
 		}
 		
-		Arena arena = new Arena(plugin, arenaManager, arenaName, "tdm");
+		Arena arena = new Arena(plugin, arenaManager, arenaName);
 		YamlStorage arenaStorage = arena.getArenaStorage();
 		Configuration arenaConfig = arenaStorage.getConfig();
 		arenaConfig.set("nickname", arenaName);

@@ -40,7 +40,8 @@ public class CommandSelect extends AbstractCommand {
 			return true;
 		}
 		
-		Arena arena = new Arena(plugin, arenaManager, arenaName, "tdm");
+		
+		Arena arena = new Arena(plugin, arenaManager, arenaName);
 		arenaManager.getArenas().put(arenaName, arena);
 		
 		this.msg(sender, "Loaded arena with name " + arena.getArenaName() + "!");

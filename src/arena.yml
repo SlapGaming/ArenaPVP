@@ -111,6 +111,7 @@ classes:
         type: AIR
         damage: -1
         amount: 0
+gamemode: tdm
 maxplayers: 0
 respawntime: 0
 scorelimit: 30

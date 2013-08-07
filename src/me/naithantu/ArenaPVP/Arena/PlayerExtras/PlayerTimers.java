@@ -3,7 +3,6 @@ package me.naithantu.ArenaPVP.Arena.PlayerExtras;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Arena.Arena;
@@ -42,7 +41,8 @@ public class PlayerTimers {
 	}
 
 	public void cancelAllTimers() {
-		outOfBoundsTimer.cancel();
+		if (outOfBounds)
+			outOfBoundsTimer.cancel();
 
 		Bukkit.getScheduler().cancelTask(spawnProtectionID);
 		spawnProtection = false;
@@ -58,9 +58,9 @@ public class PlayerTimers {
 	public void killOutOfBounds(Player player) {
 		player.damage(20);
 		outOfBoundsTimer.cancel();
+		outOfBounds = false;
 		setOutOfBounds(player, false);
 		Util.msg(player, "You left the combat area, you have been killed!");
-		outOfBounds = false;
 	}
 
 	public void setOutOfBounds(Player player, boolean outOfBounds) {

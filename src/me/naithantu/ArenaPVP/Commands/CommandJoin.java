@@ -5,10 +5,7 @@ import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
-import me.naithantu.ArenaPVP.Storage.YamlStorage;
-
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
 public class CommandJoin extends AbstractCommand {
@@ -72,7 +69,12 @@ public class CommandJoin extends AbstractCommand {
 			//If there is only arena
 			Arena arena = arenaManager.getFirstArena();
 			if (args.length > 0) {
-				joinArena(arena, player, arena.getTeams().get(0));
+				try{
+					int teamNumber = Integer.parseInt(args[0]);
+					joinArena(arena, player, arena.getTeam(teamNumber));
+				} catch (NumberFormatException e){
+					joinArena(arena, player, arena.getTeam(args[0]));
+				}
 			} else {
 				joinArena(arena, player, null);
 			}

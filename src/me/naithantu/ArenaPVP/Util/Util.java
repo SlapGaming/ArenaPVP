@@ -6,6 +6,7 @@ import me.naithantu.ArenaPVP.Storage.YamlStorage;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -58,15 +59,17 @@ public class Util {
 
 		player.setLevel(playerConfig.getInt("level"));
 		player.setExp((float) playerConfig.getDouble("exp"));
+		player.setGameMode(GameMode.valueOf(playerConfig.getString("gamemode")));
 		
 		inventory.setContents(inventoryContents.toArray(new ItemStack[36]));
 		inventory.setArmorContents(armorContents.toArray(new ItemStack[4]));
-				
+						
 		playerConfig.set("inventory", null);
 		playerConfig.set("armor", null);
 		playerConfig.set("level", null);
 		playerConfig.set("exp", null);
 		playerConfig.set("hastoleave", null);
+		playerConfig.set("gamemode", null);
 		playerStorage.saveConfig();
 	}
 	
@@ -81,6 +84,7 @@ public class Util {
 		playerConfig.set("armor", inventory.getArmorContents());
 		playerConfig.set("level", player.getLevel());
 		playerConfig.set("exp", player.getExp());
+		playerConfig.set("gamemode", player.getGameMode().toString());
 		playerStorage.saveConfig();
 		
 		inventory.clear();

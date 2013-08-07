@@ -3,7 +3,6 @@ package me.naithantu.ArenaPVP.Arena;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import me.naithantu.ArenaPVP.ArenaManager;
@@ -53,7 +52,7 @@ public class Arena {
 	YamlStorage arenaStorage;
 	FileConfiguration arenaConfig;
 
-	public Arena(ArenaPVP plugin, ArenaManager arenaManager, String arenaName, String gamemodeName) {
+	public Arena(ArenaPVP plugin, ArenaManager arenaManager, String arenaName) {
 		this.plugin = plugin;
 		this.arenaManager = arenaManager;
 		this.arenaName = arenaName;
@@ -68,8 +67,8 @@ public class Arena {
 		arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaConfig);
 		arenaUtil = new ArenaUtil(this);
 		arenaArea = new ArenaArea(plugin, this, settings, arenaConfig);
-
-		initializeArena(gamemodeName);
+		
+		initializeArena();
 	}
 
 	public String getNickName() {
@@ -84,10 +83,10 @@ public class Arena {
 		return settings;
 	}
 
-	public ArenaArea getArenaArea(){
+	public ArenaArea getArenaArea() {
 		return arenaArea;
 	}
-	
+
 	public YamlStorage getArenaStorage() {
 		return arenaStorage;
 	}
@@ -112,7 +111,9 @@ public class Arena {
 		this.arenaState = arenaState;
 	}
 
-	public void initializeArena(String gamemodeName) {
+	public void initializeArena() {
+		String gamemodeName = arenaConfig.getString("gamemode");
+		
 		// Create gamemode.
 		gamemode = ArenaGamemode.getGamemode(plugin, arenaManager, this, settings, arenaSpawns, arenaUtil, arenaStorage, gamemodeName);
 
@@ -165,7 +166,7 @@ public class Arena {
 	}
 
 	public void startGame() {
-		arenaUtil.sendMessageAll("You have been telepored to your teams spawn point, let the games begin!");
+		arenaUtil.sendMessageAll("You have been teleported to your teams spawn point, let the games begin!");
 		for (ArenaTeam team : teams) {
 			for (ArenaPlayer arenaPlayer : team.getPlayers()) {
 				Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(arenaSpawns.getRespawnLocation(Bukkit.getPlayer(arenaPlayer.getPlayerName()), arenaPlayer, SpawnType.PLAYER));
@@ -178,21 +179,19 @@ public class Arena {
 		if (winTeam != null) {
 			arenaUtil.sendMessageAll("Team " + winTeam.getTeamName() + " has won the game!");
 		}
-		
+
 		for (ArenaTeam team : teams) {
-			Iterator<ArenaPlayer> iterator = team.getPlayers().iterator();
-			while(iterator.hasNext()){
-				ArenaPlayer arenaPlayer = iterator.next();
-				arenaPlayer.getTimers().cancelAllTimers();
+			List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
+			for (ArenaPlayer arenaPlayer : players) {
 				leaveGame(arenaPlayer);
 			}
 		}
-		
+
 		File schematic = new File(plugin.getDataFolder() + File.separator + "maps", arenaName + ".schematic");
-		if(schematic.exists()){
+		if (schematic.exists()) {
 			EditSession editSession = new EditSession(new BukkitWorld(Bukkit.getWorld(arenaConfig.getString("schematicworld"))), 999999999);
 			SchematicFormat format = SchematicFormat.getFormat(schematic);
-			
+
 			CuboidClipboard cuboidClipboard;
 			try {
 				cuboidClipboard = format.load(schematic);
@@ -217,6 +216,15 @@ public class Arena {
 
 	public List<ArenaTeam> getTeams() {
 		return teams;
+	}
+	
+	public ArenaTeam getTeam(int teamNumber){
+		for (ArenaTeam team : teams) {
+			if (team.getTeamNumber() == teamNumber) {
+				return team;
+			}
+		}
+		return null;
 	}
 
 	public ArenaTeam getTeam(String teamName) {

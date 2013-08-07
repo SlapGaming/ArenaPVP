@@ -74,21 +74,25 @@ public class Gamemode {
 		event.setDroppedExp(0);
 		event.setKeepLevel(true);
 		event.getDrops().clear();
-
-		arenaUtil.sendNoPrefixMessageAll(event.getDeathMessage());
+		
+		String deathMessage = event.getDeathMessage();
 		event.setDeathMessage(null);
 
-		Player player = event.getEntity();
+		if(arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING){
+			arenaUtil.sendNoPrefixMessageAll(deathMessage);
+			
+			Player player = event.getEntity();
 
-		// Add death and kill to players.
-		arenaPlayer.getPlayerScore().addDeath();
-		if (player.getKiller() != null)
-			arenaManager.getPlayerByName(player.getKiller().getName()).getPlayerScore().addKill();
+			// Add death and kill to players.
+			arenaPlayer.getPlayerScore().addDeath();
+			if (player.getKiller() != null)
+				arenaManager.getPlayerByName(player.getKiller().getName()).getPlayerScore().addKill();
+		}
 	}
 
 	public void onPlayerRespawn(PlayerRespawnEvent event, ArenaPlayer arenaPlayer) {
 		Player player = event.getPlayer();
-		if (arena.getArenaState() == ArenaState.PLAYING) {
+		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() != ArenaPlayerState.OUTOFGAME) {
 			if (arena.getSettings().getRespawnTime() == 0) {
 				event.setRespawnLocation(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
 			} else {
@@ -199,8 +203,8 @@ public class Gamemode {
 					}
 				}
 				event.setTeam(teamToJoin);
-				return;
 			}
+			return;
 		}
 		event.setCancelled(true);
 	}

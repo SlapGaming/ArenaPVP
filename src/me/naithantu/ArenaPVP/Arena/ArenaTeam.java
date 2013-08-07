@@ -38,6 +38,10 @@ public class ArenaTeam {
 		List<ItemStack> armorContents = (List<ItemStack>) arenaConfig.getList("classes." + teamNumber + ".armor");
 		armor = armorContents.toArray(new ItemStack[4]);
 	}
+	
+	public int getTeamNumber() {
+		return teamNumber;
+	}
 
 	public String getTeamName() {
 		return teamName;
@@ -93,5 +97,6 @@ public class ArenaTeam {
 	public void leaveTeam(ArenaManager arenaManager, ArenaPlayer arenaPlayer, Player player) {
 		arenaManager.removePlayer(arenaPlayer);
 		players.remove(arenaPlayer);
+		arenaPlayer.getTimers().cancelAllTimers();
 	}
 }
