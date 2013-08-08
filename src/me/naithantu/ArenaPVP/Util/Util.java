@@ -1,5 +1,6 @@
 package me.naithantu.ArenaPVP.Util;
 
+import java.util.Collection;
 import java.util.List;
 
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
@@ -14,6 +15,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
 
 public class Util {
 	public static void broadcast(String msg){
@@ -59,7 +61,11 @@ public class Util {
 
 		player.setLevel(playerConfig.getInt("level"));
 		player.setExp((float) playerConfig.getDouble("exp"));
+		player.setHealth(playerConfig.getDouble("health"));
+		player.setFoodLevel(playerConfig.getInt("hunger"));
 		player.setGameMode(GameMode.valueOf(playerConfig.getString("gamemode")));
+		player.setFlying(playerConfig.getBoolean("flying"));
+		player.addPotionEffects((Collection<PotionEffect>) playerConfig.getList("potioneffects"));
 		
 		inventory.setContents(inventoryContents.toArray(new ItemStack[36]));
 		inventory.setArmorContents(armorContents.toArray(new ItemStack[4]));
@@ -68,8 +74,12 @@ public class Util {
 		playerConfig.set("armor", null);
 		playerConfig.set("level", null);
 		playerConfig.set("exp", null);
-		playerConfig.set("hastoleave", null);
+		playerConfig.set("health", null);
+		playerConfig.set("hunger", null);
 		playerConfig.set("gamemode", null);
+		playerConfig.set("flying", null);
+		playerConfig.set("potioneffects", null);
+		playerConfig.set("hastoleave", null);
 		playerStorage.saveConfig();
 	}
 	
@@ -84,12 +94,20 @@ public class Util {
 		playerConfig.set("armor", inventory.getArmorContents());
 		playerConfig.set("level", player.getLevel());
 		playerConfig.set("exp", player.getExp());
+		playerConfig.set("health", player.getHealth());
+		playerConfig.set("hunger", player.getFoodLevel());
 		playerConfig.set("gamemode", player.getGameMode().toString());
+		playerConfig.set("flying", player.isFlying());
+		playerConfig.set("potioneffects", player.getActivePotionEffects());
 		playerStorage.saveConfig();
 		
 		inventory.clear();
+		inventory.setArmorContents(new ItemStack[4]);
 		player.setLevel(0);
 		player.setExp(0);
-		inventory.setArmorContents(new ItemStack[4]);
+		player.setFoodLevel(20);
+		player.setHealth(20);
+		for (PotionEffect effect : player.getActivePotionEffects())
+			player.removePotionEffect(effect.getType());
 	}
 }

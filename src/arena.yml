@@ -120,4 +120,5 @@ spawnprotection: 1
 friendlyfire: false
 autojoinpvpchat: true
 outofboundsarea: false
+allowitemdrop: false
 autobalance: true

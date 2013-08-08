@@ -15,6 +15,7 @@ public class ArenaSettings {
 	boolean autojoinPvpChat;
 	boolean outOfBoundsArea;
 	boolean autoBalance;
+	boolean allowItemDrop;
 	
 	public ArenaSettings(FileConfiguration config) {
 		this.config = config;
@@ -32,6 +33,7 @@ public class ArenaSettings {
 		autojoinPvpChat = config.getBoolean("autojoinpvpchat");
 		outOfBoundsArea = config.getBoolean("outofboundsarea");
 		autoBalance = config.getBoolean("autobalance");
+		allowItemDrop = config.getBoolean("allowitemdrop");
 	}
 
 	public int getMaxPlayers() {
@@ -69,6 +71,10 @@ public class ArenaSettings {
 	public boolean isAutoBalance() {
 		return autoBalance;
 	}
+	
+	public boolean isAllowItemDrop() {
+		return allowItemDrop;
+	}
 
 	public void setMaxPlayers(int maxPlayers) {
 		this.maxPlayers = maxPlayers;
@@ -104,5 +110,9 @@ public class ArenaSettings {
 
 	public void setAutoBalance(boolean autoBalance) {
 		this.autoBalance = autoBalance;
+	}
+	
+	public void setAllowItemDrop(boolean allowItemDrop) {
+		this.allowItemDrop = allowItemDrop;
 	}
 }

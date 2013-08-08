@@ -31,7 +31,7 @@ public class CommandScore extends AbstractCommand {
 			return true;
 		}
 
-		arenaPlayer.getArena().getGamemode().sendScore(sender, arenaPlayer);	
+		arenaPlayer.getArena().getGamemode().sendScore(sender);	
 		return true;
 	}
 }

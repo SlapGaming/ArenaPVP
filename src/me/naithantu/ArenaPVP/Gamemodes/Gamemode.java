@@ -63,10 +63,17 @@ public class Gamemode {
 		return "none";
 	}
 
-	public void sendScore(CommandSender sender, ArenaPlayer arenaPlayer) {
+	public void sendScore(CommandSender sender) {
 		Util.msg(sender, "Score:");
 		for (ArenaTeam team : arena.getTeams()) {
 			Util.msg(sender, "Team " + team.getTeamName() + ": " + team.getScore());
+		}
+	}
+	
+	public void sendScoreAll() {
+		arenaUtil.sendMessageAll("Score:");
+		for (ArenaTeam team : arena.getTeams()) {
+			arenaUtil.sendMessageAll("Team " + team.getTeamName() + ": " + team.getScore());
 		}
 	}
 
@@ -180,14 +187,18 @@ public class Gamemode {
 	}
 
 	public void onPlayerDropItem(PlayerDropItemEvent event, ArenaPlayer arenaPlayer) {
-		Util.msg(event.getPlayer(), "You may not drop items!");
-		event.setCancelled(true);
+		if(!settings.isAllowItemDrop()){
+			Util.msg(event.getPlayer(), "You may not drop items!");
+			event.setCancelled(true);
+		}		
 	}
 
 	public void onPlayerInventoryClick(InventoryClickEvent event, ArenaPlayer arenaPlayer) {
-		if (event.getSlotType() == SlotType.ARMOR) {
-			Util.msg((Player) event.getWhoClicked(), "You may not take off your armor!");
-			event.setCancelled(true);
+		if(!settings.isAllowItemDrop()){
+			if (event.getSlotType() == SlotType.ARMOR && event.getCurrentItem() != null) {
+				Util.msg((Player) event.getWhoClicked(), "You may not take off your armor!");
+				event.setCancelled(true);
+			}
 		}
 	}
 
