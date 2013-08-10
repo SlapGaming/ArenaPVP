@@ -23,8 +23,7 @@ public class CommandHandler {
 		} else {
 			String command = args[0];
 
-			// Remove first argument to make it easier for sub-commands to use
-			// args.
+			// Remove first argument to make it easier for sub-commands to use args.
 			String cmdArgs[] = new String[args.length - 1];
 			for (int i = 0; i < args.length - 1; i++) {
 				cmdArgs[i] = args[i + 1];
@@ -46,10 +45,12 @@ public class CommandHandler {
 				commandObj = new CommandSaveInventory(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("saveschematic")) {
 				commandObj = new CommandSaveSchematic(sender, cmdArgs, plugin, arenaManager);
-			}else if (command.equals("score")) {
+			} else if (command.equals("score")) {
 				commandObj = new CommandScore(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("select")) {
 				commandObj = new CommandSelect(sender, cmdArgs, plugin, arenaManager);
+			} else if (command.equals("spectate")) {
+				commandObj = new CommandSpectate(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("start")) {
 				commandObj = new CommandStart(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("stop")) {

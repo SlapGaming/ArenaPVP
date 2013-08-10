@@ -11,5 +11,5 @@ public enum ArenaPlayerState {
 	 * be aware that playing does not always mean they are actually fighting
 	 * check the ArenaState for that.
 	 */
-	PLAYING, RESPAWNING, DEAD, OUTOFGAME
+	PLAYING, RESPAWNING, DEAD, OUTOFGAME, SPECTATING
 }

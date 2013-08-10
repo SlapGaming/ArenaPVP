@@ -17,7 +17,6 @@ public class ArenaGamemode {
 	 */
 
 	public static Gamemode getGamemode(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, String name) {
-		System.out.println(name);
 		if (name.equalsIgnoreCase("tdm")) {
 			return new TDM(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage);
 		} else if (name.equalsIgnoreCase("lts")) {

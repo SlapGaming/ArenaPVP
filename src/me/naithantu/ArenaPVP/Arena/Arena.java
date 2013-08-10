@@ -9,8 +9,10 @@ import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaArea;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaGamemode;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSettings;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpectators;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
@@ -40,6 +42,7 @@ public class Arena {
 	ArenaSettings settings;
 	ArenaUtil arenaUtil;
 	ArenaArea arenaArea;
+	ArenaSpectators arenaSpectators;
 
 	List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
 	List<String> offlinePlayers = new ArrayList<String>();
@@ -50,7 +53,7 @@ public class Arena {
 	Gamemode gamemode;
 
 	YamlStorage arenaStorage;
-	FileConfiguration arenaConfig;
+	FileConfiguration arenaConfig; //TODO
 
 	public Arena(ArenaPVP plugin, ArenaManager arenaManager, String arenaName) {
 		this.plugin = plugin;
@@ -67,7 +70,8 @@ public class Arena {
 		arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaConfig);
 		arenaUtil = new ArenaUtil(this);
 		arenaArea = new ArenaArea(plugin, this, settings, arenaConfig);
-		
+		arenaSpectators = new ArenaSpectators(this);
+
 		initializeArena();
 	}
 
@@ -85,6 +89,10 @@ public class Arena {
 
 	public ArenaArea getArenaArea() {
 		return arenaArea;
+	}
+
+	public ArenaSpectators getArenaSpectators() {
+		return arenaSpectators;
 	}
 
 	public YamlStorage getArenaStorage() {
@@ -113,7 +121,7 @@ public class Arena {
 
 	public void initializeArena() {
 		String gamemodeName = arenaConfig.getString("gamemode");
-		
+
 		// Create gamemode.
 		gamemode = ArenaGamemode.getGamemode(plugin, arenaManager, this, settings, arenaSpawns, arenaUtil, arenaStorage, gamemodeName);
 
@@ -122,6 +130,32 @@ public class Arena {
 			ArenaTeam team = new ArenaTeam(plugin, arenaConfig, Integer.parseInt(teamNumber));
 			teams.add(team);
 		}
+	}
+
+	public void joinSpectate(Player player) {
+		//Teleport first to avoid problems with MVInventories
+		YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
+		Configuration playerConfig = playerStorage.getConfig();
+		playerConfig.set("location", Util.getStringFromLocation(player.getLocation()));
+		Util.playerJoin(player, playerStorage);
+		
+		ArenaPlayer arenaPlayer = new ArenaPlayer(plugin, player, this, null);
+		arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
+		arenaManager.addPlayer(arenaPlayer);
+		arenaSpectators.addSpectator(player);
+		player.teleport(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
+		playerStorage.saveConfig();
+	}
+
+	public void leaveSpectate(Player player, ArenaPlayer arenaPlayer) {
+		YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
+		arenaManager.removePlayer(arenaPlayer);
+		arenaSpectators.removeSpectator(player);
+		Configuration playerConfig = playerStorage.getConfig();
+		Util.playerLeave(player, playerStorage);
+		player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
+		playerConfig.set("location", null);
+		playerStorage.saveConfig();
 	}
 
 	public boolean joinGame(Player player, ArenaTeam teamToJoin) {
@@ -137,9 +171,10 @@ public class Arena {
 			event.getTeam().joinTeam(player, arenaManager, this);
 
 			Util.playerJoin(player, playerStorage);
+			playerStorage.saveConfig();
+			arenaSpectators.onPlayerJoin(player);
 			return true;
 		}
-
 		return false;
 	}
 
@@ -149,20 +184,20 @@ public class Arena {
 		if (!event.isCancelled()) {
 			Player player = Bukkit.getPlayer(arenaPlayer.getPlayerName());
 			if (player != null) {
+				arenaSpectators.onPlayerLeave(player);
 				YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
 				Configuration playerConfig = playerStorage.getConfig();
 				if (player.isDead()) {
 					playerConfig.set("hastoleave", true);
-					playerStorage.saveConfig();
 				} else {
 					Util.playerLeave(player, playerStorage);
 					player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
 					playerConfig.set("location", null);
 				}
+				playerStorage.saveConfig();
 			}
 			arenaPlayer.getTeam().leaveTeam(arenaManager, arenaPlayer, player);
 		}
-		return;
 	}
 
 	public void startGame() {
@@ -186,6 +221,8 @@ public class Arena {
 				leaveGame(arenaPlayer);
 			}
 		}
+		
+		arenaSpectators.removeAllSpectators();
 
 		File schematic = new File(plugin.getDataFolder() + File.separator + "maps", arenaName + ".schematic");
 		if (schematic.exists()) {
@@ -217,8 +254,8 @@ public class Arena {
 	public List<ArenaTeam> getTeams() {
 		return teams;
 	}
-	
-	public ArenaTeam getTeam(int teamNumber){
+
+	public ArenaTeam getTeam(int teamNumber) {
 		for (ArenaTeam team : teams) {
 			if (team.getTeamNumber() == teamNumber) {
 				return team;

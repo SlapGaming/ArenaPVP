@@ -9,6 +9,7 @@ import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaArea;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSettings;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpectators;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
@@ -20,6 +21,7 @@ import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Entity;
@@ -43,6 +45,7 @@ public class Gamemode {
 	protected ArenaSettings settings;
 	protected ArenaSpawns arenaSpawns;
 	protected ArenaArea arenaArea;
+	protected ArenaSpectators arenaSpectators;
 	protected ArenaUtil arenaUtil;
 	protected YamlStorage arenaStorage;
 	protected Configuration arenaConfig;
@@ -55,6 +58,7 @@ public class Gamemode {
 		this.arenaSpawns = arenaSpawns;
 		this.arenaUtil = arenaUtil;
 		this.arenaStorage = arenaStorage;
+		arenaSpectators = arena.getArenaSpectators();
 		arenaArea = arena.getArenaArea();
 		arenaConfig = arenaStorage.getConfig();
 	}
@@ -78,12 +82,14 @@ public class Gamemode {
 	}
 
 	public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer) {
+		arenaPlayer.getTimers().cancelAllTimers();
 		event.setDroppedExp(0);
 		event.setKeepLevel(true);
 		event.getDrops().clear();
 		
 		String deathMessage = event.getDeathMessage();
 		event.setDeathMessage(null);
+		
 
 		if(arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING){
 			arenaUtil.sendNoPrefixMessageAll(deathMessage);
@@ -99,7 +105,7 @@ public class Gamemode {
 
 	public void onPlayerRespawn(PlayerRespawnEvent event, ArenaPlayer arenaPlayer) {
 		Player player = event.getPlayer();
-		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() != ArenaPlayerState.OUTOFGAME) {
+		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() != ArenaPlayerState.SPECTATING) {
 			if (arena.getSettings().getRespawnTime() == 0) {
 				event.setRespawnLocation(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
 			} else {
@@ -116,32 +122,49 @@ public class Gamemode {
 		if (damager instanceof Projectile) {
 			damager = ((Projectile) damager).getShooter();
 		}
-
-		//All mob version Player damage is fine, check if damager is a player.
-		if (damager instanceof Player) {
-			//Block damage if arena or player isn't playing.
-			if (arena.getArenaState() != ArenaState.PLAYING || arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
-				event.setCancelled(true);
-			} else {
-				ArenaPlayer damagePlayer = arenaManager.getPlayerByName(((Player) damager).getName());
-				//Block damage if damager is not in same arena.
-				if (damagePlayer == null || !damagePlayer.getArena().equals(arenaPlayer.getArena())) {
+		
+		if(arenaSpectators.getSpectators().containsKey(arenaPlayer)){
+			//If a spectator was hit, check for projectile damage.
+			Player spectator = (Player) event.getEntity();
+			if(event.getDamager() instanceof Projectile){
+				spectator.teleport(spectator.getLocation().add(0,5,0));
+				Util.msg(spectator, "You were in the way of a projectile!");
+				
+				Projectile damageProjectile = (Projectile) event.getDamager();
+				Location damagerLocation = damageProjectile.getLocation();
+				
+				Projectile newProjectile = damagerLocation.getWorld().spawn(damagerLocation, damageProjectile.getClass());
+				newProjectile.setVelocity(damageProjectile.getVelocity());
+				newProjectile.setBounce(damageProjectile.doesBounce());
+				newProjectile.setShooter(damageProjectile.getShooter());
+			}
+		} else {
+			//All mob versus Player damage is fine, check if damager is a player.
+			if (damager instanceof Player) {
+				//Block damage if arena or player isn't playing.
+				if (arena.getArenaState() != ArenaState.PLAYING || arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
 					event.setCancelled(true);
 				} else {
-					if (!settings.isFriendlyFire()) {
-						//Block friendly fire
-						if (damagePlayer.getTeam().equals(arenaPlayer.getTeam())) {
+					ArenaPlayer damagePlayer = arenaManager.getPlayerByName(((Player) damager).getName());
+					//Block damage if damager is not in same arena.
+					if (damagePlayer == null || !damagePlayer.getArena().equals(arenaPlayer.getArena())) {
+						event.setCancelled(true);
+					} else {
+						if (!settings.isFriendlyFire()) {
+							//Block friendly fire
+							if (damagePlayer.getTeam().equals(arenaPlayer.getTeam())) {
+								event.setCancelled(true);
+							}
+						}
+
+						//Block pvp spawn protection damage.
+						if (arenaPlayer.getTimers().hasSpawnProtection()) {
 							event.setCancelled(true);
 						}
 					}
-
-					//Block pvp spawn protection damage.
-					if (arenaPlayer.getTimers().hasSpawnProtection()) {
-						event.setCancelled(true);
-					}
 				}
 			}
-		}
+		}	
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event, ArenaPlayer arenaPlayer) {
@@ -162,8 +185,14 @@ public class Gamemode {
 		playerConfig.set("location", null);
 
 		arenaPlayer.getTimers().cancelAllTimers();
-		arenaPlayer.getTeam().getPlayers().remove(arenaPlayer);
-		arena.getOfflinePlayers().add(player.getName());
+		if(arenaPlayer.getTeam() != null){
+			//Player was not a spectator, leave team and add to offline players.
+			arenaPlayer.getTeam().getPlayers().remove(arenaPlayer);
+			arena.getOfflinePlayers().add(player.getName());
+		} else {
+			//Player was spectator, leave as spectator.
+			arena.leaveSpectate(player, arenaPlayer);
+		}
 	}
 
 	public void onPlayerJoin(PlayerJoinEvent event, final ArenaPlayer arenaPlayer) {
@@ -187,14 +216,14 @@ public class Gamemode {
 	}
 
 	public void onPlayerDropItem(PlayerDropItemEvent event, ArenaPlayer arenaPlayer) {
-		if(!settings.isAllowItemDrop()){
+		if(arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING || !settings.isAllowItemDrop()){
 			Util.msg(event.getPlayer(), "You may not drop items!");
 			event.setCancelled(true);
 		}		
 	}
 
 	public void onPlayerInventoryClick(InventoryClickEvent event, ArenaPlayer arenaPlayer) {
-		if(!settings.isAllowItemDrop()){
+		if(arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING || !settings.isAllowItemDrop()){
 			if (event.getSlotType() == SlotType.ARMOR && event.getCurrentItem() != null) {
 				Util.msg((Player) event.getWhoClicked(), "You may not take off your armor!");
 				event.setCancelled(true);

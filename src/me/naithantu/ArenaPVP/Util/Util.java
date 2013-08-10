@@ -105,6 +105,7 @@ public class Util {
 		inventory.setArmorContents(new ItemStack[4]);
 		player.setLevel(0);
 		player.setExp(0);
+		player.setGameMode(GameMode.SURVIVAL);
 		player.setFoodLevel(20);
 		player.setHealth(20);
 		for (PotionEffect effect : player.getActivePotionEffects())
