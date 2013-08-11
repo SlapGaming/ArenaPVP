@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/spel/Documents/GitHub/SlapHomebrew/lib/Bukkit.jar"/>
-	<classpathentry kind="lib" path="C:/Users/spel/Documents/GitHub/SlapHomebrew/lib/WorldEdit.jar"/>
-	<classpathentry kind="lib" path="C:/Users/spel/Documents/GitHub/SlapHomebrew/lib/WorldGuard.jar"/>
+	<classpathentry kind="lib" path="C:/Users/spel/Documents/GitHub/ArenaPVP/lib/Bukkit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/spel/Documents/GitHub/ArenaPVP/lib/WorldEdit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/spel/Documents/GitHub/ArenaPVP/lib/WorldGuard.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
