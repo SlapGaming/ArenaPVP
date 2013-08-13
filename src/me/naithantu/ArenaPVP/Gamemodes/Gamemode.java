@@ -183,19 +183,16 @@ public class Gamemode {
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event, ArenaPlayer arenaPlayer) {
-		//TODO Create EventPlayerLeaveArena
 		Player player = Bukkit.getPlayer(arenaPlayer.getPlayerName());
-
-		YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
-		Configuration playerConfig = playerStorage.getConfig();
-
-		Util.playerLeave(player, playerStorage);
-		player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
-		playerConfig.set("location", null);
 
 		arenaPlayer.getTimers().cancelAllTimers();
 		if (arenaPlayer.getTeam() != null) {
 			//Player was not a spectator, leave team and add to offline players.
+			YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
+			Configuration playerConfig = playerStorage.getConfig();
+			Util.playerLeave(player, playerStorage);
+			player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
+			playerConfig.set("location", null);
 			arenaPlayer.getTeam().getPlayers().remove(arenaPlayer);
 			arena.getOfflinePlayers().add(player.getName());
 		} else {
@@ -204,7 +201,7 @@ public class Gamemode {
 		}
 	}
 
-	public void onPlayerJoin(PlayerJoinEvent event, final ArenaPlayer arenaPlayer) {
+	public void onPlayerJoin(PlayerJoinEvent event, final ArenaPlayer arenaPlayer) {		
 		final Player player = event.getPlayer();
 		String playerName = player.getName();
 		if (arena.getOfflinePlayers().contains(playerName)) {
