@@ -1,19 +1,16 @@
 package me.naithantu.ArenaPVP.Commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import com.google.common.base.Joiner;
 
 public class CommandTeams extends AbstractCommand {
 
@@ -74,11 +71,23 @@ public class CommandTeams extends AbstractCommand {
 	private void showTeams(Arena arena) {
 		this.msg(sender, "Teams (" + arena.getArenaSpectators().getSpectators().size() + " spectators):");
 		for (ArenaTeam team : arena.getTeams()) {
-			List<String> teamPlayers = new ArrayList<String>();
+			StringBuilder strBuilder = new StringBuilder();
+			boolean first = true;
 			for (ArenaPlayer teamPlayer : team.getPlayers()) {
-				teamPlayers.add(teamPlayer.getPlayerName());
+				if(first){
+					first = false;
+				} else {
+					strBuilder.append(", ");
+				}
+				
+				if(teamPlayer.getPlayerState() != ArenaPlayerState.SPECTATING){
+					strBuilder.append(teamPlayer.getPlayerName());
+				} else {
+					strBuilder.append(ChatColor.GRAY + "" + ChatColor.STRIKETHROUGH + teamPlayer.getPlayerName() + ChatColor.WHITE);
+				}
 			}
-			this.msg(sender, team.getTeamName() + ": " + Joiner.on(", ").join(teamPlayers));
+			
+			this.msg(sender, team.getTeamColor() + team.getTeamName() + ChatColor.WHITE + ": " + strBuilder.toString());
 		}
 	}
 }
