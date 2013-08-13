@@ -1,6 +1,9 @@
 teams:
-  0: Gold
-  1: Silver
+  0: Red
+  1: Blue
+teamcolors:
+  0: '&c'
+  1: '&9'
 spawns:
   0:
     - world:1:70:1:90:90
@@ -118,7 +121,8 @@ scorelimit: 30
 outofboundstime: 3
 spawnprotection: 1
 friendlyfire: false
-autojoinpvpchat: true
+defaultchatchannel: 'ALL'
 outofboundsarea: false
 allowitemdrop: false
 autobalance: true
+allowspectate: true

@@ -33,6 +33,8 @@ public class CommandHandler {
 				commandObj = new CommandAllowjoin(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("arenas")) {
 				commandObj = new CommandArenas(sender, cmdArgs, plugin, arenaManager);
+			} else if (command.equals("chat")) {
+				commandObj = new CommandChat(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("create")) {
 				commandObj = new CommandCreate(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("join")) {

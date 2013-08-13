@@ -14,13 +14,15 @@ public class ArenaPlayer {
 	private Arena arena;
 	private ArenaTeam team;
 	private ArenaPlayerState playerState = ArenaPlayerState.PLAYING;
-		
+	private ChatChannel chatChannel;
+
 	public ArenaPlayer(ArenaPVP plugin, Player player, Arena arena, ArenaTeam team) {
 		this.playerName = player.getName();
 		this.arena = arena;
 		this.team = team;
 		this.playerScore = new PlayerScore(playerName);
 		this.timers = new PlayerTimers(plugin, arena, this, player);
+		this.chatChannel = ChatChannel.valueOf(arena.getArenaStorage().getConfig().getString("defaultchatchannel"));
 	}
 
 	public String getPlayerName() {
@@ -46,8 +48,20 @@ public class ArenaPlayer {
 	public void setPlayerState(ArenaPlayerState playerState) {
 		this.playerState = playerState;
 	}
-	
-	public PlayerTimers getTimers(){
+
+	public ChatChannel getChatChannel() {
+		return chatChannel;
+	}
+
+	public void setChatChannel(ChatChannel chatChannel) {
+		this.chatChannel = chatChannel;
+	}
+
+	public PlayerTimers getTimers() {
 		return timers;
-	}	
+	}
+
+	public enum ChatChannel {
+		TEAM, ALL, NONE
+	}
 }
