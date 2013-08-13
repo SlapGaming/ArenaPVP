@@ -48,7 +48,9 @@ public class PlayerTimers {
 		spawnProtection = false;
 
 		Bukkit.getScheduler().cancelTask(respawnTimerID);
-		arenaPlayer.setPlayerState(ArenaPlayerState.PLAYING);
+		if (arenaPlayer.getPlayerState() == ArenaPlayerState.RESPAWNING) {
+			arenaPlayer.setPlayerState(ArenaPlayerState.PLAYING);
+		}
 	}
 
 	public boolean isOutOfBounds() {
