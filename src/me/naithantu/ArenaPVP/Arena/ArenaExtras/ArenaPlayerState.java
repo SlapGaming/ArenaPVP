@@ -7,9 +7,9 @@ public enum ArenaPlayerState {
 	 * respawning = in spectator area waiting for respawn timer to finish.
 	 * dead = on respawn screen.
 	 * playing = alive and not waiting for respawning
-	 * outofgame = used all respawns.
+	 * spectating = used all respawns (or spectating and in arena list, not a team).
 	 * be aware that playing does not always mean they are actually fighting
 	 * check the ArenaState for that.
 	 */
-	PLAYING, RESPAWNING, DEAD, OUTOFGAME, SPECTATING
+	PLAYING, RESPAWNING, DEAD, SPECTATING
 }

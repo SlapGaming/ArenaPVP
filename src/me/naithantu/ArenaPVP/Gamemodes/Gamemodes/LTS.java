@@ -30,7 +30,7 @@ public class LTS extends Gamemode {
 	public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer) {
 		super.onPlayerDeath(event, arenaPlayer);
 		if(arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING){
-			arenaPlayer.setPlayerState(ArenaPlayerState.OUTOFGAME);
+			arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
 			if(checkRemainingTeams() == 1){
 				arena.stopGame(getWinningTeam());
 			}
@@ -41,7 +41,7 @@ public class LTS extends Gamemode {
 		int remainingTeams = 0;
 		for(ArenaTeam team: arena.getTeams()){
 			for(ArenaPlayer arenaPlayer: team.getPlayers()){
-				if(arenaPlayer.getPlayerState() != ArenaPlayerState.OUTOFGAME){
+				if(arenaPlayer.getPlayerState() != ArenaPlayerState.SPECTATING){
 					remainingTeams++;
 					break;
 				}
@@ -53,7 +53,7 @@ public class LTS extends Gamemode {
 	private ArenaTeam getWinningTeam(){
 		for(ArenaTeam team: arena.getTeams()){
 			for(ArenaPlayer arenaPlayer: team.getPlayers()){
-				if(arenaPlayer.getPlayerState() != ArenaPlayerState.OUTOFGAME){
+				if(arenaPlayer.getPlayerState() != ArenaPlayerState.SPECTATING){
 					return team;
 				}
 			}

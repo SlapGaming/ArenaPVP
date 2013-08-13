@@ -21,7 +21,7 @@ public class ArenaUtil {
 
 	public void sendMessageTeam(String message, ArenaTeam team) {
 		for (ArenaPlayer arenaPlayer : team.getPlayers())
-			Util.msg(Bukkit.getPlayer(arenaPlayer.getPlayerName()), message);
+			Util.msg(Bukkit.getPlayerExact(arenaPlayer.getPlayerName()), message);
 	}
 
 	public void sendNoPrefixMessageAll(String message) {
@@ -31,6 +31,6 @@ public class ArenaUtil {
 
 	public void sendNoPrefixMessageTeam(String message, ArenaTeam team) {
 		for (ArenaPlayer arenaPlayer : team.getPlayers())
-			Bukkit.getPlayer(arenaPlayer.getPlayerName()).sendMessage(message);
+			Bukkit.getPlayerExact(arenaPlayer.getPlayerName()).sendMessage(message);
 	}
 }

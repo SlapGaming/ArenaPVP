@@ -54,8 +54,8 @@ public class CommandSpectate extends AbstractCommand {
 			}
 
 			if(arenaManager.getArenas().containsKey(args[0])){
-				Arena arena = arenaManager.getFirstArena();
-				arena.joinSpectate(player);
+				Arena arena = arenaManager.getArenas().get(args[0]);
+				joinSpectate(arena, player);
 			} else {
 				this.msg(sender, "No arena with given name was found, type /pvp arenas to see available arenas.");
 			}
@@ -63,8 +63,16 @@ public class CommandSpectate extends AbstractCommand {
 		} else {
 			//If there is only arena
 			Arena arena = arenaManager.getFirstArena();
-			arena.joinSpectate(player);
+			joinSpectate(arena, player);
 		}
 		return true;
+	}
+	
+	public void joinSpectate(Arena arena, Player player){
+		if(arena.getArenaStorage().getConfig().getBoolean("allowspectate")){
+			arena.joinSpectate(player);
+		} else {
+			this.msg(sender, "You may not spectate that arena!");
+		}
 	}
 }

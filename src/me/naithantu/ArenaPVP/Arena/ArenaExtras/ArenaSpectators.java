@@ -14,17 +14,17 @@ import org.bukkit.entity.Player;
 public class ArenaSpectators {
 	Arena arena;
 
-	HashMap<ArenaPlayer, Player> spectators = new HashMap<ArenaPlayer, Player>();
+	HashMap<Player, ArenaPlayer> spectators = new HashMap<Player, ArenaPlayer>();
 
 	public ArenaSpectators(Arena arena) {
 		this.arena = arena;
 	}
 
-	public HashMap<ArenaPlayer, Player> getSpectators() {
+	public HashMap<Player, ArenaPlayer> getSpectators() {
 		return spectators;
 	}
 
-	public void addSpectator(Player spectator) {
+	public void addSpectator(ArenaPlayer arenaSpectator, Player spectator) {
 		//Hide spectator from players.
 		for (ArenaTeam team : arena.getTeams()) {
 			List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
@@ -35,12 +35,16 @@ public class ArenaSpectators {
 		}
 
 		//Hide spectator from other spectators.
-		for (Player player : spectators.values()) {
+		for (Player player : spectators.keySet()) {
 			player.hidePlayer(spectator);
 		}
+		
+		spectators.put(spectator, arenaSpectator);
 	}
 
 	public void removeSpectator(Player spectator) {
+		spectators.remove(spectator);
+		
 		//Show spectator to other players.
 		for (ArenaTeam team : arena.getTeams()) {
 			List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
@@ -51,26 +55,26 @@ public class ArenaSpectators {
 		}
 
 		//Show spectator to other spectators and show other spectators to spectator.
-		for (Player player : spectators.values()) {
+		for (Player player : spectators.keySet()) {
 			player.showPlayer(spectator);
 			spectator.showPlayer(player);
 		}
 	}
 
 	public void removeAllSpectators() {
-		for (Player spectator : spectators.values()) {
+		for (Player spectator : spectators.keySet()) {
 			removeSpectator(spectator);
 		}
 	}
 
 	public void onPlayerJoin(Player player) {
-		for (Player spectator : spectators.values()) {
+		for (Player spectator : spectators.keySet()) {
 			player.hidePlayer(spectator);
 		}
 	}
 
 	public void onPlayerLeave(Player player) {
-		for (Player spectator : spectators.values()) {
+		for (Player spectator : spectators.keySet()) {
 			player.showPlayer(spectator);
 		}
 	}

@@ -8,6 +8,7 @@ import java.util.List;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaArea;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaChat;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaGamemode;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSettings;
@@ -42,8 +43,9 @@ public class Arena {
 	ArenaSettings settings;
 	ArenaUtil arenaUtil;
 	ArenaArea arenaArea;
+	ArenaChat arenaChat;
 	ArenaSpectators arenaSpectators;
-
+	
 	List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
 	List<String> offlinePlayers = new ArrayList<String>();
 	String nickName;
@@ -53,7 +55,7 @@ public class Arena {
 	Gamemode gamemode;
 
 	YamlStorage arenaStorage;
-	FileConfiguration arenaConfig; //TODO
+	FileConfiguration arenaConfig;
 
 	public Arena(ArenaPVP plugin, ArenaManager arenaManager, String arenaName) {
 		this.plugin = plugin;
@@ -71,6 +73,7 @@ public class Arena {
 		arenaUtil = new ArenaUtil(this);
 		arenaArea = new ArenaArea(plugin, this, settings, arenaConfig);
 		arenaSpectators = new ArenaSpectators(this);
+		arenaChat = new ArenaChat(this);
 
 		initializeArena();
 	}
@@ -86,6 +89,10 @@ public class Arena {
 	public ArenaSettings getSettings() {
 		return settings;
 	}
+	
+	public ArenaUtil getArenatUtil() {
+		return arenaUtil;
+	}
 
 	public ArenaArea getArenaArea() {
 		return arenaArea;
@@ -93,6 +100,10 @@ public class Arena {
 
 	public ArenaSpectators getArenaSpectators() {
 		return arenaSpectators;
+	}
+	
+	public ArenaChat getArenaChat() {
+		return arenaChat;
 	}
 
 	public YamlStorage getArenaStorage() {
@@ -138,11 +149,12 @@ public class Arena {
 		Configuration playerConfig = playerStorage.getConfig();
 		playerConfig.set("location", Util.getStringFromLocation(player.getLocation()));
 		Util.playerJoin(player, playerStorage);
-		
+		player.setAllowFlight(true);
+		player.setFlying(true);
 		ArenaPlayer arenaPlayer = new ArenaPlayer(plugin, player, this, null);
 		arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
 		arenaManager.addPlayer(arenaPlayer);
-		arenaSpectators.addSpectator(player);
+		arenaSpectators.addSpectator(arenaPlayer, player);
 		player.teleport(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
 		playerStorage.saveConfig();
 	}
@@ -178,26 +190,32 @@ public class Arena {
 		return false;
 	}
 
-	public void leaveGame(ArenaPlayer arenaPlayer) {
-		EventLeaveArena event = new EventLeaveArena(arenaPlayer);
-		gamemode.onPlayerLeaveArena(event);
-		if (!event.isCancelled()) {
-			Player player = Bukkit.getPlayer(arenaPlayer.getPlayerName());
-			if (player != null) {
-				arenaSpectators.onPlayerLeave(player);
-				YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
-				Configuration playerConfig = playerStorage.getConfig();
-				if (player.isDead()) {
-					playerConfig.set("hastoleave", true);
-				} else {
-					Util.playerLeave(player, playerStorage);
-					player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
-					playerConfig.set("location", null);
+	public void leaveGame(final ArenaPlayer arenaPlayer) {
+		//Delay in case player was killed by arrow.
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+			@Override
+			public void run() {
+				EventLeaveArena event = new EventLeaveArena(arenaPlayer);
+				gamemode.onPlayerLeaveArena(event);
+				if (!event.isCancelled()) {
+					Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
+					if (player != null) {
+						arenaSpectators.onPlayerLeave(player);
+						YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
+						Configuration playerConfig = playerStorage.getConfig();
+						if (player.isDead()) {
+							playerConfig.set("hastoleave", true);
+						} else {
+							Util.playerLeave(player, playerStorage);
+							player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
+							playerConfig.set("location", null);
+						}
+						playerStorage.saveConfig();
+					}
+					arenaPlayer.getTeam().leaveTeam(arenaManager, arenaPlayer, player);
 				}
-				playerStorage.saveConfig();
 			}
-			arenaPlayer.getTeam().leaveTeam(arenaManager, arenaPlayer, player);
-		}
+		},1);
 	}
 
 	public void startGame() {
@@ -210,7 +228,7 @@ public class Arena {
 		arenaState = ArenaState.PLAYING;
 	}
 
-	public void stopGame(ArenaTeam winTeam) {
+	public void stopGame(ArenaTeam winTeam) {		
 		if (winTeam != null) {
 			arenaUtil.sendMessageAll("Team " + winTeam.getTeamName() + " has won the game!");
 		}

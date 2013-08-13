@@ -6,6 +6,7 @@ import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaArea;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaChat;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSettings;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
@@ -25,12 +26,14 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Fish;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -47,6 +50,7 @@ public class Gamemode {
 	protected ArenaArea arenaArea;
 	protected ArenaSpectators arenaSpectators;
 	protected ArenaUtil arenaUtil;
+	protected ArenaChat arenaChat;
 	protected YamlStorage arenaStorage;
 	protected Configuration arenaConfig;
 
@@ -59,6 +63,7 @@ public class Gamemode {
 		this.arenaUtil = arenaUtil;
 		this.arenaStorage = arenaStorage;
 		arenaSpectators = arena.getArenaSpectators();
+		arenaChat = arena.getArenaChat();
 		arenaArea = arena.getArenaArea();
 		arenaConfig = arenaStorage.getConfig();
 	}
@@ -73,7 +78,7 @@ public class Gamemode {
 			Util.msg(sender, "Team " + team.getTeamName() + ": " + team.getScore());
 		}
 	}
-	
+
 	public void sendScoreAll() {
 		arenaUtil.sendMessageAll("Score:");
 		for (ArenaTeam team : arena.getTeams()) {
@@ -86,15 +91,14 @@ public class Gamemode {
 		event.setDroppedExp(0);
 		event.setKeepLevel(true);
 		event.getDrops().clear();
-		
+
 		String deathMessage = event.getDeathMessage();
 		event.setDeathMessage(null);
-		
 
-		if(arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING){
+		Player player = event.getEntity();
+
+		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING) {
 			arenaUtil.sendNoPrefixMessageAll(deathMessage);
-			
-			Player player = event.getEntity();
 
 			// Add death and kill to players.
 			arenaPlayer.getPlayerScore().addDeath();
@@ -122,21 +126,26 @@ public class Gamemode {
 		if (damager instanceof Projectile) {
 			damager = ((Projectile) damager).getShooter();
 		}
-		
-		if(arenaSpectators.getSpectators().containsKey(arenaPlayer)){
+
+		if (arenaSpectators.getSpectators().containsKey(event.getEntity())) {
 			//If a spectator was hit, check for projectile damage.
 			Player spectator = (Player) event.getEntity();
-			if(event.getDamager() instanceof Projectile){
-				spectator.teleport(spectator.getLocation().add(0,5,0));
+			if (event.getDamager() instanceof Projectile) {
+				spectator.teleport(spectator.getLocation().add(0, 5, 0));
 				Util.msg(spectator, "You were in the way of a projectile!");
-				
+				event.setCancelled(true);
+
 				Projectile damageProjectile = (Projectile) event.getDamager();
 				Location damagerLocation = damageProjectile.getLocation();
-				
-				Projectile newProjectile = damagerLocation.getWorld().spawn(damagerLocation, damageProjectile.getClass());
-				newProjectile.setVelocity(damageProjectile.getVelocity());
-				newProjectile.setBounce(damageProjectile.doesBounce());
-				newProjectile.setShooter(damageProjectile.getShooter());
+				if (!(damageProjectile instanceof Fish)) {
+					//Hit by any non fishing rod projectile.
+					Projectile newProjectile = damagerLocation.getWorld().spawn(damagerLocation, damageProjectile.getClass());
+					newProjectile.setVelocity(damageProjectile.getVelocity());
+					newProjectile.setBounce(damageProjectile.doesBounce());
+					newProjectile.setShooter(damageProjectile.getShooter());
+					damageProjectile.remove();
+				}
+
 			}
 		} else {
 			//All mob versus Player damage is fine, check if damager is a player.
@@ -164,11 +173,11 @@ public class Gamemode {
 					}
 				}
 			}
-		}	
+		}
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event, ArenaPlayer arenaPlayer) {
-		if(settings.isOutOfBoundsArea()){
+		if (settings.isOutOfBoundsArea()) {
 			arenaArea.handleMove(arenaPlayer, event.getPlayer(), event.getTo());
 		}
 	}
@@ -185,7 +194,7 @@ public class Gamemode {
 		playerConfig.set("location", null);
 
 		arenaPlayer.getTimers().cancelAllTimers();
-		if(arenaPlayer.getTeam() != null){
+		if (arenaPlayer.getTeam() != null) {
 			//Player was not a spectator, leave team and add to offline players.
 			arenaPlayer.getTeam().getPlayers().remove(arenaPlayer);
 			arena.getOfflinePlayers().add(player.getName());
@@ -216,19 +225,23 @@ public class Gamemode {
 	}
 
 	public void onPlayerDropItem(PlayerDropItemEvent event, ArenaPlayer arenaPlayer) {
-		if(arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING || !settings.isAllowItemDrop()){
+		if (arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING || !settings.isAllowItemDrop()) {
 			Util.msg(event.getPlayer(), "You may not drop items!");
 			event.setCancelled(true);
-		}		
+		}
 	}
 
 	public void onPlayerInventoryClick(InventoryClickEvent event, ArenaPlayer arenaPlayer) {
-		if(arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING || !settings.isAllowItemDrop()){
+		if (arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING || !settings.isAllowItemDrop()) {
 			if (event.getSlotType() == SlotType.ARMOR && event.getCurrentItem() != null) {
 				Util.msg((Player) event.getWhoClicked(), "You may not take off your armor!");
 				event.setCancelled(true);
 			}
 		}
+	}
+
+	public void onPlayerChat(AsyncPlayerChatEvent event, ArenaPlayer arenaPlayer) {
+		arenaChat.onPlayerChatEvent(event, arenaPlayer);
 	}
 
 	// Arena made events.

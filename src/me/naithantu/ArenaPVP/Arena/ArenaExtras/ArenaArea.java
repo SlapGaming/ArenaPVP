@@ -24,6 +24,7 @@ public class ArenaArea {
 
 	WorldGuardPlugin worldGuard;
 	String worldGuardRegion;
+	String spectatorRegion;
 
 	HashMap<String, OutOfBoundsTimer> outOfBoundsTimers = new HashMap<String, OutOfBoundsTimer>();
 
@@ -31,26 +32,38 @@ public class ArenaArea {
 		this.plugin = plugin;
 		this.arena = arena;
 		this.settings = settings;
-		
+
 		worldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
 		worldGuardRegion = config.getString("outofboundsregion");
+		if (config.contains("spectatorregion")) {
+			spectatorRegion = config.getString("spectatorregion");
+		} else {
+			spectatorRegion = worldGuardRegion;
+		}
 	}
 
 	public void handleMove(ArenaPlayer arenaPlayer, Player player, Location location) {
-		if(arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING && arena.getArenaState() == ArenaState.PLAYING){
+		if (arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING && arena.getArenaState() == ArenaState.PLAYING) {
 			PlayerTimers playerTimers = arenaPlayer.getTimers();
-			if (checkArea(location) && playerTimers.isOutOfBounds()) {
+			String regionName;
+			if (arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING) {
+				regionName = spectatorRegion;
+			} else {
+				regionName = worldGuardRegion;
+			}
+
+			if (checkArea(location, regionName) && playerTimers.isOutOfBounds()) {
 				arenaPlayer.getTimers().setOutOfBounds(player, false);
-			} else if (!checkArea(location) && !playerTimers.isOutOfBounds()){
+			} else if (!checkArea(location, regionName) && !playerTimers.isOutOfBounds()) {
 				arenaPlayer.getTimers().setOutOfBounds(player, true);
 			}
 		}
 	}
 
-	public boolean checkArea(Location location) {
+	public boolean checkArea(Location location, String regionName) {
 		RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
 		for (ProtectedRegion region : regionManager.getApplicableRegions(location)) {
-			if (region.getId().equals(worldGuardRegion)) {
+			if (region.getId().equals(regionName)) {
 				return true;
 			}
 		}

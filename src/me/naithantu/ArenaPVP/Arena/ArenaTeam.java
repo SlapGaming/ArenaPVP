@@ -3,12 +3,14 @@ package me.naithantu.ArenaPVP.Arena;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
 
@@ -21,6 +23,7 @@ public class ArenaTeam {
 	int teamNumber;
 
 	String teamName;
+	ChatColor teamColor;
 
 	int score = 0;
 
@@ -31,6 +34,7 @@ public class ArenaTeam {
 		this.plugin = plugin;
 		this.arenaConfig = arenaConfig;
 		this.teamNumber = teamNumber;
+		this.teamColor = ChatColor.getByChar(arenaConfig.getString("teamcolors." + teamNumber));
 
 		teamName = arenaConfig.getString("teams." + teamNumber);
 		List<ItemStack> inventoryContents = (List<ItemStack>) arenaConfig.getList("classes." + teamNumber + ".inventory");
@@ -45,6 +49,10 @@ public class ArenaTeam {
 
 	public String getTeamName() {
 		return teamName;
+	}
+	
+	public ChatColor getTeamColor() {
+		return teamColor;
 	}
 
 	public void setTeamName(String teamName) {
@@ -83,7 +91,7 @@ public class ArenaTeam {
 
 	public void joinTeam(Player player, ArenaManager arenaManager, Arena arena, ArenaPlayer arenaPlayer) {
 		players.add(arenaPlayer);
-		if (arena.getArenaState() == ArenaState.PLAYING) {
+		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() != ArenaPlayerState.SPECTATING) {
 			if (arena.getSettings().getRespawnTime() == 0) {
 				player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
 			} else {
