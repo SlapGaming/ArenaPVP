@@ -1,5 +1,7 @@
 package me.naithantu.ArenaPVP.Gamemodes.Gamemodes;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -11,6 +13,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
@@ -24,10 +27,12 @@ import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
 
 public class CTF extends Gamemode {
-	HashMap<String, ArenaTeam> flags = new HashMap<String, ArenaTeam>();
 
-	public CTF(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage) {
-		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage);
+	HashMap<String, ArenaTeam> flags = new HashMap<String, ArenaTeam>();
+	private Comparator<ArenaTeam> comp;
+	
+	public CTF(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
+		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
 	}
 
 	@Override
@@ -102,5 +107,29 @@ public class CTF extends Gamemode {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void updateTabs() {
+		if (tabController.hasTabAPI()) return; //Currently deactivated <- Remove this line to activate
+		if (!tabController.hasTabAPI()) return;
+		
+	}
+
+	@Override
+	public void sortLists() {
+		Collections.sort(arena.getTeams(), comp);
+	}
+
+	@Override
+	protected void createComp() {
+		comp = new Comparator<ArenaTeam>() {
+			@Override
+			public int compare(ArenaTeam o1, ArenaTeam o2) {
+				if (o1.getScore() < o2.getScore()) return 1;
+				if (o1.getScore() > o2.getScore()) return -1;
+				return 0;
+			}
+		};
 	}
 }

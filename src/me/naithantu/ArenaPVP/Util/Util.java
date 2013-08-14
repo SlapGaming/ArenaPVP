@@ -117,4 +117,8 @@ public class Util {
 		for (PotionEffect effect : player.getActivePotionEffects())
 			player.removePotionEffect(effect.getType());
 	}
+	
+	public static String capaltizeFirstLetter(String s) {
+		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+	}
 }

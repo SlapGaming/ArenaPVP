@@ -2,6 +2,7 @@ package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.CTF;
@@ -16,13 +17,13 @@ public class ArenaGamemode {
 	 * stick with coded in gamemodes for now, might switch to reflections later
 	 */
 
-	public static Gamemode getGamemode(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, String name) {
+	public static Gamemode getGamemode(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, String name, TabController tabController) {
 		if (name.equalsIgnoreCase("tdm")) {
-			return new TDM(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage);
+			return new TDM(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
 		} else if (name.equalsIgnoreCase("lts")) {
-			return new LTS(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage);
+			return new LTS(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
 		} else if (name.equalsIgnoreCase("ctf")){
-			return new CTF(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage);
+			return new CTF(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
 		}
 		return null;
 	}

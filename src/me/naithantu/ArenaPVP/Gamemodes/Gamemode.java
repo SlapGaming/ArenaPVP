@@ -2,6 +2,7 @@ package me.naithantu.ArenaPVP.Gamemodes;
 
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
@@ -40,8 +41,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.PlayerInventory;
+import org.mcsg.double0negative.tabapi.TabAPI;
 
-public class Gamemode {
+public abstract class Gamemode {
 	protected ArenaPVP plugin;
 	protected ArenaManager arenaManager;
 	protected Arena arena;
@@ -53,8 +55,9 @@ public class Gamemode {
 	protected ArenaChat arenaChat;
 	protected YamlStorage arenaStorage;
 	protected Configuration arenaConfig;
+	protected TabController tabController;
 
-	public Gamemode(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage) {
+	public Gamemode(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
 		this.plugin = plugin;
 		this.arenaManager = arenaManager;
 		this.arena = arena;
@@ -62,10 +65,12 @@ public class Gamemode {
 		this.arenaSpawns = arenaSpawns;
 		this.arenaUtil = arenaUtil;
 		this.arenaStorage = arenaStorage;
+		this.tabController = tabController;
 		arenaSpectators = arena.getArenaSpectators();
 		arenaChat = arena.getArenaChat();
 		arenaArea = arena.getArenaArea();
 		arenaConfig = arenaStorage.getConfig();
+		createComp();
 	}
 
 	public String getName() {
@@ -278,4 +283,17 @@ public class Gamemode {
 	public AbstractCommand executeCommand(String command) {
 		return null;
 	}
+	
+	public abstract void sortLists();
+	
+	public abstract void updateTabs();
+	
+	protected abstract void createComp();
+	
+	protected void clearTab(Player p) {
+		try {
+			TabAPI.clearTab(p);
+		} catch (NullPointerException ex) {}
+	}
+	
 }

@@ -27,6 +27,8 @@ public class ArenaPVP extends JavaPlugin {
 	ArenaManager arenaManager;
 	
 	Logger logger;
+	
+	TabController tabController;
 			
 	@Override
 	public void onEnable(){
@@ -41,6 +43,8 @@ public class ArenaPVP extends JavaPlugin {
 		
 		arenaManager = new ArenaManager();
 		commandHandler = new CommandHandler(this, arenaManager);
+		
+		tabController = new TabController(this);
 		
 		registerListeners();
 		
@@ -80,5 +84,9 @@ public class ArenaPVP extends JavaPlugin {
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		return commandHandler.handle(sender, cmd, args);
+	}
+	
+	public TabController getTabController() {
+		return tabController;
 	}
 }

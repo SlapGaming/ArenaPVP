@@ -7,6 +7,7 @@ import java.util.List;
 
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaArea;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaChat;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaGamemode;
@@ -56,6 +57,8 @@ public class Arena {
 
 	YamlStorage arenaStorage;
 	FileConfiguration arenaConfig;
+	
+	TabController tabController;
 
 	public Arena(ArenaPVP plugin, ArenaManager arenaManager, String arenaName) {
 		this.plugin = plugin;
@@ -74,6 +77,8 @@ public class Arena {
 		arenaArea = new ArenaArea(plugin, this, settings, arenaConfig);
 		arenaSpectators = new ArenaSpectators(this);
 		arenaChat = new ArenaChat(this);
+		
+		tabController = plugin.getTabController();
 
 		initializeArena();
 	}
@@ -134,7 +139,7 @@ public class Arena {
 		String gamemodeName = arenaConfig.getString("gamemode");
 
 		// Create gamemode.
-		gamemode = ArenaGamemode.getGamemode(plugin, arenaManager, this, settings, arenaSpawns, arenaUtil, arenaStorage, gamemodeName);
+		gamemode = ArenaGamemode.getGamemode(plugin, arenaManager, this, settings, arenaSpawns, arenaUtil, arenaStorage, gamemodeName, tabController);
 
 		// Create teams with proper names.
 		for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
