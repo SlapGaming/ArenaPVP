@@ -8,6 +8,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
 import me.naithantu.ArenaPVP.ArenaManager;
@@ -33,6 +34,27 @@ public class DM extends Gamemode {
 		createComp();
 	}
 
+	@Override
+	public String getName(){
+		return "DM";
+	}
+	
+	@Override
+	public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer){
+		super.onPlayerDeath(event, arenaPlayer);
+		Player killer = event.getEntity().getKiller();
+		if(killer != null){
+			ArenaPlayer arenaKiller = arenaManager.getPlayerByName(killer.getKiller().getName());
+			if (arenaKiller.getPlayerScore().getKills() >= settings.getScoreLimit()) {
+				arena.stopGame(arenaKiller);
+			} else {
+				sortLists();
+				updateTabs();
+			}
+		}
+	}
+	
+	
 	@Override
 	public void updateTabs() {
 		if (tabController.hasTabAPI()) return; //Currently deactivated <- Remove this line to activate

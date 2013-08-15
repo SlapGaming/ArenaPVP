@@ -16,6 +16,7 @@ public class ArenaSettings {
 	boolean outOfBoundsArea;
 	boolean autoBalance;
 	boolean allowItemDrop;
+	boolean allowBlockChange;
 	
 	public ArenaSettings(FileConfiguration config) {
 		this.config = config;
@@ -34,6 +35,7 @@ public class ArenaSettings {
 		outOfBoundsArea = config.getBoolean("outofboundsarea");
 		autoBalance = config.getBoolean("autobalance");
 		allowItemDrop = config.getBoolean("allowitemdrop");
+		allowBlockChange = config.getBoolean("allowblockchange");
 	}
 
 	public int getMaxPlayers() {
@@ -75,6 +77,10 @@ public class ArenaSettings {
 	public boolean isAllowItemDrop() {
 		return allowItemDrop;
 	}
+	
+	public boolean isAllowBlockChange() {
+		return allowBlockChange;
+	}
 
 	public void setMaxPlayers(int maxPlayers) {
 		this.maxPlayers = maxPlayers;
@@ -114,5 +120,9 @@ public class ArenaSettings {
 	
 	public void setAllowItemDrop(boolean allowItemDrop) {
 		this.allowItemDrop = allowItemDrop;
+	}
+	
+	public void setAllowBlockChange(boolean allowBlockChange) {
+		this.allowBlockChange = allowBlockChange;
 	}
 }

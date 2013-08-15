@@ -162,6 +162,7 @@ public class Arena {
 		arenaSpectators.addSpectator(arenaPlayer, player);
 		player.teleport(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
 		playerStorage.saveConfig();
+		gamemode.updateTabs();
 	}
 
 	public void leaveSpectate(Player player, ArenaPlayer arenaPlayer) {
@@ -173,6 +174,8 @@ public class Arena {
 		player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
 		playerConfig.set("location", null);
 		playerStorage.saveConfig();
+		gamemode.clearTab(player);
+		gamemode.updateTabs();
 	}
 
 	public boolean joinGame(Player player, ArenaTeam teamToJoin) {
@@ -231,13 +234,24 @@ public class Arena {
 			}
 		}
 		arenaState = ArenaState.PLAYING;
+		gamemode.updateTabs();
 	}
 
+	public void stopGame(ArenaPlayer winPlayer) {
+		if (winPlayer != null) {
+			arenaUtil.sendMessageAll(winPlayer.getPlayerName() + " has won the game!");
+		}
+		stopGame();
+	}
+	
 	public void stopGame(ArenaTeam winTeam) {		
 		if (winTeam != null) {
 			arenaUtil.sendMessageAll("Team " + winTeam.getTeamName() + " has won the game!");
 		}
-
+		stopGame();
+	}
+	
+	public void stopGame() {
 		for (ArenaTeam team : teams) {
 			List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
 			for (ArenaPlayer arenaPlayer : players) {

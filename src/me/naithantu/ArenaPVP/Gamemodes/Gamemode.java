@@ -23,6 +23,7 @@ import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -30,12 +31,15 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fish;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -80,14 +84,14 @@ public abstract class Gamemode {
 	public void sendScore(CommandSender sender) {
 		Util.msg(sender, "Score:");
 		for (ArenaTeam team : arena.getTeams()) {
-			Util.msg(sender, "Team " + team.getTeamName() + ": " + team.getScore());
+			Util.msg(sender, "Team " + team.getTeamColor() + team.getTeamName() + ChatColor.WHITE + ": " + team.getScore());
 		}
 	}
 
 	public void sendScoreAll() {
 		arenaUtil.sendMessageAll("Score:");
 		for (ArenaTeam team : arena.getTeams()) {
-			arenaUtil.sendMessageAll("Team " + team.getTeamName() + ": " + team.getScore());
+			arenaUtil.sendMessageAll("Team " + team.getTeamColor() + team.getTeamName() + ChatColor.WHITE + ": " + team.getScore());
 		}
 	}
 
@@ -161,7 +165,7 @@ public abstract class Gamemode {
 				} else {
 					ArenaPlayer damagePlayer = arenaManager.getPlayerByName(((Player) damager).getName());
 					//Block damage if damager is not in same arena.
-					if (damagePlayer == null || !damagePlayer.getArena().equals(arenaPlayer.getArena())) {
+					if (damagePlayer == null || !damagePlayer.getArena().equals(arenaPlayer.getArena()) || damagePlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
 						event.setCancelled(true);
 					} else {
 						if (!settings.isFriendlyFire()) {
@@ -204,6 +208,12 @@ public abstract class Gamemode {
 			//Player was spectator, leave as spectator.
 			arena.leaveSpectate(player, arenaPlayer);
 		}
+		clearTab(player);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			public void run() {
+				updateTabs();
+			}
+		}, 1);
 	}
 
 	public void onPlayerJoin(PlayerJoinEvent event, final ArenaPlayer arenaPlayer) {		
@@ -221,6 +231,7 @@ public abstract class Gamemode {
 					player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
 					Util.playerJoin(player, playerStorage);
 					arenaPlayer.getTeam().joinTeam(player, arenaManager, arena, arenaPlayer);
+					updateTabs();
 				}
 			}, 1);
 		}
@@ -245,6 +256,30 @@ public abstract class Gamemode {
 	public void onPlayerChat(AsyncPlayerChatEvent event, ArenaPlayer arenaPlayer) {
 		arenaChat.onPlayerChatEvent(event, arenaPlayer);
 	}
+	
+	public void onPlayerPlaceBlock(BlockPlaceEvent event, ArenaPlayer arenaPlayer) {
+		if (arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
+			event.setCancelled(true);
+		} else {
+			if (!arena.getSettings().isAllowBlockChange()) {
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	public void onPlayerBreakBlock(BlockBreakEvent event, ArenaPlayer arenaPlayer) {
+		if (arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
+			event.setCancelled(true);
+		} else {
+			if (!arena.getSettings().isAllowBlockChange()) {
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	public void onPlayerInteractBlock(PlayerInteractEvent event, ArenaPlayer arenaPlayer) {
+		return;
+	}
 
 	// Arena made events.
 	public void onPlayerJoinArena(EventJoinArena event) {
@@ -259,13 +294,29 @@ public abstract class Gamemode {
 				}
 				event.setTeam(teamToJoin);
 			}
+			updateTabs();
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+				@Override
+				public void run() {
+					updateTabs();
+				}
+			},1);
 			return;
 		}
 		event.setCancelled(true);
 	}
 
-	public void onPlayerLeaveArena(EventLeaveArena event) {
-
+	public void onPlayerLeaveArena(final EventLeaveArena event) {
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+			@Override
+			public void run() {
+				Player p = Bukkit.getPlayerExact(event.getArenaPlayer().getPlayerName());
+				if (p != null) {
+					clearTab(p);
+				}
+				updateTabs();
+			}
+		},1);
 	}
 
 	public void onPlayerArenaRespawn(final EventRespawn event) {
@@ -290,9 +341,12 @@ public abstract class Gamemode {
 	
 	protected abstract void createComp();
 	
-	protected void clearTab(Player p) {
+	public void clearTab(Player p) {
+		if (!tabController.hasTabAPI()) return;
 		try {
 			TabAPI.clearTab(p);
+			TabAPI.setPriority(plugin, p, -2);
+			TabAPI.updatePlayer(p);
 		} catch (NullPointerException ex) {}
 	}
 	

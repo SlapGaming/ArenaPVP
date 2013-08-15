@@ -56,7 +56,7 @@ public class CommandStop extends AbstractCommand {
 	}
 
 	public void stopArena(Arena arena) {
-		arena.stopGame(null);
+		arena.stopGame();
 		this.msg(sender, "You have stopped arena " + arena.getArenaName() + "!");
 	}
 }

@@ -58,7 +58,7 @@ public class ArenaPVP extends JavaPlugin {
 	@Override
 	public void onDisable(){
 		for(Arena arena: arenaManager.getArenas().values()){
-			arena.stopGame(null);
+			arena.stopGame();
 		}
 	}
 	

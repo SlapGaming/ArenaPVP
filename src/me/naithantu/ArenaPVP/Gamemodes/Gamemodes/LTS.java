@@ -49,6 +49,8 @@ public class LTS extends Gamemode {
 				arena.stopGame(getWinningTeam());
 			}
 		}
+		sortLists();
+		updateTabs();
 	}
 	
 	private int checkRemainingTeams(){
@@ -77,7 +79,6 @@ public class LTS extends Gamemode {
 
 	@Override
 	public void updateTabs() {
-		if (tabController.hasTabAPI()) return; //Currently deactivated <- Remove this line to activate
 		if (!tabController.hasTabAPI()) return;
 		
 		String status = Util.capaltizeFirstLetter(arena.getArenaState().toString());
@@ -97,6 +98,7 @@ public class LTS extends Gamemode {
 				} else {
 					teamString[x] = ChatColor.STRIKETHROUGH + teamPlayer.getPlayerName();
 				}
+				nrOfPlayers++;
 			}
 			teamStrings.add(teamString);
 		}

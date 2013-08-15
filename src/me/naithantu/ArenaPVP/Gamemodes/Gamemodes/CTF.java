@@ -3,17 +3,22 @@ package me.naithantu.ArenaPVP.Gamemodes.Gamemodes;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.mcsg.double0negative.tabapi.TabAPI;
 
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.TabController;
+import me.naithantu.ArenaPVP.TabController.Gamemodes;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
@@ -53,13 +58,20 @@ public class CTF extends Gamemode {
 				Location flagLocation = Util.getLocationFromString(arenaStorage.getConfig().getString("gamemodes.ctf." + team.getTeamNumber()));
 				if (playerLocation.distanceSquared(flagLocation) < 1) {
 					if(getFlagCarrier(team) == null){
+						ArenaTeam stolenTeam = flags.get(playerName);
 						flags.remove(playerName);
-						arenaUtil.sendMessageAll(playerName + " has captured the " + team.getTeamName() + " flag!");
+						arenaUtil.sendMessageAll(team.getTeamColor() + playerName + ChatColor.WHITE + " has captured the " + stolenTeam.getTeamColor() + stolenTeam.getTeamName() + ChatColor.WHITE + " flag!");
 						team.addScore();
 						if(team.getScore() >= settings.getScoreLimit()){
 							arena.stopGame(team);
+						} else {
+							if (tabController.hasTabAPI()) {
+								updateTabs();
+							} else {
+								sortLists();
+								sendScoreAll();
+							}
 						}
-						super.sendScoreAll();
 					} else {
 						Util.msg(player, "You can not capture a flag when the enemy has your flag!");
 					}
@@ -72,7 +84,8 @@ public class CTF extends Gamemode {
 						Location flagLocation = Util.getLocationFromString(arenaStorage.getConfig().getString("gamemodes.ctf." + arenaTeam.getTeamNumber()));
 						if (playerLocation.distanceSquared(flagLocation) < 1) {
 							flags.put(player.getName(), arenaTeam);
-							arenaUtil.sendMessageAll(playerName + " has taken the " + arenaTeam.getTeamName() + " flag!");
+							arenaUtil.sendMessageAll(arenaPlayer.getTeam().getTeamColor() + playerName + ChatColor.WHITE + " has taken the " + arenaTeam.getTeamColor() + arenaTeam.getTeamName() + ChatColor.WHITE + " flag!");
+							updateTabs();
 						}
 					}
 				}
@@ -87,6 +100,7 @@ public class CTF extends Gamemode {
 		if (flags.containsKey(playerName)) {
 			flags.remove(playerName);
 			arenaUtil.sendMessageAll("The " + arenaPlayer.getTeam().getTeamName() + " flag has been returned!");
+			updateTabs();
 		}
 	}
 	
@@ -97,6 +111,7 @@ public class CTF extends Gamemode {
 		if (flags.containsKey(playerName)) {
 			flags.remove(playerName);
 			arenaUtil.sendMessageAll("The " + arenaPlayer.getTeam().getTeamName() + " flag has been returned!");
+			updateTabs();
 		}
 	}
 
@@ -111,9 +126,96 @@ public class CTF extends Gamemode {
 
 	@Override
 	public void updateTabs() {
-		if (tabController.hasTabAPI()) return; //Currently deactivated <- Remove this line to activate
+		sortLists();
 		if (!tabController.hasTabAPI()) return;
 		
+		String status = Util.capaltizeFirstLetter(arena.getArenaState().toString());
+		String arenaName = arena.getArenaName();
+		String spectators = ChatColor.GRAY + "" + arena.getArenaSpectators().getSpectators().size() + " Spectators";
+		List<ArenaTeam> teams = arena.getTeams();
+		int nrOfPlayers = 0;
+		String[] teamString = new String[teams.size() * 3];
+		String[][] players = new String[teams.size()][];
+		
+		int x = 0; int z = 0;
+		for (ArenaTeam team : teams) {
+			List<ArenaPlayer> playerList = team.getPlayers();
+			players[x] = new String[playerList.size()];
+			ChatColor teamColor = team.getTeamColor();
+			int y = 0;
+			for (ArenaPlayer player : playerList) {
+				players[x][y] = teamColor + player.getPlayerName(); 
+				y++; nrOfPlayers++;
+			}
+			if (flags.containsValue(team)) {
+				teamString[z] = teamColor + "" + ChatColor.BOLD + "FLAG TAKEN!!";
+			} else {
+				teamString[z] = teamColor + "Flag in place";
+			} 
+			z++;
+			teamString[z] = teamColor + "-" + team.getTeamName() + "-"; z++;
+			teamString[z] = teamColor + "" + team.getScore() + " Points"; z++;
+			x++;
+		}
+		
+		String playerString = nrOfPlayers + " (" + teams.size() + " Teams)";		
+		int rank = 1;
+		for (ArenaTeam team : teams) {
+			String teamName = team.getTeamColor() + team.getTeamName();
+			String ranking = ChatColor.GREEN + "Rank " + rank;
+			for (ArenaPlayer player : team.getPlayers()) {
+				Player p = Bukkit.getPlayerExact(player.getPlayerName());
+				if (p != null) {
+					setTabPlayer(p, status, arenaName, playerString, spectators, false, teamName, ranking, teamString, players);
+				}
+			}
+		}
+		for (Player p : arena.getArenaSpectators().getSpectators().keySet()) {
+			setTabPlayer(p, status, arenaName, playerString, spectators, true, null, null, teamString, players);
+		}
+		TabAPI.updateAll();		
+	}
+	
+	private void setTabPlayer(Player p, String status, String arena, String playerString, String spectators, boolean spectator, String team, String rank, String[] teams, String[][] players) {
+		int row = tabController.setTopTab(p, Gamemodes.CTF);
+		TabAPI.setTabString(plugin, p, 2, 1, status);
+		TabAPI.setTabString(plugin, p, 3, 1, arena);
+		TabAPI.setTabString(plugin, p, 4, 1, playerString);
+		TabAPI.setTabString(plugin, p, 4, 2, spectators);
+		if (spectator) {
+			TabAPI.setTabString(plugin, p, 5, 1, ChatColor.GRAY + "Spectator");
+		} else {
+			TabAPI.setTabString(plugin, p, 5, 1, team);
+			TabAPI.setTabString(plugin, p, 5, 2, rank);
+		}
+		
+		int colom = 0;
+		for (String cell : teams) {
+			if (cell != null) TabAPI.setTabString(plugin, p, row, colom, cell);
+			colom++;
+			if (colom == 3) {
+				row++;
+				if (row > 19) return;
+				colom = 0;
+			}
+		}
+		
+		row++; row++;
+		if (row < 18) {
+			TabAPI.setTabString(plugin, p, row, 1, ChatColor.GOLD + "-- Players --");
+			row++; colom = 0;
+			for (String[] teamPlayers : players) {
+				for (String aPlayer : teamPlayers) {
+					if (aPlayer != null) TabAPI.setTabString(plugin, p, row, colom, aPlayer);
+					colom++;
+					if (colom == 3) {
+						row++;
+						if (row > 19) return;
+						colom = 0;
+					}
+				}
+			}
+		}
 	}
 
 	@Override
