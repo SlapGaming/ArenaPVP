@@ -53,6 +53,8 @@ public class CommandHandler {
 				commandObj = new CommandSelect(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("spectate")) {
 				commandObj = new CommandSpectate(sender, cmdArgs, plugin, arenaManager);
+			} else if (command.equals("spectators")) {
+				commandObj = new CommandSpectators(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("start")) {
 				commandObj = new CommandStart(sender, cmdArgs, plugin, arenaManager);
 			} else if (command.equals("stop")) {

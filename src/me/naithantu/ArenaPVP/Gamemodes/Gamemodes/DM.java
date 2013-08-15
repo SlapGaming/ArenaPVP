@@ -31,12 +31,13 @@ public class DM extends Gamemode {
 	
 	public DM(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns,	ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
 		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
+		settings.setFriendlyFire(true);
 		createComp();
 	}
 
 	@Override
 	public String getName(){
-		return "DM";
+		return "Deathmatch";
 	}
 	
 	@Override
@@ -57,7 +58,6 @@ public class DM extends Gamemode {
 	
 	@Override
 	public void updateTabs() {
-		if (tabController.hasTabAPI()) return; //Currently deactivated <- Remove this line to activate
 		if (!tabController.hasTabAPI()) return;
 		String gameStatus = Util.capaltizeFirstLetter(arena.getArenaState().toString());
 		String arenaName = arena.getArenaName();

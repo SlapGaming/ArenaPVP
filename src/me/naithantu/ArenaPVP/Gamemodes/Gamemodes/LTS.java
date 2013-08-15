@@ -30,34 +30,36 @@ import me.naithantu.ArenaPVP.Util.Util;
 public class LTS extends Gamemode {
 
 	private Comparator<ArenaPlayer> comp;
-	
+
 	public LTS(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
 		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
 	}
-	
+
 	@Override
-	public String getName(){
+	public String getName() {
 		return "LTS";
 	}
 
 	@Override
 	public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer) {
 		super.onPlayerDeath(event, arenaPlayer);
-		if(arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING){
+		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING) {
 			arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
-			if(checkRemainingTeams() == 1){
+			if (checkRemainingTeams() == 1) {
 				arena.stopGame(getWinningTeam());
 			}
 		}
+		if (arena.getArenaStorage().getConfig().getBoolean("allowspectate"))
+			arena.changeToSpectate(event.getEntity(), arenaPlayer);
 		sortLists();
 		updateTabs();
 	}
-	
-	private int checkRemainingTeams(){
+
+	private int checkRemainingTeams() {
 		int remainingTeams = 0;
-		for(ArenaTeam team: arena.getTeams()){
-			for(ArenaPlayer arenaPlayer: team.getPlayers()){
-				if(arenaPlayer.getPlayerState() != ArenaPlayerState.SPECTATING){
+		for (ArenaTeam team : arena.getTeams()) {
+			for (ArenaPlayer arenaPlayer : team.getPlayers()) {
+				if (arenaPlayer.getPlayerState() != ArenaPlayerState.SPECTATING) {
 					remainingTeams++;
 					break;
 				}
@@ -65,11 +67,11 @@ public class LTS extends Gamemode {
 		}
 		return remainingTeams;
 	}
-	
-	private ArenaTeam getWinningTeam(){
-		for(ArenaTeam team: arena.getTeams()){
-			for(ArenaPlayer arenaPlayer: team.getPlayers()){
-				if(arenaPlayer.getPlayerState() != ArenaPlayerState.SPECTATING){
+
+	private ArenaTeam getWinningTeam() {
+		for (ArenaTeam team : arena.getTeams()) {
+			for (ArenaPlayer arenaPlayer : team.getPlayers()) {
+				if (arenaPlayer.getPlayerState() != ArenaPlayerState.SPECTATING) {
 					return team;
 				}
 			}
@@ -79,12 +81,13 @@ public class LTS extends Gamemode {
 
 	@Override
 	public void updateTabs() {
-		if (!tabController.hasTabAPI()) return;
-		
+		if (!tabController.hasTabAPI())
+			return;
+
 		String status = Util.capaltizeFirstLetter(arena.getArenaState().toString());
 		String arenaName = arena.getArenaName();
 		int nrOfPlayers = 0;
-		
+
 		List<String[]> teamStrings = new ArrayList<>();
 		List<ArenaTeam> teams = arena.getTeams();
 		for (ArenaTeam team : teams) {
@@ -102,10 +105,10 @@ public class LTS extends Gamemode {
 			}
 			teamStrings.add(teamString);
 		}
-		
+
 		String playersString = nrOfPlayers + " Players";
 		String spectators = ChatColor.GRAY + "" + arena.getArenaSpectators().getSpectators().size() + " Spectators";
-		
+
 		for (ArenaTeam team : teams) {
 			for (ArenaPlayer player : team.getPlayers()) {
 				Player p = Bukkit.getPlayerExact(player.getPlayerName());
@@ -119,17 +122,17 @@ public class LTS extends Gamemode {
 		}
 		TabAPI.updateAll();
 	}
-	
+
 	private void setTabPlayer(Player p, String status, String arena, String players, String spectators, List<String[]> teamStrings) {
 		int row = tabController.setTopTab(p, Gamemodes.LTS);
 		TabAPI.setTabString(plugin, p, 2, 1, status);
 		TabAPI.setTabString(plugin, p, 3, 1, arena);
 		TabAPI.setTabString(plugin, p, 4, 1, players);
 		TabAPI.setTabString(plugin, p, 4, 2, spectators);
-		
+
 		setTabPlayerTeam(p, row, 0, teamStrings.get(0));
 		setTabPlayerTeam(p, row, 2, teamStrings.get(1));
-		
+
 		switch (teamStrings.size()) {
 		case 5:
 			setTabPlayerTeam(p, 10, 1, teamStrings.get(4));
@@ -141,15 +144,17 @@ public class LTS extends Gamemode {
 			setTabPlayerTeam(p, 13, 1, teamStrings.get(2));
 			break;
 		}
-		
+
 	}
-	
+
 	private void setTabPlayerTeam(Player p, int row, int colom, String[] team) {
 		int x = 1;
 		for (String cell : team) {
 			TabAPI.setTabString(plugin, p, row, colom, cell);
-			row++; x++;
-			if (x > 6) return;
+			row++;
+			x++;
+			if (x > 6)
+				return;
 		}
 	}
 
@@ -167,11 +172,13 @@ public class LTS extends Gamemode {
 			public int compare(ArenaPlayer o1, ArenaPlayer o2) {
 				ArenaPlayerState o1State = o1.getPlayerState();
 				ArenaPlayerState o2State = o2.getPlayerState();
-				if (o1State != ArenaPlayerState.PLAYING && o2State == ArenaPlayerState.PLAYING) return 1;
-				if (o1State == ArenaPlayerState.PLAYING && o2State != ArenaPlayerState.PLAYING) return -1;
+				if (o1State != ArenaPlayerState.PLAYING && o2State == ArenaPlayerState.PLAYING)
+					return 1;
+				if (o1State == ArenaPlayerState.PLAYING && o2State != ArenaPlayerState.PLAYING)
+					return -1;
 				return 0;
 			}
 		};
 	}
-	
+
 }

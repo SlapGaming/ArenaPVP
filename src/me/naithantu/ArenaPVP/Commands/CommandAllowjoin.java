@@ -52,7 +52,7 @@ public class CommandAllowjoin extends AbstractCommand {
 			return true;
 		} else {
 			// If there is only arena
-			Arena arena = arenaManager.getFirstArena();
+			Arena arena = arenaManager.getFirstArena(); //TODO When several arenas exist in different states, this doesn't work! Retrieve arena via arenastate (preferably via abstractcommand!)
 			enableArena(arena);
 		}
 		return true;

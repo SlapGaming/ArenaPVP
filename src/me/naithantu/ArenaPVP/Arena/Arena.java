@@ -18,6 +18,7 @@ import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpectators;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
+import me.naithantu.ArenaPVP.Arena.Runnables.StartArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventLeaveArena;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
@@ -28,6 +29,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
@@ -46,7 +48,7 @@ public class Arena {
 	ArenaArea arenaArea;
 	ArenaChat arenaChat;
 	ArenaSpectators arenaSpectators;
-	
+
 	List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
 	List<String> offlinePlayers = new ArrayList<String>();
 	String nickName;
@@ -57,7 +59,7 @@ public class Arena {
 
 	YamlStorage arenaStorage;
 	FileConfiguration arenaConfig;
-	
+
 	TabController tabController;
 
 	public Arena(ArenaPVP plugin, ArenaManager arenaManager, String arenaName) {
@@ -77,7 +79,7 @@ public class Arena {
 		arenaArea = new ArenaArea(plugin, this, settings, arenaConfig);
 		arenaSpectators = new ArenaSpectators(this);
 		arenaChat = new ArenaChat(this);
-		
+
 		tabController = plugin.getTabController();
 
 		initializeArena();
@@ -94,7 +96,7 @@ public class Arena {
 	public ArenaSettings getSettings() {
 		return settings;
 	}
-	
+
 	public ArenaUtil getArenatUtil() {
 		return arenaUtil;
 	}
@@ -106,7 +108,7 @@ public class Arena {
 	public ArenaSpectators getArenaSpectators() {
 		return arenaSpectators;
 	}
-	
+
 	public ArenaChat getArenaChat() {
 		return arenaChat;
 	}
@@ -154,13 +156,13 @@ public class Arena {
 		Configuration playerConfig = playerStorage.getConfig();
 		playerConfig.set("location", Util.getStringFromLocation(player.getLocation()));
 		Util.playerJoin(player, playerStorage);
-		player.setAllowFlight(true);
-		player.setFlying(true);
 		ArenaPlayer arenaPlayer = new ArenaPlayer(plugin, player, this, null);
 		arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
 		arenaManager.addPlayer(arenaPlayer);
-		arenaSpectators.addSpectator(arenaPlayer, player);
 		player.teleport(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
+		arenaSpectators.addSpectator(arenaPlayer, player);
+		arenaSpectators.getSpectators().put(player, arenaPlayer);
+		changeToSpectate(player, arenaPlayer);
 		playerStorage.saveConfig();
 		gamemode.updateTabs();
 	}
@@ -169,6 +171,7 @@ public class Arena {
 		YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
 		arenaManager.removePlayer(arenaPlayer);
 		arenaSpectators.removeSpectator(player);
+		arenaSpectators.getSpectators().remove(player);
 		Configuration playerConfig = playerStorage.getConfig();
 		Util.playerLeave(player, playerStorage);
 		player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
@@ -176,6 +179,12 @@ public class Arena {
 		playerStorage.saveConfig();
 		gamemode.clearTab(player);
 		gamemode.updateTabs();
+	}
+
+	private void changeToSpectate(Player player, ArenaPlayer arenaPlayer) {
+		player.setAllowFlight(true);
+		player.setFlying(true);
+		arenaSpectators.addSpectator(arenaPlayer, player);
 	}
 
 	public boolean joinGame(Player player, ArenaTeam teamToJoin) {
@@ -200,7 +209,7 @@ public class Arena {
 
 	public void leaveGame(final ArenaPlayer arenaPlayer) {
 		//Delay in case player was killed by arrow.
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
 			public void run() {
 				EventLeaveArena event = new EventLeaveArena(arenaPlayer);
@@ -223,18 +232,12 @@ public class Arena {
 					arenaPlayer.getTeam().leaveTeam(arenaManager, arenaPlayer, player);
 				}
 			}
-		},1);
+		}, 1);
 	}
 
 	public void startGame() {
-		arenaUtil.sendMessageAll("You have been teleported to your teams spawn point, let the games begin!");
-		for (ArenaTeam team : teams) {
-			for (ArenaPlayer arenaPlayer : team.getPlayers()) {
-				Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(arenaSpawns.getRespawnLocation(Bukkit.getPlayer(arenaPlayer.getPlayerName()), arenaPlayer, SpawnType.PLAYER));
-			}
-		}
-		arenaState = ArenaState.PLAYING;
-		gamemode.updateTabs();
+		StartArena startArena = new StartArena(this);
+		startArena.runTaskTimer(plugin, 0, 20);
 	}
 
 	public void stopGame(ArenaPlayer winPlayer) {
@@ -243,14 +246,14 @@ public class Arena {
 		}
 		stopGame();
 	}
-	
-	public void stopGame(ArenaTeam winTeam) {		
+
+	public void stopGame(ArenaTeam winTeam) {
 		if (winTeam != null) {
 			arenaUtil.sendMessageAll("Team " + winTeam.getTeamName() + " has won the game!");
 		}
 		stopGame();
 	}
-	
+
 	public void stopGame() {
 		for (ArenaTeam team : teams) {
 			List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
@@ -258,7 +261,7 @@ public class Arena {
 				leaveGame(arenaPlayer);
 			}
 		}
-		
+
 		arenaSpectators.removeAllSpectators();
 
 		File schematic = new File(plugin.getDataFolder() + File.separator + "maps", arenaName + ".schematic");

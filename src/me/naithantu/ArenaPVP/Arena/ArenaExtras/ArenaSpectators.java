@@ -2,7 +2,9 @@ package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
@@ -38,13 +40,9 @@ public class ArenaSpectators {
 		for (Player player : spectators.keySet()) {
 			player.hidePlayer(spectator);
 		}
-		
-		spectators.put(spectator, arenaSpectator);
-	}
+ 	}
 
-	public void removeSpectator(Player spectator) {
-		spectators.remove(spectator);
-		
+	public void removeSpectator(Player spectator) {		
 		//Show spectator to other players.
 		for (ArenaTeam team : arena.getTeams()) {
 			List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
@@ -62,7 +60,8 @@ public class ArenaSpectators {
 	}
 
 	public void removeAllSpectators() {
-		for (Player spectator : spectators.keySet()) {
+		Set<Player> tempSpectator = new HashSet<Player>(spectators.keySet());
+		for (Player spectator : tempSpectator) {
 			removeSpectator(spectator);
 		}
 	}

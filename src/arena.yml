@@ -2,8 +2,8 @@ teams:
   0: Red
   1: Blue
 teamcolors:
-  0: '&c'
-  1: '&9'
+  0: 'c'
+  1: '9'
 spawns:
   0:
     - world:1:70:1:90:90

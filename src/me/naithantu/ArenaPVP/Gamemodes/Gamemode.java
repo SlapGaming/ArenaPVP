@@ -42,6 +42,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.PlayerInventory;
@@ -77,9 +78,7 @@ public abstract class Gamemode {
 		createComp();
 	}
 
-	public String getName() {
-		return "none";
-	}
+	public abstract String getName();
 
 	public void sendScore(CommandSender sender) {
 		Util.msg(sender, "Score:");
@@ -186,8 +185,15 @@ public abstract class Gamemode {
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event, ArenaPlayer arenaPlayer) {
-		if (settings.isOutOfBoundsArea()) {
-			arenaArea.handleMove(arenaPlayer, event.getPlayer(), event.getTo());
+		//Check if player actually moved.
+		if (event.getTo().getX() != event.getFrom().getX() || event.getTo().getZ() != event.getFrom().getZ()) {
+			if (arena.getArenaState() == ArenaState.STARTING) {
+				event.setCancelled(true);
+				return;
+			}
+			if (settings.isOutOfBoundsArea()) {
+				arenaArea.handleMove(arenaPlayer, event.getPlayer(), event.getTo());
+			}
 		}
 	}
 
@@ -216,7 +222,7 @@ public abstract class Gamemode {
 		}, 1);
 	}
 
-	public void onPlayerJoin(PlayerJoinEvent event, final ArenaPlayer arenaPlayer) {		
+	public void onPlayerJoin(PlayerJoinEvent event, final ArenaPlayer arenaPlayer) {
 		final Player player = event.getPlayer();
 		String playerName = player.getName();
 		if (arena.getOfflinePlayers().contains(playerName)) {
@@ -244,6 +250,11 @@ public abstract class Gamemode {
 		}
 	}
 
+	public void onPlayerPickupItem(PlayerPickupItemEvent event, ArenaPlayer arenaPlayer) {
+		if (arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING)
+			event.setCancelled(true);
+	}
+
 	public void onPlayerInventoryClick(InventoryClickEvent event, ArenaPlayer arenaPlayer) {
 		if (arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING || !settings.isAllowItemDrop()) {
 			if (event.getSlotType() == SlotType.ARMOR && event.getCurrentItem() != null) {
@@ -256,7 +267,7 @@ public abstract class Gamemode {
 	public void onPlayerChat(AsyncPlayerChatEvent event, ArenaPlayer arenaPlayer) {
 		arenaChat.onPlayerChatEvent(event, arenaPlayer);
 	}
-	
+
 	public void onPlayerPlaceBlock(BlockPlaceEvent event, ArenaPlayer arenaPlayer) {
 		if (arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
 			event.setCancelled(true);
@@ -266,7 +277,7 @@ public abstract class Gamemode {
 			}
 		}
 	}
-	
+
 	public void onPlayerBreakBlock(BlockBreakEvent event, ArenaPlayer arenaPlayer) {
 		if (arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
 			event.setCancelled(true);
@@ -276,9 +287,10 @@ public abstract class Gamemode {
 			}
 		}
 	}
-	
+
 	public void onPlayerInteractBlock(PlayerInteractEvent event, ArenaPlayer arenaPlayer) {
-		return;
+		if (arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING)
+			event.setCancelled(true);
 	}
 
 	// Arena made events.
@@ -295,19 +307,19 @@ public abstract class Gamemode {
 				event.setTeam(teamToJoin);
 			}
 			updateTabs();
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				@Override
 				public void run() {
 					updateTabs();
 				}
-			},1);
+			}, 1);
 			return;
 		}
 		event.setCancelled(true);
 	}
 
 	public void onPlayerLeaveArena(final EventLeaveArena event) {
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
 			public void run() {
 				Player p = Bukkit.getPlayerExact(event.getArenaPlayer().getPlayerName());
@@ -316,7 +328,7 @@ public abstract class Gamemode {
 				}
 				updateTabs();
 			}
-		},1);
+		}, 1);
 	}
 
 	public void onPlayerArenaRespawn(final EventRespawn event) {
@@ -334,20 +346,21 @@ public abstract class Gamemode {
 	public AbstractCommand executeCommand(String command) {
 		return null;
 	}
-	
+
 	public abstract void sortLists();
-	
+
 	public abstract void updateTabs();
-	
+
 	protected abstract void createComp();
-	
+
 	public void clearTab(Player p) {
-		if (!tabController.hasTabAPI()) return;
+		if (!tabController.hasTabAPI())
+			return;
 		try {
 			TabAPI.clearTab(p);
 			TabAPI.setPriority(plugin, p, -2);
 			TabAPI.updatePlayer(p);
-		} catch (NullPointerException ex) {}
+		} catch (NullPointerException ex) {
+		}
 	}
-	
 }

@@ -23,13 +23,10 @@ public class ArenaChat {
 
 	public void onPlayerChat(Player player, ArenaPlayer arenaPlayer, String message, ChatChannel chatChannel) {
 		ArenaTeam team = arenaPlayer.getTeam();
-		String teamName;
 		ChatColor teamColor;
 		if (team != null) {
-			teamName = team.getTeamName();
 			teamColor = team.getTeamColor();
 		} else {
-			teamName = "Spectator";
 			teamColor = ChatColor.GRAY;
 		}
 

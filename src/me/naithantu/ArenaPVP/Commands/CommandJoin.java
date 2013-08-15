@@ -83,9 +83,7 @@ public class CommandJoin extends AbstractCommand {
 	}
 	
 	public void joinArena(Arena arena, Player player, ArenaTeam team){
-		if(arena.joinGame(player, team)){
-			this.msg(sender, "You have joined arena " + arena.getArenaName() + "!");
-		} else {
+		if(!arena.joinGame(player, team)){
 			this.msg(sender, "You were unable to join arena " + arena.getArenaName() + ", try a different arena!");
 		}
 	}
