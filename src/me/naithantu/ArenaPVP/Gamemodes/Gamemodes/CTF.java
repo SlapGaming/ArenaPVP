@@ -46,6 +46,11 @@ public class CTF extends Gamemode {
 	}
 
 	@Override
+	public boolean isTeamGame() {
+		return true;
+	}
+	
+	@Override
 	public void onPlayerMove(PlayerMoveEvent event, ArenaPlayer arenaPlayer) {
 		super.onPlayerMove(event, arenaPlayer);
 		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING) {

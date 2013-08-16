@@ -19,6 +19,11 @@ public class Spleef extends Gamemode {
 	public String getName() {
 		return "Spleef";
 	}
+	
+	@Override
+	public boolean isTeamGame() {
+		return false;
+	}
 
 	@Override
 	public void updateTabs() {

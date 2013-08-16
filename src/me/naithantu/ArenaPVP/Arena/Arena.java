@@ -3,7 +3,11 @@ package me.naithantu.ArenaPVP.Arena;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
@@ -29,8 +33,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitScheduler;
-
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
@@ -181,7 +183,7 @@ public class Arena {
 		gamemode.updateTabs();
 	}
 
-	private void changeToSpectate(Player player, ArenaPlayer arenaPlayer) {
+	public void changeToSpectate(Player player, ArenaPlayer arenaPlayer) {
 		player.setAllowFlight(true);
 		player.setFlying(true);
 		arenaSpectators.addSpectator(arenaPlayer, player);
@@ -261,9 +263,12 @@ public class Arena {
 				leaveGame(arenaPlayer);
 			}
 		}
-
-		arenaSpectators.removeAllSpectators();
-
+		
+		Set<Entry<Player, ArenaPlayer>> spectators = new HashSet<>(arenaSpectators.getSpectators().entrySet());
+		for (Entry<Player, ArenaPlayer> entry : spectators) {
+			leaveSpectate(entry.getKey(), entry.getValue());
+		}
+		
 		File schematic = new File(plugin.getDataFolder() + File.separator + "maps", arenaName + ".schematic");
 		if (schematic.exists()) {
 			EditSession editSession = new EditSession(new BukkitWorld(Bukkit.getWorld(arenaConfig.getString("schematicworld"))), 999999999);

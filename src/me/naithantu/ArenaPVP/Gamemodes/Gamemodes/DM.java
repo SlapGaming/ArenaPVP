@@ -41,11 +41,16 @@ public class DM extends Gamemode {
 	}
 	
 	@Override
+	public boolean isTeamGame() {
+		return false;
+	}
+	
+	@Override
 	public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer){
 		super.onPlayerDeath(event, arenaPlayer);
 		Player killer = event.getEntity().getKiller();
 		if(killer != null){
-			ArenaPlayer arenaKiller = arenaManager.getPlayerByName(killer.getKiller().getName());
+			ArenaPlayer arenaKiller = arenaManager.getPlayerByName(killer.getName());
 			if (arenaKiller.getPlayerScore().getKills() >= settings.getScoreLimit()) {
 				arena.stopGame(arenaKiller);
 			} else {
@@ -106,6 +111,10 @@ public class DM extends Gamemode {
 				setTabPlayer(p, gameStatus, arenaName, nrOfPlayers, nrOfSpectators, false, player.getPlayerScore().getKills() + " Kills", "Rank " + rank, playerTab);
 			}
 			rank++;
+		}
+		
+		for (Player p : arena.getArenaSpectators().getSpectators().keySet()) {
+			setTabPlayer(p, gameStatus, arenaName, nrOfPlayers, nrOfSpectators, true, null, null, playerTab);
 		}
 		TabAPI.updateAll();
 	}

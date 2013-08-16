@@ -39,6 +39,11 @@ public class LTS extends Gamemode {
 	public String getName() {
 		return "LTS";
 	}
+	
+	@Override
+	public boolean isTeamGame() {
+		return true;
+	}
 
 	@Override
 	public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer) {

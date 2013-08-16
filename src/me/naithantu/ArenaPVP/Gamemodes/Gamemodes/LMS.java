@@ -27,6 +27,16 @@ public class LMS extends Gamemode {
 		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
 		settings.setFriendlyFire(true);
 	}
+	
+	@Override
+	public String getName() {
+		return "LMS";
+	}
+	
+	@Override
+	public boolean isTeamGame() {
+		return false;
+	}
 
 	@Override
 	public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer) {
@@ -92,10 +102,5 @@ public class LMS extends Gamemode {
 				return 0;
 			}
 		};
-	}
-
-	@Override
-	public String getName() {
-		return "LMS";
 	}
 }

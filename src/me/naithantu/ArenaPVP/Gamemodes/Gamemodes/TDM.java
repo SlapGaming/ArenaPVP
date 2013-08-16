@@ -41,6 +41,11 @@ public class TDM extends Gamemode {
 	}
 	
 	@Override
+	public boolean isTeamGame() {
+		return true;
+	}
+	
+	@Override
 	public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer){
 		super.onPlayerDeath(event, arenaPlayer);
 		Player killer = event.getEntity().getKiller();

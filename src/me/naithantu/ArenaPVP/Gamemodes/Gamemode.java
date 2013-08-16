@@ -79,6 +79,8 @@ public abstract class Gamemode {
 	}
 
 	public abstract String getName();
+	
+	public abstract boolean isTeamGame();
 
 	public void sendScore(CommandSender sender) {
 		Util.msg(sender, "Score:");
@@ -239,7 +241,7 @@ public abstract class Gamemode {
 					arenaPlayer.getTeam().joinTeam(player, arenaManager, arena, arenaPlayer);
 					updateTabs();
 				}
-			}, 1);
+			}, 20);
 		}
 	}
 
