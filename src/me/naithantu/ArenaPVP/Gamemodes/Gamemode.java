@@ -61,8 +61,9 @@ public abstract class Gamemode {
 	protected YamlStorage arenaStorage;
 	protected Configuration arenaConfig;
 	protected TabController tabController;
+	protected Gamemodes gm;
 
-	public Gamemode(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
+	public Gamemode(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController, Gamemodes gm) {
 		this.plugin = plugin;
 		this.arenaManager = arenaManager;
 		this.arena = arena;
@@ -71,6 +72,7 @@ public abstract class Gamemode {
 		this.arenaUtil = arenaUtil;
 		this.arenaStorage = arenaStorage;
 		this.tabController = tabController;
+		this.gm = gm;
 		arenaSpectators = arena.getArenaSpectators();
 		arenaChat = arena.getArenaChat();
 		arenaArea = arena.getArenaArea();
@@ -81,6 +83,10 @@ public abstract class Gamemode {
 	public abstract String getName();
 	
 	public abstract boolean isTeamGame();
+	
+	public Gamemodes getGamemode(){
+		return gm;
+	}
 
 	public void sendScore(CommandSender sender) {
 		Util.msg(sender, "Score:");
@@ -354,6 +360,10 @@ public abstract class Gamemode {
 	public abstract void updateTabs();
 
 	protected abstract void createComp();
+	
+	public static boolean isCorrectYML(String arena){
+		return false;
+	}
 
 	public void clearTab(Player p) {
 		if (!tabController.hasTabAPI())
@@ -364,5 +374,9 @@ public abstract class Gamemode {
 			TabAPI.updatePlayer(p);
 		} catch (NullPointerException ex) {
 		}
+	}
+	
+	public enum Gamemodes {
+		SPLEEF, DM, TDM, CTF, LMS, LTS
 	}
 }

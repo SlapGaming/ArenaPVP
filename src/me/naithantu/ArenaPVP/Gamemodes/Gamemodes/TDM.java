@@ -22,7 +22,6 @@ import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
-import me.naithantu.ArenaPVP.TabController.Gamemodes;
 import me.naithantu.ArenaPVP.Util.Util;
 
 public class TDM extends Gamemode {
@@ -32,7 +31,7 @@ public class TDM extends Gamemode {
 	
 	
 	public TDM(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
-		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
+		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.TDM);
 	}
 	
 	@Override

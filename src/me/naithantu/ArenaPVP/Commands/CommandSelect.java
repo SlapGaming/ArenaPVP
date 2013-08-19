@@ -1,10 +1,9 @@
 package me.naithantu.ArenaPVP.Commands;
 
-import java.io.File;
-
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaValidator;
 
 import org.bukkit.command.CommandSender;
 
@@ -28,10 +27,11 @@ public class CommandSelect extends AbstractCommand {
 		
 		String arenaName = args[0].toLowerCase();
 		
+		ArenaValidator validator = new ArenaValidator(plugin, arenaName);
 		
-		File file = new File(plugin.getDataFolder() + File.separator + "maps", arenaName + ".yml");
-		if(!file.exists()){
-			this.msg(sender, "That map does not exist!");
+		if (!validator.checkOnSelect()) {
+			badMsg(sender, "One more more errors found. Please enter setup modus to fix. Errors:");
+			sender.sendMessage(validator.getErrors());
 			return true;
 		}
 		

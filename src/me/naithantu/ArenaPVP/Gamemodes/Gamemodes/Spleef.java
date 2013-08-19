@@ -13,7 +13,7 @@ import me.naithantu.ArenaPVP.Storage.YamlStorage;
 public class Spleef extends Gamemode {
 
 	public Spleef(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
-		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
+		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.SPLEEF);
 	}
 
 	public String getName() {

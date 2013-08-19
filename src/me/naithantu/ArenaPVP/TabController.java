@@ -1,5 +1,7 @@
 package me.naithantu.ArenaPVP;
 
+import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.mcsg.double0negative.tabapi.TabAPI;
@@ -26,11 +28,7 @@ public class TabController {
 		return tabApiFound;
 	}
 	
-	public enum Gamemodes {
-		DUEL, SPLEEF, DM, TDM, CTF, LMS, LTS
-	}
-	
-	public int setTopTab(Player p, Gamemodes gm) {
+	public int setTopTab(Player p, Gamemode.Gamemodes gm) {
 		int returnInt = 5;
 		
 		TabAPI.clearTab(p);
@@ -56,14 +54,6 @@ public class TabController {
 		case DM: 
 			TabAPI.setTabString(plugin, p, 0, 0, ChatColor.DARK_AQUA + "   Deathmatch");	
 			TabAPI.setTabString(plugin, p, 0, 2, ChatColor.DARK_AQUA + "   Deathmatch ");
-			TabAPI.setTabString(plugin, p, 3, 0, ChatColor.GRAY + "Arena    ->");
-			TabAPI.setTabString(plugin, p, 5, 0, ChatColor.GRAY + "Score    ->");
-			TabAPI.setTabString(plugin, p, 7, 1, ChatColor.GOLD + "-- Players --");
-			returnInt = 8;
-			break;
-		case DUEL: 
-			TabAPI.setTabString(plugin, p, 0, 0, ChatColor.DARK_AQUA + "        Duel");	
-			TabAPI.setTabString(plugin, p, 0, 2, ChatColor.DARK_AQUA + "        Duel ");
 			TabAPI.setTabString(plugin, p, 3, 0, ChatColor.GRAY + "Arena    ->");
 			TabAPI.setTabString(plugin, p, 5, 0, ChatColor.GRAY + "Score    ->");
 			TabAPI.setTabString(plugin, p, 7, 1, ChatColor.GOLD + "-- Players --");
