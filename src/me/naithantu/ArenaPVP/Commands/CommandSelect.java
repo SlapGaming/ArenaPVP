@@ -27,13 +27,13 @@ public class CommandSelect extends AbstractCommand {
 		
 		String arenaName = args[0].toLowerCase();
 		
-		ArenaValidator validator = new ArenaValidator(plugin, arenaName);
+		/*ArenaValidator validator = new ArenaValidator(plugin, arenaName);
 		
 		if (!validator.checkOnSelect()) {
 			badMsg(sender, "One more more errors found. Please enter setup modus to fix. Errors:");
 			sender.sendMessage(validator.getErrors());
 			return true;
-		}
+		}*/
 		
 		if(arenaManager.getArenas().containsKey(arenaName)){
 			this.msg(sender, "That arena is already loaded! You can unload it with /pvp stop [arenaname].");
