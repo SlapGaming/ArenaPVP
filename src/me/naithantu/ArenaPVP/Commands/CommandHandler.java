@@ -1,5 +1,6 @@
 package me.naithantu.ArenaPVP.Commands;
 
+import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -74,7 +75,9 @@ public class CommandHandler {
 			if (!handled) {
 				commandObj.badMsg(sender, cmd.getUsage());
 			}
-		}
+		} else {
+            Util.msg(sender, "That command does not exist, use /pvp for help!");
+        }
 		return true;
 	}
 }

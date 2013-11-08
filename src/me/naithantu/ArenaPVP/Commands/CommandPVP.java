@@ -17,7 +17,8 @@ public class CommandPVP extends AbstractCommand {
 			this.noPermission(sender);
 			return true;
 		}
-		
+
+        this.msg(sender, "Unsupported command, this will be added once the plugin is no longer in such an early alpha/beta state.");
 		//TODO Create main pvp help command.
 		return true;
 	}
