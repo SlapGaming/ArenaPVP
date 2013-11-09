@@ -73,13 +73,6 @@ public class TabController {
 			TabAPI.setTabString(plugin, p, 6, 1, ChatColor.GOLD + "-- Teams --");
 			returnInt = 7;
 			break;
-		case SPLEEF: 
-			TabAPI.setTabString(plugin, p, 0, 0, ChatColor.DARK_AQUA + "      Spleef!");		
-			TabAPI.setTabString(plugin, p, 0, 2, ChatColor.DARK_AQUA + "      Spleef! ");
-			TabAPI.setTabString(plugin, p, 3, 0, ChatColor.GRAY + "Type     ->");
-			TabAPI.setTabString(plugin, p, 6, 1, ChatColor.GOLD + "-- Players --");
-			returnInt = 7;
-			break;
 		case TDM: 
 			TabAPI.setTabString(plugin, p, 0, 0, ChatColor.DARK_AQUA + "         TDM");	
 			TabAPI.setTabString(plugin, p, 0, 2, ChatColor.DARK_AQUA + "         TDM ");
