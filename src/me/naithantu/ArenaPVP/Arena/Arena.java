@@ -139,16 +139,16 @@ public class Arena {
 	}
 
 	public void initializeArena() {
+        // Create teams with proper names.
+        for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
+            ArenaTeam team = new ArenaTeam(plugin, arenaConfig, Integer.parseInt(teamNumber));
+            teams.add(team);
+        }
+
 		String gamemodeName = arenaConfig.getString("gamemode");
 
 		// Create gamemode.
 		gamemode = ArenaGamemode.getGamemode(plugin, arenaManager, this, settings, arenaSpawns, arenaUtil, arenaStorage, gamemodeName, tabController);
-
-		// Create teams with proper names.
-		for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
-			ArenaTeam team = new ArenaTeam(plugin, arenaConfig, Integer.parseInt(teamNumber));
-			teams.add(team);
-		}
 	}
 
 	public void joinSpectate(Player player) {

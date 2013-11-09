@@ -1,9 +1,6 @@
 package me.naithantu.ArenaPVP.Gamemodes.Gamemodes;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
@@ -33,10 +30,18 @@ import me.naithantu.ArenaPVP.Util.Util;
 public class CTF extends Gamemode {
 
 	HashMap<String, ArenaTeam> flags = new HashMap<String, ArenaTeam>();
+    HashMap<ArenaTeam, Location> flagLocations = new HashMap<ArenaTeam, Location>();
+
+    //Contains names of players who got a help message, will be removed when they move away from the flag (to prevent spam)
+    HashSet<String> gotInfoMessage = new HashSet<String>();
 	private Comparator<ArenaTeam> comp;
 	
 	public CTF(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
 		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.CTF);
+        for(ArenaTeam arenaTeam : arena.getTeams()){
+            System.out.println("Getting location: " + arenaStorage.getConfig().getString("gamemodes.ctf."  + arenaTeam.getTeamNumber()));
+            flagLocations.put(arenaTeam, Util.getLocationFromString(arenaStorage.getConfig().getString("gamemodes.ctf."  + arenaTeam.getTeamNumber())));
+        }
 	}
 
 	@Override
@@ -52,49 +57,70 @@ public class CTF extends Gamemode {
 	@Override
 	public void onPlayerMove(PlayerMoveEvent event, ArenaPlayer arenaPlayer) {
 		super.onPlayerMove(event, arenaPlayer);
-		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING) {
-			Player player = event.getPlayer();
-			String playerName = player.getName();
-			//If player has flag, check if he can capture it.
-			if (flags.containsKey(playerName)) {
-				ArenaTeam team = arenaPlayer.getTeam();
-				Location playerLocation = player.getLocation();
-				Location flagLocation = Util.getLocationFromString(arenaStorage.getConfig().getString("gamemodes.ctf." + team.getTeamNumber()));
-				if (playerLocation.distanceSquared(flagLocation) < 1) {
-					if(getFlagCarrier(team) == null){
-						ArenaTeam stolenTeam = flags.get(playerName);
-						flags.remove(playerName);
-						arenaUtil.sendMessageAll(team.getTeamColor() + playerName + ChatColor.WHITE + " has captured the " + stolenTeam.getTeamColor() + stolenTeam.getTeamName() + ChatColor.WHITE + " flag!");
-						team.addScore();
-						if(team.getScore() >= settings.getScoreLimit()){
-							arena.stopGame(team);
-						} else {
-							if (tabController.hasTabAPI()) {
-								updateTabs();
-							} else {
-								sortLists();
-								sendScoreAll();
-							}
-						}
-					} else {
-						Util.msg(player, "You can not capture a flag when the enemy has your flag!");
-					}
-				}
-			} else {
-				for (ArenaTeam arenaTeam : arena.getTeams()) {
-					// Take enemy flag (can't take own flag & flag can't already be taken).
-					if (!arenaPlayer.getTeam().equals(arenaTeam) && getFlagCarrier(arenaTeam) == null) {
-						Location playerLocation = player.getLocation();
-						Location flagLocation = Util.getLocationFromString(arenaStorage.getConfig().getString("gamemodes.ctf." + arenaTeam.getTeamNumber()));
-						if (playerLocation.distanceSquared(flagLocation) < 1) {
-							flags.put(player.getName(), arenaTeam);
-							arenaUtil.sendMessageAll(arenaPlayer.getTeam().getTeamColor() + playerName + ChatColor.WHITE + " has taken the " + arenaTeam.getTeamColor() + arenaTeam.getTeamName() + ChatColor.WHITE + " flag!");
-							updateTabs();
-						}
-					}
-				}
-			}
-		}
+        Location from = event.getFrom();
+        Location to = event.getTo();
+
+        boolean nearFlag = false;
+
+        //Check if player actually moved.
+        if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
+            if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING) {
+                Player player = event.getPlayer();
+                String playerName = player.getName();
+                //If player has flag, check if he can capture it.
+                if (flags.containsKey(playerName)) {
+                    ArenaTeam team = arenaPlayer.getTeam();
+                    if (to.distanceSquared(flagLocations.get(team)) < 1) {
+                        nearFlag = true;
+                        if(getFlagCarrier(team) == null){
+                            ArenaTeam stolenTeam = flags.get(playerName);
+                            flags.remove(playerName);
+                            arenaUtil.sendMessageAll(team.getTeamColor() + playerName + ChatColor.WHITE + " has captured the " + stolenTeam.getTeamColor() + stolenTeam.getTeamName() + ChatColor.WHITE + " flag!");
+                            team.addScore();
+                            if(team.getScore() >= settings.getScoreLimit()){
+                                arena.stopGame(team);
+                            } else {
+                                if (tabController.hasTabAPI()) {
+                                    updateTabs();
+                                } else {
+                                    sortLists();
+                                    sendScoreAll();
+                                }
+                            }
+                        } else {
+                            if(!gotInfoMessage.contains(player.getName())){
+                                Util.msg(player, "You can not capture a flag when the enemy has your flag!");
+                                gotInfoMessage.add(player.getName());
+                            }
+                        }
+                    }
+                } else {
+                    for (ArenaTeam arenaTeam : arena.getTeams()) {
+                        // Take enemy flag (can't take own flag & flag can't already be taken).
+                        if (!arenaPlayer.getTeam().equals(arenaTeam)) {
+                            if (to.distanceSquared(flagLocations.get(arenaTeam)) < 1) {
+                                nearFlag = true;
+                                //Check if flag is already taken.
+                                if(getFlagCarrier(arenaTeam) == null){
+                                    flags.put(player.getName(), arenaTeam);
+                                    arenaUtil.sendMessageAll(arenaPlayer.getTeam().getTeamColor() + playerName + ChatColor.WHITE + " has taken the " + arenaTeam.getTeamColor() + arenaTeam.getTeamName() + ChatColor.WHITE + " flag!");
+                                    updateTabs();
+                                } else {
+                                    if(!gotInfoMessage.contains(player.getName())){
+                                        Util.msg(player, "Someone in your team already has the enemy flag!");
+                                        gotInfoMessage.add(player.getName());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if(!nearFlag && gotInfoMessage.contains(player.getName())){
+                    gotInfoMessage.remove(player.getName());
+                }
+            }
+        }
 	}
 
 	@Override
