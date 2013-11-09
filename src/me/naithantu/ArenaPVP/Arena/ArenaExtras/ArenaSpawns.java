@@ -39,7 +39,7 @@ public class ArenaSpawns {
 	public Location getRespawnLocation(Player player, ArenaPlayer arenaPlayer, SpawnType spawnType) {
 		String teamID;
 		if (spawnType == SpawnType.PLAYER) {
-			teamID = Integer.toString(arena.getTeams().indexOf(arenaPlayer.getTeam()));
+			teamID = Integer.toString(arenaPlayer.getTeam().getTeamNumber());
 		} else if (spawnType == SpawnType.SPECTATOR) {
 			teamID = "spectator";
 		} else {
@@ -62,33 +62,6 @@ public class ArenaSpawns {
 		}
 		return null;
 	}
-
-	/*public void addRespawnTimer(final Player player, final ArenaPlayer arenaPlayer, final SpawnType spawnType) {
-		String playerName = arenaPlayer.getPlayerName();
-		if (respawnTimers.containsKey(playerName)) {
-			scheduler.cancelTask(respawnTimers.get(playerName));
-		}
-
-		int taskID = scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				respawnTimers.remove(arenaPlayer);
-				arenaPlayer.setPlayerState(ArenaPlayerState.PLAYING);
-				Location location;
-				if ((location = getRespawnLocation(player, arenaPlayer, spawnType)) != null) {
-					Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(location);
-				}
-			}
-		}, settings.getRespawnTime() * 20);
-		respawnTimers.put(playerName, taskID);
-		arenaPlayer.setPlayerState(ArenaPlayerState.RESPAWNING);
-	}*/
-	
-	/*public void cancelRespawns(){
-		for(int id: respawnTimers.values()){
-			scheduler.cancelTask(id);
-		}
-	}*/
 
 	public enum SpawnType {
 		SPECTATOR, PLAYER
