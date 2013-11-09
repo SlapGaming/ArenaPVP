@@ -5,6 +5,7 @@ import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
+import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -83,6 +84,11 @@ public class CommandJoin extends AbstractCommand {
 	}
 	
 	public void joinArena(Arena arena, Player player, ArenaTeam team){
+        if(player.isInsideVehicle()){
+            Util.msg(sender, "You can't join while inside a vehicle!");
+            return;
+        }
+
 		if(!arena.joinGame(player, team)){
 			this.msg(sender, "You were unable to join arena " + arena.getArenaName() + ", try a different arena!");
 		}
