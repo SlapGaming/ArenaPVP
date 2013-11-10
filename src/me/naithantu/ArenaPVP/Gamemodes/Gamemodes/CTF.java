@@ -6,10 +6,12 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
 import me.naithantu.ArenaPVP.ArenaManager;
@@ -29,8 +31,9 @@ import me.naithantu.ArenaPVP.Util.Util;
 
 public class CTF extends Gamemode {
 
-	HashMap<String, ArenaTeam> flags = new HashMap<String, ArenaTeam>();
-    HashMap<ArenaTeam, Location> flagLocations = new HashMap<ArenaTeam, Location>();
+	private HashMap<String, ArenaTeam> flags = new HashMap<String, ArenaTeam>();
+    private HashMap<ArenaTeam, ItemStack> flagBlocks = new HashMap<ArenaTeam, ItemStack>();
+    private HashMap<ArenaTeam, Location> flagLocations = new HashMap<ArenaTeam, Location>();
 
     //Contains names of players who got a help message, will be removed when they move away from the flag (to prevent spam)
     HashSet<String> gotInfoMessage = new HashSet<String>();
@@ -39,8 +42,11 @@ public class CTF extends Gamemode {
 	public CTF(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
 		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.CTF);
         for(ArenaTeam arenaTeam : arena.getTeams()){
-            System.out.println("Getting location: " + arenaStorage.getConfig().getString("gamemodes.ctf."  + arenaTeam.getTeamNumber()));
-            flagLocations.put(arenaTeam, Util.getLocationFromString(arenaStorage.getConfig().getString("gamemodes.ctf."  + arenaTeam.getTeamNumber())));
+            flagLocations.put(arenaTeam, Util.getLocationFromString(arenaStorage.getConfig().getString("gamemodes.ctf.flags."  + arenaTeam.getTeamNumber())));
+            String block = arenaStorage.getConfig().getString("gamemodes.ctf.blocks." + arenaTeam.getTeamNumber());
+            String[] blockSplit = block.split(":");
+            ItemStack flagBlock = new ItemStack(Material.getMaterial(Integer.parseInt(blockSplit[0])), 1, Short.parseShort(blockSplit[1]));
+            flagBlocks.put(arenaTeam, flagBlock);
         }
 	}
 
@@ -74,8 +80,9 @@ public class CTF extends Gamemode {
                         nearFlag = true;
                         if(getFlagCarrier(team) == null){
                             ArenaTeam stolenTeam = flags.get(playerName);
-                            flags.remove(playerName);
                             arenaUtil.sendMessageAll(team.getTeamColor() + playerName + ChatColor.WHITE + " has captured the " + stolenTeam.getTeamColor() + stolenTeam.getTeamName() + ChatColor.WHITE + " flag!");
+                            flags.remove(playerName);
+                            player.getInventory().setArmorContents(arenaPlayer.getTeam().getArmor());
                             team.addScore();
                             if(team.getScore() >= settings.getScoreLimit()){
                                 arena.stopGame(team);
@@ -103,6 +110,7 @@ public class CTF extends Gamemode {
                                 //Check if flag is already taken.
                                 if(getFlagCarrier(arenaTeam) == null){
                                     flags.put(player.getName(), arenaTeam);
+                                    player.getInventory().setHelmet(flagBlocks.get(arenaTeam));
                                     arenaUtil.sendMessageAll(arenaPlayer.getTeam().getTeamColor() + playerName + ChatColor.WHITE + " has taken the " + arenaTeam.getTeamColor() + arenaTeam.getTeamName() + ChatColor.WHITE + " flag!");
                                     updateTabs();
                                 } else {
@@ -131,6 +139,7 @@ public class CTF extends Gamemode {
             ArenaTeam stolenTeam = flags.get(arenaPlayer.getPlayerName());
             arenaUtil.sendMessageAll("The " + stolenTeam.getTeamColor() + stolenTeam.getTeamName() + ChatColor.WHITE + " flag has been returned!");
             flags.remove(playerName);
+            event.getEntity().getInventory().setArmorContents(arenaPlayer.getTeam().getArmor());
 			updateTabs();
 		}
 	}
