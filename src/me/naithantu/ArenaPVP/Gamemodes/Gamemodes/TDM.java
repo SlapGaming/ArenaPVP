@@ -89,12 +89,7 @@ public class TDM extends Gamemode {
 		Collections.sort(players, playerComp);
 		String nrOfPlayers = players.size() + " (" + teams.size() + " teams)";
 		
-		String[] playerTab;
-		if (players.size() > 4) {
-			playerTab = new String[5 * 3];
-		} else {
-			playerTab = new String[players.size() * 3];
-		}
+		String[] playerTab = new String[players.size() * 3];
 		
 		x = 0;
 		for (ArenaPlayer player : players) {
