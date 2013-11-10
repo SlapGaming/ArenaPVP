@@ -128,8 +128,9 @@ public class CTF extends Gamemode {
 		super.onPlayerDeath(event, arenaPlayer);
 		String playerName = event.getEntity().getName();
 		if (flags.containsKey(playerName)) {
-			flags.remove(playerName);
-			arenaUtil.sendMessageAll("The " + arenaPlayer.getTeam().getTeamName() + " flag has been returned!");
+            ArenaTeam stolenTeam = flags.get(arenaPlayer.getPlayerName());
+            arenaUtil.sendMessageAll("The " + stolenTeam.getTeamColor() + stolenTeam.getTeamName() + ChatColor.WHITE + " flag has been returned!");
+            flags.remove(playerName);
 			updateTabs();
 		}
 	}
@@ -139,9 +140,10 @@ public class CTF extends Gamemode {
 		super.onPlayerQuit(event, arenaPlayer);
 		String playerName = event.getPlayer().getName();
 		if (flags.containsKey(playerName)) {
-			flags.remove(playerName);
-			arenaUtil.sendMessageAll("The " + arenaPlayer.getTeam().getTeamName() + " flag has been returned!");
-			updateTabs();
+            ArenaTeam stolenTeam = flags.get(arenaPlayer.getPlayerName());
+            arenaUtil.sendMessageAll("The " + stolenTeam.getTeamColor() + stolenTeam.getTeamName() + ChatColor.WHITE + " flag has been returned!");
+            flags.remove(playerName);
+            updateTabs();
 		}
 	}
 
