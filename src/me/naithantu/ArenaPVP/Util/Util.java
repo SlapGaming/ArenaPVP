@@ -65,7 +65,7 @@ public class Util {
 		player.setHealth(playerConfig.getDouble("health"));
 		player.setFoodLevel(playerConfig.getInt("hunger"));
 		player.setGameMode(GameMode.valueOf(playerConfig.getString("gamemode")));
-		if (playerConfig.getBoolean("flying")) {
+		if (playerConfig.getBoolean("flying") || GameMode.valueOf(playerConfig.getString("gamemode")) == GameMode.CREATIVE) {
 			player.setAllowFlight(true);
 			player.setFlying(true);
 		} else {
