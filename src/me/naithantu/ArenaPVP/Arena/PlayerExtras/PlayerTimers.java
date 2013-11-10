@@ -58,10 +58,9 @@ public class PlayerTimers {
 	}
 
 	public void killOutOfBounds(Player player) {
-		player.damage(20);
+		player.setHealth(0);
 		outOfBoundsTimer.cancel();
 		outOfBounds = false;
-		setOutOfBounds(player, false);
 		Util.msg(player, "You left the combat area, you have been killed!");
 	}
 

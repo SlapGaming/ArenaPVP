@@ -193,16 +193,20 @@ public abstract class Gamemode {
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event, ArenaPlayer arenaPlayer) {
-		//Check if player actually moved.
-		if (event.getTo().getX() != event.getFrom().getX() || event.getTo().getZ() != event.getFrom().getZ()) {
-			if (arena.getArenaState() == ArenaState.STARTING) {
-				event.setCancelled(true);
-				return;
-			}
-			if (settings.isOutOfBoundsArea()) {
-				arenaArea.handleMove(arenaPlayer, event.getPlayer(), event.getTo());
-			}
-		}
+        if(arena.getArenaState() == ArenaState.STARTING){
+            //Check if player moved x or z (jumping/falling is fine).
+            if (event.getTo().getX() != event.getFrom().getX() || event.getTo().getZ() != event.getFrom().getZ()) {
+                event.setCancelled(true);
+                return;
+            }
+        } else {
+            if (settings.isOutOfBoundsArea() && !event.getPlayer().isDead()) {
+                //Check if player actually moved to prevent unnecessary checking.
+                if (event.getTo().getX() != event.getFrom().getX() || event.getTo().getZ() != event.getFrom().getZ() || event.getTo().getY() != event.getFrom().getY()) {
+                    arenaArea.handleMove(arenaPlayer, event.getPlayer(), event.getTo());
+                }
+            }
+        }
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event, ArenaPlayer arenaPlayer) {
