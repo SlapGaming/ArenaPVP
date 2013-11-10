@@ -75,7 +75,7 @@ public class CommandSaveInventory extends AbstractCommand {
 	public void saveInventory(Arena arena, Player player, ArenaTeam team){
 		YamlStorage arenaStorage = arena.getArenaStorage();
 		Configuration arenaConfig = arenaStorage.getConfig();
-		int teamNumber = arena.getTeams().indexOf(team);
+		int teamNumber = team.getTeamNumber();
 		arenaConfig.set("classes." + teamNumber + ".inventory", player.getInventory().getContents());
 		arenaConfig.set("classes." + teamNumber + ".armor", player.getInventory().getArmorContents());
 		arenaStorage.saveConfig();
