@@ -221,7 +221,7 @@ public abstract class Gamemode {
 			player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
 			playerConfig.set("location", null);
 			arenaPlayer.getTeam().getPlayers().remove(arenaPlayer);
-			arena.getOfflinePlayers().add(player.getName());
+			arena.getOfflinePlayers().add(arenaPlayer);
 		} else {
 			//Player was spectator, leave as spectator.
 			arena.leaveSpectate(player, arenaPlayer);

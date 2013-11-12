@@ -51,7 +51,7 @@ public class Arena {
 	ArenaSpectators arenaSpectators;
 
 	List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
-	List<String> offlinePlayers = new ArrayList<String>();
+	List<ArenaPlayer> offlinePlayers = new ArrayList<ArenaPlayer>();
 	String nickName;
 
 	String arenaName;
@@ -126,7 +126,7 @@ public class Arena {
 		return gamemode;
 	}
 
-	public List<String> getOfflinePlayers() {
+	public List<ArenaPlayer> getOfflinePlayers() {
 		return offlinePlayers;
 	}
 
@@ -256,18 +256,26 @@ public class Arena {
 	}
 
 	public void stopGame() {
+        //Let online players leave the game.
 		for (ArenaTeam team : teams) {
 			List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
 			for (ArenaPlayer arenaPlayer : players) {
 				leaveGame(arenaPlayer);
 			}
 		}
-		
+
+        //Remove offline players from arenaManager (they have already been teleported away & got inventory back, so no need to handle that)
+        for(ArenaPlayer arenaPlayer: offlinePlayers){
+            arenaManager.removePlayer(arenaPlayer);
+        }
+
+        //Let spectators leave the game.
 		Set<Entry<Player, ArenaPlayer>> spectators = new HashSet<>(arenaSpectators.getSpectators().entrySet());
 		for (Entry<Player, ArenaPlayer> entry : spectators) {
 			leaveSpectate(entry.getKey(), entry.getValue());
 		}
-		
+
+        //Paste schematic on arena.
 		File schematic = new File(plugin.getDataFolder() + File.separator + "maps", arenaName + ".schematic");
 		if (schematic.exists()) {
 			EditSession editSession = new EditSession(new BukkitWorld(Bukkit.getWorld(arenaConfig.getString("schematicworld"))), 999999999);
@@ -288,6 +296,8 @@ public class Arena {
 				e.printStackTrace();
 			}
 		}
+
+        //Remove arena from arenamanager.
 		arenaManager.getArenas().remove(arenaName);
 	}
 
