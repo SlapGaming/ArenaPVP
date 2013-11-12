@@ -28,7 +28,19 @@ public class CommandMaps extends AbstractCommand {
 		
 		File mapsFolder = new File(plugin.getDataFolder() + File.separator + "maps");
 		for (File map : mapsFolder.listFiles()) {
-			mapNames.add(map.getName().replaceFirst(".yml", ""));
+            String extension = "";
+
+            int i = map.getName().lastIndexOf('.');
+            if (i > 0) {
+                extension = map.getName().substring(i+1);
+            }
+
+            System.out.println(map.getName() + " : " + extension);
+
+			if(extension.equalsIgnoreCase("yml")){
+                mapNames.add(map.getName().replaceFirst(".yml", ""));
+            }
+
 		}
 		
 		this.msg(sender, "Available maps: " + Joiner.on(", ").join(mapNames));
