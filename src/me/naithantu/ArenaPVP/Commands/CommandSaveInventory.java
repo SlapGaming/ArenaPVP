@@ -65,6 +65,7 @@ public class CommandSaveInventory extends AbstractCommand {
 			
 			if(arena.getTeam(args[0]) != null){
 				saveInventory(arena, player, arena.getTeam(args[0]));
+                this.msg(sender, "Saved inventory & armor for team " + arena.getTeam(args[0]).getTeamName() + ".");
 			} else {
 				this.msg(sender, "No team with given name was found, type /pvp teams to see available teams.");
 			}
