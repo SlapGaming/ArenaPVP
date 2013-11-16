@@ -25,6 +25,7 @@ import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Entity;
@@ -355,7 +356,7 @@ public abstract class Gamemode {
 		}
 	}
 
-	public AbstractCommand executeCommand(String command) {
+	public AbstractCommand handleGamemodeCommand(CommandSender sender, String command, String[] cmdArgs) {
 		return null;
 	}
 

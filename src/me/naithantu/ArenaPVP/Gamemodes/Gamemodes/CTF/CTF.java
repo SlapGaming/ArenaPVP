@@ -1,12 +1,16 @@
-package me.naithantu.ArenaPVP.Gamemodes.Gamemodes;
+package me.naithantu.ArenaPVP.Gamemodes.Gamemodes.CTF;
 
 import java.util.*;
 import java.util.Map.Entry;
 
+import me.naithantu.ArenaPVP.Commands.AbstractCommand;
+import me.naithantu.ArenaPVP.Commands.CommandArenas;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -43,9 +47,7 @@ public class CTF extends Gamemode {
 		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.CTF);
         for(ArenaTeam arenaTeam : arena.getTeams()){
             flagLocations.put(arenaTeam, Util.getLocationFromString(arenaStorage.getConfig().getString("gamemodes.ctf.flags."  + arenaTeam.getTeamNumber())));
-            String block = arenaStorage.getConfig().getString("gamemodes.ctf.blocks." + arenaTeam.getTeamNumber());
-            String[] blockSplit = block.split(":");
-            ItemStack flagBlock = new ItemStack(Material.getMaterial(Integer.parseInt(blockSplit[0])), 1, Short.parseShort(blockSplit[1]));
+            ItemStack flagBlock = (ItemStack) arenaStorage.getConfig().get("gamemodes.ctf.blocks." + arenaTeam.getTeamNumber());
             flagBlocks.put(arenaTeam, flagBlock);
         }
 	}
@@ -63,6 +65,11 @@ public class CTF extends Gamemode {
 	@Override
 	public void onPlayerMove(PlayerMoveEvent event, ArenaPlayer arenaPlayer) {
 		super.onPlayerMove(event, arenaPlayer);
+
+        //Check if player is alive (playermoveevent is still called after player died).
+        if(event.getPlayer().isDead())
+            return;
+
         Location from = event.getFrom();
         Location to = event.getTo();
 
@@ -275,4 +282,14 @@ public class CTF extends Gamemode {
 			}
 		};
 	}
+
+    public AbstractCommand handleGamemodeCommand(CommandSender sender, String command, String[] cmdArgs){
+        AbstractCommand commandObj = null;
+        if (command.equals("setflagblock")) {
+            commandObj = new CommandSetFlagBlock(sender, cmdArgs, plugin, arenaManager, arena);
+        } else if (command.equals("setflag")) {
+            commandObj = new CommandSetFlag(sender, cmdArgs, plugin, arenaManager, arena);
+        }
+        return commandObj;
+    }
 }

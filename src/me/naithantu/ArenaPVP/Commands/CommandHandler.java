@@ -67,7 +67,7 @@ public class CommandHandler {
 			} else {
 				ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(sender.getName());
 				if (arenaPlayer != null) {
-					commandObj = arenaPlayer.getArena().getGamemode().executeCommand(command);
+					commandObj = arenaPlayer.getArena().getGamemode().handleGamemodeCommand(sender, command, cmdArgs);
 				}
 			}
 		}

@@ -5,7 +5,7 @@ import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
-import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.CTF;
+import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.CTF.CTF;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.DM;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.LMS;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.LTS;
