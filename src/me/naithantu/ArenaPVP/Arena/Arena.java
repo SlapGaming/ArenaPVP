@@ -51,7 +51,6 @@ public class Arena {
     ArenaSpectators arenaSpectators;
 
     List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
-    List<ArenaPlayer> offlinePlayers = new ArrayList<ArenaPlayer>();
     String nickName;
 
     String arenaName;
@@ -124,10 +123,6 @@ public class Arena {
 
     public Gamemode getGamemode() {
         return gamemode;
-    }
-
-    public List<ArenaPlayer> getOfflinePlayers() {
-        return offlinePlayers;
     }
 
     public ArenaState getArenaState() {
@@ -267,11 +262,6 @@ public class Arena {
             for (ArenaPlayer arenaPlayer : players) {
                 leaveGame(arenaPlayer);
             }
-        }
-
-        //Remove offline players from arenaManager (they have already been teleported away & got inventory back, so no need to handle that)
-        for (ArenaPlayer arenaPlayer : offlinePlayers) {
-            arenaManager.removePlayer(arenaPlayer);
         }
 
         //Let spectators leave the game.

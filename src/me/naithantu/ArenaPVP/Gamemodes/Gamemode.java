@@ -215,7 +215,6 @@ public abstract class Gamemode {
 		arenaPlayer.getTimers().cancelAllTimers();
 		if (arenaPlayer.getTeam() != null) {
             arena.leaveGame(arenaPlayer);
-			arena.getOfflinePlayers().add(arenaPlayer);
 		} else {
 			//Player was spectator, leave as spectator.
 			arena.leaveSpectate(player, arenaPlayer);

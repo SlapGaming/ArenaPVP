@@ -8,7 +8,7 @@ import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 public class ArenaManager {
 	HashMap<String, Arena> arenas = new HashMap<String, Arena>();
 
-    //Allplayers contains players (online and offline) and spectators
+    //Allplayers contains players and spectators
     HashMap<String, ArenaPlayer> allPlayers = new HashMap<String, ArenaPlayer>();
 
 	public ArenaManager() {
