@@ -38,7 +38,6 @@ public class CommandStop extends AbstractCommand {
 			}
 
 			String arenaName = args[0].toLowerCase();
-			;
 
 			if (arenaManager.getArenas().containsKey(arenaName)) {
 				stopArena(arenaManager.getArenas().get(arenaName));

@@ -43,7 +43,6 @@ public class CommandStart extends AbstractCommand {
 			}
 
 			String arenaName = args[0].toLowerCase();
-			;
 
 			if (arenaManager.getArenas().containsKey(arenaName)) {
 				startArena(arenaManager.getArenas().get(arenaName));

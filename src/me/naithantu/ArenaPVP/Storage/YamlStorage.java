@@ -27,10 +27,8 @@ public class YamlStorage {
 	
 	public boolean exists(){
 		File tempFile = new File(plugin.getDataFolder() + File.separator + path, fileName);
-		if(tempFile.exists())
-			return true;
-		return false;
-	}
+        return tempFile.exists();
+    }
 
 	public void reloadConfig() {
 		if (file == null) {

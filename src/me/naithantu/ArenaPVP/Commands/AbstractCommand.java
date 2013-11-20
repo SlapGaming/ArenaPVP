@@ -42,8 +42,6 @@ public abstract class AbstractCommand {
 
 	protected boolean testPermission(CommandSender sender, String perm) {
 		String permission = "arenapvp." + perm;
-		if (!(sender instanceof Player) || sender.hasPermission(permission))
-			return true;
-		return false;
-	}
+        return !(sender instanceof Player) || sender.hasPermission(permission);
+    }
 }

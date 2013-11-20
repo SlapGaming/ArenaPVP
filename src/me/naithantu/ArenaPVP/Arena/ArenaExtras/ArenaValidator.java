@@ -29,7 +29,7 @@ public class ArenaValidator {
 	private ArrayList<String> errors;	
 	
 	private ArrayList<ConfigTeam> teams;
-	
+
 	//General settings
 	private int maxPlayers = -1;
 	private int scoreLimit = -1;
@@ -134,7 +134,7 @@ public class ArenaValidator {
 		if (config.contains("outofboundsarea")) {
 			outOfBoundsArea = config.getBoolean("outofboundsarea");
 			if (config.contains("outofboundstime")) {
-				if (outOfBoundsArea == false) {
+				if (!outOfBoundsArea) {
 					config.set("outofboundstime", null);
 					storage.saveConfig();
 				} else {
