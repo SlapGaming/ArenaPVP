@@ -47,14 +47,9 @@ public class CommandSetFlag extends AbstractCommand {
             return true;
         }
 
-        ItemStack flagBlock = player.getItemInHand();
-
-        YamlStorage arenaStorage = arena.getArenaStorage();
-        Configuration arenaConfig = arenaStorage.getConfig();
         int teamNumber = teamToChange.getTeamNumber();
-        arenaConfig.set("gamemodes.ctf.flags." + teamNumber, Util.getStringFromLocation(player.getLocation()));
-        arenaStorage.saveConfig();
-        this.msg(sender, "Changed flag block for team " + teamToChange.getTeamName() + ".");
+        Util.saveLocation(player.getLocation(), arena.getArenaStorage(), "gamemodes.ctf.flags." + teamNumber);
+        this.msg(sender, "Changed flag location for team " + teamToChange.getTeamName() + ".");
         return true;
     }
 }

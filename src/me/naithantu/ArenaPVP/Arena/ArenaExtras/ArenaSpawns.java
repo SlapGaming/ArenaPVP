@@ -1,14 +1,13 @@
 package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.Bukkit;
+import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
@@ -22,18 +21,16 @@ public class ArenaSpawns {
 	ArenaManager arenaManager;
 	Arena arena;
 	ArenaSettings settings;
-	FileConfiguration config;
+	YamlStorage arenaStorage;
+    FileConfiguration arenaConfig;
 
-	HashMap<String, Integer> respawnTimers = new HashMap<String, Integer>();
-
-	BukkitScheduler scheduler = Bukkit.getScheduler();
-
-	public ArenaSpawns(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, FileConfiguration config) {
+	public ArenaSpawns(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, YamlStorage arenaStorage) {
 		this.plugin = plugin;
 		this.arenaManager = arenaManager;
 		this.arena = arena;
 		this.settings = settings;
-		this.config = config;
+		this.arenaStorage = arenaStorage;
+        arenaConfig = arenaStorage.getConfig();
 	}
 
 	public Location getRespawnLocation(Player player, ArenaPlayer arenaPlayer, SpawnType spawnType) {
@@ -46,15 +43,16 @@ public class ArenaSpawns {
 			return null;
 		}
 
-		List<String> stringLocations = config.getStringList("spawns." + teamID);
+        ConfigurationSection configurationSection = arenaConfig.getConfigurationSection("spawns." + teamID);
+        int numberOfSpawns = configurationSection.getKeys(false).size();
 
 		int locationIndex = 0;
-		if (stringLocations.size() > 1) {
+		if (numberOfSpawns > 1) {
 			Random random = new Random();
-			locationIndex = random.nextInt(stringLocations.size());
+			locationIndex = random.nextInt(numberOfSpawns);
 		}
 
-		Location spawnLocation = Util.getLocationFromString(stringLocations.get(locationIndex));
+		Location spawnLocation = Util.getLocation(arenaStorage, "spawns." + teamID + "." + locationIndex);
 		EventRespawn eventRespawn = new EventRespawn(player, spawnLocation, arenaPlayer, spawnType);
 		arena.getGamemode().onPlayerArenaRespawn(eventRespawn);
 		if (!eventRespawn.isCancelled()) {

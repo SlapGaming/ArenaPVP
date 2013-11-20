@@ -30,7 +30,7 @@ public class RespawnListener implements Listener {
 			Configuration playerConfig = playerStorage.getConfig();
 			if(playerConfig.contains("hastoleave")){
 				Util.playerLeave(player, playerStorage);
-				event.setRespawnLocation(Util.getLocationFromString(playerConfig.getString("location")));
+                event.setRespawnLocation(Util.getLocation(playerStorage, "location"));
 				playerConfig.set("location", null);
 			}
 		}

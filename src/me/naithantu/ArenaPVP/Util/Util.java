@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -33,21 +34,45 @@ public class Util {
 		}
 	}
 
-	public static Location getLocationFromString(String string) {
-		String[] stringSplit = string.split(":");
-		World world = Bukkit.getServer().getWorld(stringSplit[0]);
-		Double x = Double.valueOf(stringSplit[1]);
-		Double y = Double.valueOf(stringSplit[2]);
-		Double z = Double.valueOf(stringSplit[3]);
-		Float yaw = Float.valueOf(stringSplit[4]);
-		Float pitch = Float.valueOf(stringSplit[5]);
-		Location location = new Location(world, x, y, z, yaw, pitch);
-		return location;
-	}
+    public static Location getLocation(YamlStorage storage, String key) {
+        FileConfiguration config = storage.getConfig();
+        String worldName = config.getString(key + ".world");
+        World world = Bukkit.getWorld(worldName);
+        double x = config.getDouble(key + ".x");
+        double y = config.getDouble(key + ".y");
+        double z = config.getDouble(key + ".z");
+        float yaw = (float) config.getDouble(key + ".yaw");
+        float pitch = (float) config.getDouble(key + ".pitch");
+        return new Location(world, x, y, z, yaw, pitch);
+    }
 
-	public static String getStringFromLocation(Location location) {
-		return location.getWorld().getName() + ":" + location.getX() + ":" + location.getY() + ":" + location.getZ() + ":" + location.getYaw() + ":" + location.getPitch();
-	}
+    public static void saveLocation(Location location, YamlStorage storage, String key){
+        saveLocation(location, storage, key, true);
+    }
+
+    public static void saveLocation(Location location, YamlStorage storage, String key, boolean round){
+        if(round)
+            location = roundLocation(location);
+        FileConfiguration config = storage.getConfig();
+        config.set(key + ".world", location.getWorld().getName());
+        config.set(key + ".x", location.getX());
+        config.set(key + ".y", location.getY());
+        config.set(key + ".z", location.getZ());
+        config.set(key + ".yaw", location.getYaw());
+        config.set(key + ".pitch", location.getPitch());
+        storage.saveConfig();
+    }
+
+
+    public static Location roundLocation(Location location) {
+        location.setX(0.5 * Math.round(location.getX() / 0.5));
+        location.setY(0.5 * Math.round(location.getY() / 0.5));
+        location.setZ(0.5 * Math.round(location.getZ() / 0.5));
+        location.setYaw(45 * (Math.round(location.getYaw() / 45)));
+        location.setPitch(45 * (Math.round(location.getPitch() / 45)));
+        return location;
+    }
+
 
 	@SuppressWarnings("unchecked")
 	public static void playerLeave(Player player, YamlStorage playerStorage) {

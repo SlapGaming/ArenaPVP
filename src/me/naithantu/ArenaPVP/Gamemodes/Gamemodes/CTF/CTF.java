@@ -39,6 +39,9 @@ public class CTF extends Gamemode {
     private HashMap<ArenaTeam, ItemStack> flagBlocks = new HashMap<ArenaTeam, ItemStack>();
     private HashMap<ArenaTeam, Location> flagLocations = new HashMap<ArenaTeam, Location>();
 
+    //The world the flags are in.
+    private String worldName;
+
     //Contains names of players who got a help message, will be removed when they move away from the flag (to prevent spam)
     HashSet<String> gotInfoMessage = new HashSet<String>();
 	private Comparator<ArenaTeam> comp;
@@ -46,10 +49,11 @@ public class CTF extends Gamemode {
 	public CTF(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
 		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.CTF);
         for(ArenaTeam arenaTeam : arena.getTeams()){
-            flagLocations.put(arenaTeam, Util.getLocationFromString(arenaStorage.getConfig().getString("gamemodes.ctf.flags."  + arenaTeam.getTeamNumber())));
+            flagLocations.put(arenaTeam, Util.getLocation(arenaStorage, "gamemodes.ctf.flags." + arenaTeam.getTeamNumber()));
             ItemStack flagBlock = (ItemStack) arenaStorage.getConfig().get("gamemodes.ctf.blocks." + arenaTeam.getTeamNumber());
             flagBlocks.put(arenaTeam, flagBlock);
         }
+        worldName = flagLocations.get(arena.getTeam(0)).getWorld().getName();
 	}
 
 	@Override
@@ -78,6 +82,9 @@ public class CTF extends Gamemode {
         //Check if player actually moved.
         if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
             if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING) {
+                //Check if player is in same world as flag.
+                to.getWorld().getName().equals(worldName);
+
                 Player player = event.getPlayer();
                 String playerName = player.getName();
                 //If player has flag, check if he can capture it.

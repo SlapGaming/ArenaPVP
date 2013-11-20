@@ -100,10 +100,6 @@ public class ArenaValidator {
 			gm = Gamemodes.LTS;
 			teamGame = true;
 			break;
-		case "spleef":
-			gm = Gamemodes.SPLEEF;
-			teamGame = false;
-			break;
 		case "tdm":
 			gm = Gamemodes.TDM;
 			teamGame = true;
@@ -209,7 +205,7 @@ public class ArenaValidator {
 		case CTF: case LTS:	case TDM:
 			if (nrOfTeams(nrOfTeams, 2, 9001)) teamsCorrect = true;
 			break;
-		case DM: case LMS: case SPLEEF:
+		case DM: case LMS:
 			if (nrOfTeams(nrOfTeams, 1, 1)) teamsCorrect = true;
 			break;
 		}
