@@ -198,7 +198,6 @@ public abstract class Gamemode {
             //Check if player moved x or z (jumping/falling is fine).
             if (event.getTo().getX() != event.getFrom().getX() || event.getTo().getZ() != event.getFrom().getZ()) {
                 event.setCancelled(true);
-                return;
             }
         } else {
             if (settings.isOutOfBoundsArea() && !event.getPlayer().isDead()) {
@@ -215,13 +214,7 @@ public abstract class Gamemode {
 
 		arenaPlayer.getTimers().cancelAllTimers();
 		if (arenaPlayer.getTeam() != null) {
-			//Player was not a spectator, leave team and add to offline players.
-			YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
-			Configuration playerConfig = playerStorage.getConfig();
-			Util.playerLeave(player, playerStorage);
-			player.teleport(Util.getLocationFromString(playerConfig.getString("location")));
-			playerConfig.set("location", null);
-			arenaPlayer.getTeam().getPlayers().remove(arenaPlayer);
+            arena.leaveGame(arenaPlayer);
 			arena.getOfflinePlayers().add(arenaPlayer);
 		} else {
 			//Player was spectator, leave as spectator.
@@ -233,27 +226,6 @@ public abstract class Gamemode {
 				updateTabs();
 			}
 		}, 1);
-	}
-
-	public void onPlayerJoin(PlayerJoinEvent event, final ArenaPlayer arenaPlayer) {
-		final Player player = event.getPlayer();
-		String playerName = player.getName();
-		if (arena.getOfflinePlayers().contains(playerName)) {
-			arena.getOfflinePlayers().remove(playerName);
-			//Teleport first to avoid problems with MVInventories
-			final YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
-			Configuration playerConfig = playerStorage.getConfig();
-			playerConfig.set("location", Util.getStringFromLocation(player.getLocation()));
-
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				public void run() {
-					player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
-					Util.playerJoin(player, playerStorage);
-					arenaPlayer.getTeam().joinTeam(player, arenaManager, arena, arenaPlayer);
-					updateTabs();
-				}
-			}, 20);
-		}
 	}
 
 	public void onPlayerDropItem(PlayerDropItemEvent event, ArenaPlayer arenaPlayer) {
@@ -365,10 +337,6 @@ public abstract class Gamemode {
 	public abstract void updateTabs();
 
 	protected abstract void createComp();
-	
-	public static boolean isCorrectYML(String arena){
-		return false;
-	}
 
 	public void clearTab(Player p) {
 		if (!tabController.hasTabAPI())
