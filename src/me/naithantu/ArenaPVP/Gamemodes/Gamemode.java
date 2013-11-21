@@ -36,6 +36,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -109,20 +110,19 @@ public abstract class Gamemode {
 		event.setKeepLevel(true);
 		event.getDrops().clear();
 
-		String deathMessage = event.getDeathMessage();
-		event.setDeathMessage(null);
-
 		Player player = event.getEntity();
 
 		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING) {
-			arenaUtil.sendNoPrefixMessageAll(deathMessage);
+            if(event.getDeathMessage() != null)
+                arenaUtil.sendNoPrefixMessageAll(event.getDeathMessage());
 
 			// Add death and kill to players.
 			arenaPlayer.getPlayerScore().addDeath();
 			if (player.getKiller() != null)
 				arenaManager.getPlayerByName(player.getKiller().getName()).getPlayerScore().addKill();
 		}
-	}
+        event.setDeathMessage(null);
+    }
 
 	public void onPlayerRespawn(PlayerRespawnEvent event, ArenaPlayer arenaPlayer) {
 		Player player = event.getPlayer();
@@ -139,7 +139,7 @@ public abstract class Gamemode {
 	}
 
 	public void onPlayerDamage(EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
-		Entity damager = event.getDamager();
+        Entity damager = event.getDamager();
 		if (damager instanceof Projectile) {
 			damager = ((Projectile) damager).getShooter();
 		}
@@ -327,6 +327,10 @@ public abstract class Gamemode {
 		}
 	}
 
+    public void onArenaStart(){}
+
+    public void onArenaStop(){}
+
 	public AbstractCommand handleGamemodeCommand(CommandSender sender, String command, String[] cmdArgs) {
 		return null;
 	}
@@ -347,8 +351,8 @@ public abstract class Gamemode {
 		} catch (NullPointerException ex) {
 		}
 	}
-	
-	public enum Gamemodes {
-		SPLEEF, DM, TDM, CTF, LMS, LTS
+
+    public enum Gamemodes {
+		DM, TDM, CTF, LMS, LTS, PAINTBALL
 	}
 }

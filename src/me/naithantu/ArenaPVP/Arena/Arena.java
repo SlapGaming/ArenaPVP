@@ -256,6 +256,8 @@ public class Arena {
     }
 
     private void stop() {
+        gamemode.onArenaStop();
+
         //Let online players leave the game.
         for (ArenaTeam team : teams) {
             List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());

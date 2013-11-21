@@ -33,6 +33,7 @@ public class StartArena extends BukkitRunnable {
 			}
 			arena.setArenaState(ArenaState.PLAYING);
 			arena.getGamemode().updateTabs();
+            arena.getGamemode().onArenaStart();
 			this.cancel();
 		}
 	}
