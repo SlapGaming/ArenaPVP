@@ -54,7 +54,7 @@ public class Paintball extends Gamemode {
 
     @Override
     public void onArenaStart() {
-        paintballTimer.runTaskTimer(plugin, 100, 100);
+        paintballTimer.runTaskTimer(plugin, 40, 40);
     }
 
     @Override
