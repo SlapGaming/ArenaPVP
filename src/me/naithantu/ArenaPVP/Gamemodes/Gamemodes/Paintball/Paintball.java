@@ -78,7 +78,7 @@ public class Paintball extends Gamemode {
                 Player killer = (Player) snowBall.getShooter();
                 ArenaTeam team = arenaManager.getPlayerByName(killer.getName()).getTeam();
                 team.addScore();
-                arenaUtil.sendMessageAll(team.getTeamColor() + killer.getName() + ChatColor.WHITE + " fragged " + arenaPlayer.getTeam().getTeamColor() + arenaPlayer.getTeam().getTeamName() + ChatColor.WHITE + "!");
+                arenaUtil.sendMessageAll(team.getTeamColor() + killer.getName() + ChatColor.WHITE + " fragged " + arenaPlayer.getTeam().getTeamColor() + arenaPlayer.getPlayerName() + ChatColor.WHITE + "!");
                 ((Player) event.getEntity()).setHealth(0);
                 if (team.getScore() >= settings.getScoreLimit()) {
                     arena.stopGame(team);
