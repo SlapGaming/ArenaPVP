@@ -7,6 +7,8 @@ import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaValidator;
 
 import org.bukkit.command.CommandSender;
 
+import java.io.File;
+
 public class CommandSelect extends AbstractCommand {
 
 	protected CommandSelect(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
@@ -27,20 +29,17 @@ public class CommandSelect extends AbstractCommand {
 		
 		String arenaName = args[0].toLowerCase();
 		
-		/*ArenaValidator validator = new ArenaValidator(plugin, arenaName);
-		
-		if (!validator.checkOnSelect()) {
-			badMsg(sender, "One more more errors found. Please enter setup modus to fix. Errors:");
-			sender.sendMessage(validator.getErrors());
-			return true;
-		}*/
-		
 		if(arenaManager.getArenas().containsKey(arenaName)){
 			this.msg(sender, "That arena is already loaded! You can unload it with /pvp stop [arenaname].");
 			return true;
 		}
-		
-		
+
+        File file = new File(plugin.getDataFolder() + File.separator + "maps", arenaName + ".yml");
+        if(!file.exists()){
+            this.msg(sender, "That arena does not exist, use /pvp maps to see available arenas!");
+            return true;
+        }
+
 		Arena arena = new Arena(plugin, arenaManager, arenaName);
 		arenaManager.getArenas().put(arenaName, arena);
 		

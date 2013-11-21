@@ -38,7 +38,7 @@ public class CommandCreate extends AbstractCommand {
 		
 		String arenaName = args[0].toLowerCase();
 				
-		File file = new File(plugin.getDataFolder() + File.separator + "maps", arenaName);
+		File file = new File(plugin.getDataFolder() + File.separator + "maps", arenaName + ".yml");
 		if(file.exists()){
 			this.msg(sender, "An arena with that name already exists!");
 			return true;
