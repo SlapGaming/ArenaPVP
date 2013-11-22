@@ -176,7 +176,7 @@ public abstract class Gamemode {
 					if (damagePlayer == null || !damagePlayer.getArena().equals(arenaPlayer.getArena()) || damagePlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
 						event.setCancelled(true);
 					} else {
-						if (!settings.isFriendlyFire()) {
+						if (!settings.isFriendlyFire() || !isTeamGame()) {
 							//Block friendly fire
 							if (damagePlayer.getTeam().equals(arenaPlayer.getTeam())) {
 								event.setCancelled(true);
@@ -353,6 +353,6 @@ public abstract class Gamemode {
 	}
 
     public enum Gamemodes {
-		DM, TDM, CTF, LMS, LTS, PAINTBALL
+		FFA, TDM, CTF, LMS, LTS, PAINTBALL
 	}
 }

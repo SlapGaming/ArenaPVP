@@ -24,19 +24,19 @@ import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
 
-public class DM extends Gamemode {
+public class FFA extends Gamemode {
 
 	private Comparator<ArenaPlayer> comp;
 	
-	public DM(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns,	ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
-		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.DM);
+	public FFA(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
+		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.FFA);
 		settings.setFriendlyFire(true);
 		createComp();
 	}
 
 	@Override
 	public String getName(){
-		return "Deathmatch";
+		return "Free for All";
 	}
 	
 	@Override
@@ -119,7 +119,7 @@ public class DM extends Gamemode {
 	}
 	
 	private void setTabPlayer(Player p, String status, String arena, String players, String spectators, boolean specator, String kills, String rank, String[] playersTab) {
-		int row = tabController.setTopTab(p, Gamemodes.DM); int colom = 0;
+		int row = tabController.setTopTab(p, Gamemodes.FFA); int colom = 0;
 		TabAPI.setTabString(plugin, p, 2, 1, status);
 		TabAPI.setTabString(plugin, p, 3, 1, arena);
 		TabAPI.setTabString(plugin, p, 4, 1, players);

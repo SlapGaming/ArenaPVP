@@ -51,7 +51,7 @@ public class TabController {
 			TabAPI.setTabString(plugin, p, 7, 1, ChatColor.GOLD + "-- Teams --");
 			returnInt = 8;
 			break;
-		case DM: 
+		case FFA:
 			TabAPI.setTabString(plugin, p, 0, 0, ChatColor.DARK_AQUA + "   Deathmatch");	
 			TabAPI.setTabString(plugin, p, 0, 2, ChatColor.DARK_AQUA + "   Deathmatch ");
 			TabAPI.setTabString(plugin, p, 3, 0, ChatColor.GRAY + "Arena    ->");
