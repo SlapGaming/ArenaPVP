@@ -34,9 +34,7 @@ public class CommandMaps extends AbstractCommand {
             if (i > 0) {
                 extension = map.getName().substring(i+1);
             }
-
-            System.out.println(map.getName() + " : " + extension);
-
+            
 			if(extension.equalsIgnoreCase("yml")){
                 mapNames.add(map.getName().replaceFirst(".yml", ""));
             }
