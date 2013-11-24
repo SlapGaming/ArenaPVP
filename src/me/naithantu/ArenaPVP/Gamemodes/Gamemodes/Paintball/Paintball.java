@@ -80,7 +80,11 @@ public class Paintball extends Gamemode {
                     ArenaTeam team = arenaManager.getPlayerByName(killer.getName()).getTeam();
                     team.addScore();
                     arenaUtil.sendMessageAll(team.getTeamColor() + killer.getName() + ChatColor.WHITE + " fragged " + arenaPlayer.getTeam().getTeamColor() + arenaPlayer.getPlayerName() + ChatColor.WHITE + "!");
-                    ((Player) event.getEntity()).setHealth(0);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                        public void run(){
+                            ((Player) event.getEntity()).setHealth(0);
+                        }
+                    }, 1);
                     if (team.getScore() >= settings.getScoreLimit()) {
                         arena.stopGame(team);
                     } else {

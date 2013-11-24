@@ -59,7 +59,7 @@ public class OITC extends Gamemode {
     @Override
     public void onPlayerDamage(EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
         super.onPlayerDamage(event, arenaPlayer);
-        Player damaged = (Player) event.getEntity();
+        final Player damaged = (Player) event.getEntity();
 
         // If the damage is not allowed, then the event will be cancelled.
         if (!event.isCancelled()) {
@@ -72,10 +72,12 @@ public class OITC extends Gamemode {
 
                     //Can't kill yourself
                     if (!killer.getName().equalsIgnoreCase(damaged.getName())) {
-                        damaged.setHealth(0);
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            public void run() {
+                                damaged.setHealth(0);
+                            }
+                        }, 1);
                         arrow.remove();
-                        event.setCancelled(true);
-                        onPlayerKill(killer, damaged, arenaManager.getPlayerByName(damaged.getName()).getPlayerScore(), arenaPlayer);
                     }
                 }
             }
