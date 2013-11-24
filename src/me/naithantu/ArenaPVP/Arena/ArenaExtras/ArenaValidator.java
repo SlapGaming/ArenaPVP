@@ -88,10 +88,6 @@ public class ArenaValidator {
 			gm = Gamemodes.CTF;
 			teamGame = true;
 			break;
-		case "dm":
-			gm = Gamemodes.DM;
-			teamGame = false;
-			break;
 		case "lms":
 			gm = Gamemodes.LMS;
 			teamGame = false;
@@ -205,7 +201,7 @@ public class ArenaValidator {
 		case CTF: case LTS:	case TDM:
 			if (nrOfTeams(nrOfTeams, 2, 9001)) teamsCorrect = true;
 			break;
-		case DM: case LMS:
+		case LMS:
 			if (nrOfTeams(nrOfTeams, 1, 1)) teamsCorrect = true;
 			break;
 		}

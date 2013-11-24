@@ -116,7 +116,7 @@ public abstract class Gamemode {
             if(event.getDeathMessage() != null)
                 arenaUtil.sendNoPrefixMessageAll(event.getDeathMessage());
 
-			// Add death and kill to players.
+            // Add death and kill to players.
 			arenaPlayer.getPlayerScore().addDeath();
 			if (player.getKiller() != null)
 				arenaManager.getPlayerByName(player.getKiller().getName()).getPlayerScore().addKill();
@@ -176,7 +176,7 @@ public abstract class Gamemode {
 					if (damagePlayer == null || !damagePlayer.getArena().equals(arenaPlayer.getArena()) || damagePlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
 						event.setCancelled(true);
 					} else {
-						if (!settings.isFriendlyFire() || !isTeamGame()) {
+						if (!settings.isFriendlyFire() && isTeamGame()) {
 							//Block friendly fire
 							if (damagePlayer.getTeam().equals(arenaPlayer.getTeam())) {
 								event.setCancelled(true);
@@ -277,6 +277,9 @@ public abstract class Gamemode {
 			event.setCancelled(true);
 	}
 
+    public void onProjectileHit(ProjectileHitEvent event, ArenaPlayer arenaPlayer) {
+    }
+
 	// Arena made events.
 	public void onPlayerJoinArena(EventJoinArena event) {
 		ArenaState arenaState = arena.getArenaState();
@@ -353,6 +356,6 @@ public abstract class Gamemode {
 	}
 
     public enum Gamemodes {
-		FFA, TDM, CTF, LMS, LTS, PAINTBALL
+		FFA, TDM, CTF, LMS, LTS, PAINTBALL, OITC
 	}
 }

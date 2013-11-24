@@ -1,19 +1,24 @@
-package me.naithantu.ArenaPVP.Gamemodes.Gamemodes.Paintball;
+package me.naithantu.ArenaPVP.Gamemodes.Gamemodes;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.google.common.base.Joiner;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.*;
+import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerScore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
 import me.naithantu.ArenaPVP.ArenaManager;
@@ -26,66 +31,51 @@ import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
 
-public class Paintball extends Gamemode {
+public class OITC extends Gamemode {
 
     private Comparator<ArenaTeam> teamComp;
     private Comparator<ArenaPlayer> playerComp;
 
     private ArenaUtil arenaUtil;
 
-    private PaintballTimer paintballTimer;
+    private ItemStack arrow;
 
-
-    public Paintball(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
+    public OITC(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
         super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.PAINTBALL);
         this.arenaUtil = arenaUtil;
-        paintballTimer = new PaintballTimer(arena.getTeams());
+        arrow = new ItemStack(Material.ARROW, 1);
     }
 
     @Override
     public String getName() {
-        return "Paintball";
+        return "One in the Chamber";
     }
 
     @Override
     public boolean isTeamGame() {
-        return true;
+        return false;
     }
 
     @Override
-    public void onArenaStart() {
-        paintballTimer.runTaskTimer(plugin, 40, 40);
-    }
-
-    @Override
-    public void onArenaStop() {
-        //Check if game has actually started (can't cancel a not running timer)
-        if (arena.getArenaState() == ArenaState.PLAYING) {
-            paintballTimer.cancel();
-        }
-    }
-
-    @Override
-    public void onPlayerDamage(final EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
+    public void onPlayerDamage(EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
         super.onPlayerDamage(event, arenaPlayer);
+        Player damaged = (Player) event.getEntity();
 
         // If the damage is not allowed, then the event will be cancelled.
         if (!event.isCancelled()) {
-            // Just need to check if the damage was done by a snowball.
-            if (event.getDamager() instanceof Snowball) {
-                Snowball snowball = (Snowball) event.getDamager();
-                //Check if snowball was thrown by a player.
-                if (snowball.getShooter() instanceof Player) {
-                    Player killer = (Player) snowball.getShooter();
-                    ArenaTeam team = arenaManager.getPlayerByName(killer.getName()).getTeam();
-                    team.addScore();
-                    arenaUtil.sendMessageAll(team.getTeamColor() + killer.getName() + ChatColor.WHITE + " fragged " + arenaPlayer.getTeam().getTeamColor() + arenaPlayer.getPlayerName() + ChatColor.WHITE + "!");
-                    ((Player) event.getEntity()).setHealth(0);
-                    if (team.getScore() >= settings.getScoreLimit()) {
-                        arena.stopGame(team);
-                    } else {
-                        sortLists();
-                        updateTabs();
+            // Just need to check if the damage was done by a arrow.
+            if (event.getDamager() instanceof Arrow) {
+                Arrow arrow = (Arrow) event.getDamager();
+                //Check if arrow was shot by a player.
+                if (arrow.getShooter() instanceof Player) {
+                    Player killer = (Player) arrow.getShooter();
+
+                    //Can't kill yourself
+                    if (!killer.getName().equalsIgnoreCase(damaged.getName())) {
+                        damaged.setHealth(0);
+                        arrow.remove();
+                        event.setCancelled(true);
+                        onPlayerKill(killer, damaged, arenaManager.getPlayerByName(damaged.getName()).getPlayerScore(), arenaPlayer);
                     }
                 }
             }
@@ -94,9 +84,82 @@ public class Paintball extends Gamemode {
 
     @Override
     public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer) {
-        // Remove the death message, death messages are being sent upon snowball hit.
+        Player killer = event.getEntity().getKiller();
+        if (killer != null) {
+            PlayerScore playerScore = arenaPlayer.getPlayerScore();
+            Player player = event.getEntity();
+            onPlayerKill(killer, player, playerScore, arenaPlayer);
+        }
+
+        // Remove the death message, death messages are being sent in onPlayerKill
         event.setDeathMessage(null);
         super.onPlayerDeath(event, arenaPlayer);
+    }
+
+    private void onPlayerKill(Player killer, Player player, PlayerScore playerScore, ArenaPlayer arenaPlayer) {
+        arenaUtil.sendMessageAll(ChatColor.GOLD + killer.getName() + ChatColor.WHITE + " killed " + ChatColor.GOLD + player.getName() + ChatColor.WHITE + "!");
+
+        if (playerScore.getDeaths() >= settings.getScoreLimit()) {
+            arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
+            arenaUtil.sendMessageAllExcept(ChatColor.GOLD + player.getName() + ChatColor.WHITE + " has been eliminated!", player.getName());
+            Util.msg(player, "You have been eliminated!");
+        } else {
+            Util.msg(player, "You have " + (settings.getScoreLimit() - playerScore.getDeaths()) + " lives remaining!");
+        }
+
+        if (checkRemainingPlayers() == 1) {
+            List<ArenaPlayer> winningPlayers = getWinningPlayer();
+            if (winningPlayers.size() == 1) {
+                arena.stopGame(winningPlayers.get(0));
+            } else {
+                arenaUtil.sendMessageAll(Joiner.on(", ").join(winningPlayers) + " have won the game!");
+                arena.stopGame();
+            }
+        } else {
+            killer.getInventory().addItem(arrow);
+            sortLists();
+            updateTabs();
+        }
+    }
+
+    @Override
+    public void onProjectileHit(ProjectileHitEvent event, ArenaPlayer arenaPlayer) {
+        if (event.getEntity() instanceof Arrow) {
+            event.getEntity().remove();
+        }
+    }
+
+    private int checkRemainingPlayers() {
+        int remainingPlayers = 0;
+        for (ArenaTeam team : arena.getTeams()) {
+            for (ArenaPlayer arenaPlayer : team.getPlayers()) {
+                if (arenaPlayer.getPlayerState() != ArenaPlayerState.SPECTATING) {
+                    remainingPlayers++;
+                }
+            }
+        }
+        return remainingPlayers;
+    }
+
+    private List<ArenaPlayer> getWinningPlayer() {
+        int highestScore = 0;
+        for (ArenaTeam team : arena.getTeams()) {
+            for (ArenaPlayer arenaPlayer : team.getPlayers()) {
+                if (arenaPlayer.getPlayerScore().getKills() > highestScore) {
+                    highestScore = arenaPlayer.getPlayerScore().getKills();
+                }
+            }
+        }
+
+        List<ArenaPlayer> winningPlayers = new ArrayList<ArenaPlayer>();
+        for (ArenaTeam team : arena.getTeams()) {
+            for (ArenaPlayer arenaPlayer : team.getPlayers()) {
+                if (arenaPlayer.getPlayerScore().getKills() == highestScore) {
+                    winningPlayers.add(arenaPlayer);
+                }
+            }
+        }
+        return winningPlayers;
     }
 
     @Override
@@ -121,7 +184,7 @@ public class Paintball extends Gamemode {
             x++;
             teamTab[x] = team.getTeamColor() + team.getTeamName();
             x++;
-            String killString = team.getScore() + " Frags";
+            String killString = team.getScore() + " Kills";
             while (kills.contains(killString)) {
                 killString = killString + " ";
             }
@@ -141,7 +204,7 @@ public class Paintball extends Gamemode {
             x++;
             playerTab[x] = player.getTeam().getTeamColor() + player.getPlayerName();
             x++;
-            String killString = player.getPlayerScore().getKills() + " Frags";
+            String killString = player.getPlayerScore().getKills() + " Kills";
             while (kills.contains(killString)) {
                 killString = killString + " ";
             }

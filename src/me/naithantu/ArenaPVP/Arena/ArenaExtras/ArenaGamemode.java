@@ -2,15 +2,12 @@ package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.FFA;
+import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.*;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.Paintball.Paintball;
 import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.CTF.CTF;
-import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.LMS;
-import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.LTS;
-import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.TDM;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 
 public class ArenaGamemode {
@@ -28,6 +25,7 @@ public class ArenaGamemode {
 		    case "lts":		return new LTS(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
 		    case "tdm":		return new TDM(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
             case "paintball": return new Paintball(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
+            case "oitc": return new OITC(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
 	    	default:
 			    return null;
 		}

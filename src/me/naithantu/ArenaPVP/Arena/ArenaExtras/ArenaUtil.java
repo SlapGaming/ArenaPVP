@@ -14,6 +14,18 @@ public class ArenaUtil {
 		this.arena = arena;
 	}
 
+    public void sendMessageAllExcept(String message, String exceptPlayer){
+        for(ArenaTeam team: arena.getTeams())
+            sendMessageTeamExcept(message, team, exceptPlayer);
+    }
+
+    public void sendMessageTeamExcept(String message, ArenaTeam team, String exceptPlayer){
+        for(ArenaPlayer arenaPlayer : team.getPlayers()){
+            if(!arenaPlayer.getPlayerName().equals(exceptPlayer))
+                Util.msg(Bukkit.getPlayerExact(arenaPlayer.getPlayerName()), message);
+        }
+    }
+
 	public void sendMessageAll(String message) {
 		for (ArenaTeam team : arena.getTeams())
 			sendMessageTeam(message, team);

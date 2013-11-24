@@ -25,7 +25,6 @@ public class LMS extends Gamemode {
 
 	public LMS(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
 		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.LMS);
-		settings.setFriendlyFire(true);
 	}
 	
 	@Override
