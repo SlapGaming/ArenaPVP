@@ -17,11 +17,11 @@ public class ProjectileHitListener implements Listener {
 
 	@EventHandler
 	public void onProjectileHit(ProjectileHitEvent event) {
-		if (event.getEntity() instanceof Player) {
-			Player player = (Player) event.getEntity();
+		if (event.getEntity().getShooter() instanceof Player) {
+			Player player = (Player) event.getEntity().getShooter();
 			ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
 			if (arenaPlayer != null) {
-				//arenaPlayer.getArena().getGamemode().onProjectileHit(event, arenaPlayer);
+				arenaPlayer.getArena().getGamemode().onProjectileHit(event, arenaPlayer);
 			}
 		}
 	}

@@ -17,6 +17,7 @@ import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.PickupItemListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.QuitListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.RespawnListener;
 
+import me.naithantu.ArenaPVP.Events.BukkitEvents.ProjectileHitListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -76,6 +77,8 @@ public class ArenaPVP extends JavaPlugin {
 		pm.registerEvents(new MoveListener(arenaManager), this);
 		pm.registerEvents(new QuitListener(arenaManager), this);
 		pm.registerEvents(new RespawnListener(this, arenaManager), this);
+        //Projectile events
+        pm.registerEvents(new ProjectileHitListener(arenaManager), this);
 
 	}
 	
