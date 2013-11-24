@@ -27,7 +27,9 @@ public class PaintballTimer extends BukkitRunnable {
             for(ArenaPlayer arenaPlayer: team.getPlayers()){
                 if(arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING){
                     Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
-                    player.getInventory().addItem(snowBall);
+                    if(!player.isDead()){
+                        player.getInventory().addItem(snowBall);
+                    }
                 }
             }
         }
