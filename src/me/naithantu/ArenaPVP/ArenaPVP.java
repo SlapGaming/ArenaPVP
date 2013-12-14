@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Commands.CommandHandler;
+import me.naithantu.ArenaPVP.Events.BukkitEvents.BlockRedstoneListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.BlockListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.ChatListener;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DamageListener;
@@ -77,7 +78,8 @@ public class ArenaPVP extends JavaPlugin {
 		pm.registerEvents(new MoveListener(arenaManager), this);
 		pm.registerEvents(new QuitListener(arenaManager), this);
 		pm.registerEvents(new RespawnListener(this, arenaManager), this);
-        //Projectile events
+        //Other events
+        pm.registerEvents(new BlockRedstoneListener(arenaManager), this);
         pm.registerEvents(new ProjectileHitListener(arenaManager), this);
 
 	}

@@ -36,6 +36,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -296,6 +297,9 @@ public abstract class Gamemode {
     public void onProjectileHit(ProjectileHitEvent event, ArenaPlayer arenaPlayer) {
     }
 
+    public void onRedstoneUpdate(BlockRedstoneEvent event) {
+    }
+
 	// Arena made events.
 	public void onPlayerJoinArena(EventJoinArena event) {
 		ArenaState arenaState = arena.getArenaState();
@@ -372,6 +376,6 @@ public abstract class Gamemode {
 	}
 
     public enum Gamemodes {
-		FFA, TDM, CTF, LMS, LTS, PAINTBALL, OITC
+		FFA, TDM, CTF, LMS, LTS, PAINTBALL, OITC, REDSTONE
 	}
 }

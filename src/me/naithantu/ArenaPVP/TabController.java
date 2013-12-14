@@ -89,6 +89,12 @@ public class TabController {
                 TabAPI.setTabString(plugin, p, 7, 1, ChatColor.GOLD + "-- Teams --");
                 returnInt = 8;
                 break;
+            case REDSTONE:
+                TabAPI.setTabString(plugin, p, 3, 0, ChatColor.GRAY + "Arena    ->");
+                TabAPI.setTabString(plugin, p, 5, 0, ChatColor.GRAY + "Team     ->");
+                TabAPI.setTabString(plugin, p, 7, 1, ChatColor.GOLD + "-- Teams --");
+                returnInt = 8;
+                break;
         }
         return returnInt;
     }

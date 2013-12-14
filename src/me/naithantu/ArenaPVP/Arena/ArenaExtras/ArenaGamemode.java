@@ -4,6 +4,7 @@ import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.*;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.Paintball.Paintball;
+import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.Redstone.Redstone;
 import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
@@ -23,6 +24,7 @@ public class ArenaGamemode {
 		    case "ffa": 		return new FFA(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
 		    case "lms":		return new LMS(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
 		    case "lts":		return new LTS(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
+            case "redstone": return new Redstone(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
 		    case "tdm":		return new TDM(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
             case "paintball": return new Paintball(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
             case "oitc": return new OITC(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController);
