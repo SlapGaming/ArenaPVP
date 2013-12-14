@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ArenaPVP:jar">
+    <output-path>$PROJECT_DIR$/../../Server/plugins</output-path>
+    <root id="archive" name="ArenaPVP.jar">
+      <element id="module-output" name="ArenaPVP" />
+    </root>
+  </artifact>
+</component>
