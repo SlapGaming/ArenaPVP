@@ -89,9 +89,6 @@ public class Paintball extends Gamemode {
                         killTimer.runTaskLater(plugin, 1);
                         if (team.getScore() >= settings.getScoreLimit()) {
                             arena.stopGame(team);
-                        } else {
-                            sortLists();
-                            updateTabs();
                         }
                     }
                 }
@@ -104,6 +101,8 @@ public class Paintball extends Gamemode {
         // Remove the death message, death messages are being sent upon snowball hit.
         event.setDeathMessage(null);
         super.onPlayerDeath(event, arenaPlayer);
+        sortLists();
+        updateTabs();
     }
 
     @Override

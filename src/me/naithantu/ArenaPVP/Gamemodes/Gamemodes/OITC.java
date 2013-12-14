@@ -8,9 +8,11 @@ import java.util.List;
 import com.google.common.base.Joiner;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.*;
 import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerScore;
+import me.naithantu.ArenaPVP.Arena.Runnables.KillTimer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -32,9 +34,7 @@ import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
 
 public class OITC extends Gamemode {
-
-    private Comparator<ArenaTeam> teamComp;
-    private Comparator<ArenaPlayer> playerComp;
+    private Comparator<ArenaPlayer> comp;
 
     private ArenaUtil arenaUtil;
 
@@ -57,6 +57,16 @@ public class OITC extends Gamemode {
     }
 
     @Override
+    public void sendScore(CommandSender sender) {
+        Util.msg(sender, "Score:");
+        for (ArenaTeam team : arena.getTeams()) {
+            for(ArenaPlayer arenaPlayer: team.getPlayers()){
+                Util.msg(sender, team.getTeamColor() + arenaPlayer.getPlayerName() + ChatColor.WHITE + ": " + arenaPlayer.getPlayerScore().getKills());
+            }
+        }
+    }
+
+    @Override
     public void onPlayerDamage(EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
         super.onPlayerDamage(event, arenaPlayer);
         final Player damaged = (Player) event.getEntity();
@@ -73,11 +83,8 @@ public class OITC extends Gamemode {
                         Player killer = (Player) arrow.getShooter();
                         //Can't kill yourself
                         if (!killer.getName().equalsIgnoreCase(damaged.getName())) {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                                public void run() {
-                                    damaged.setHealth(0);
-                                }
-                            }, 1);
+                            KillTimer killTimer = new KillTimer(arenaPlayer, (Player) event.getEntity());
+                            killTimer.runTaskLater(plugin, 1);
                             arrow.remove();
                         }
                     }
@@ -88,6 +95,7 @@ public class OITC extends Gamemode {
 
     @Override
     public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer) {
+        super.onPlayerDeath(event, arenaPlayer);
         Player killer = event.getEntity().getKiller();
         if (killer != null) {
             PlayerScore playerScore = arenaPlayer.getPlayerScore();
@@ -97,7 +105,6 @@ public class OITC extends Gamemode {
 
         // Remove the death message, death messages are being sent in onPlayerKill
         event.setDeathMessage(null);
-        super.onPlayerDeath(event, arenaPlayer);
     }
 
     private void onPlayerKill(Player killer, Player player, PlayerScore playerScore, ArenaPlayer arenaPlayer) {
@@ -169,136 +176,93 @@ public class OITC extends Gamemode {
     @Override
     public void updateTabs() {
         if (!tabController.hasTabAPI()) return;
-
-        String status = Util.capaltizeFirstLetter(arena.getArenaState().toString());
+        String gameStatus = Util.capaltizeFirstLetter(arena.getArenaState().toString());
         String arenaName = arena.getArenaName();
-        String spectators = ChatColor.GRAY + "" + arena.getArenaSpectators().getSpectators().size() + " Spectators";
 
-        List<ArenaPlayer> players = new ArrayList<>();
-        List<ArenaTeam> teams = arena.getTeams();
-        String[] teamTab = new String[teams.size() * 3];
+        List<ArenaPlayer> players = arena.getTeams().get(0).getPlayers();
+        String nrOfPlayers = players.size() + " Players";
+        String nrOfSpectators = ChatColor.GRAY + "" + arena.getArenaSpectators().getSpectators().size() + " Spectators";
 
-        List<String> kills = new ArrayList<>();
-        int rank = 1;
-        int x = 0;
-        for (ArenaTeam team : arena.getTeams()) {
-            players.addAll(team.getPlayers());
-            teamTab[x] = ChatColor.GRAY + "Rank " + rank + " ->";
-            rank++;
-            x++;
-            teamTab[x] = team.getTeamColor() + team.getTeamName();
-            x++;
-            String killString = team.getScore() + " Kills";
-            while (kills.contains(killString)) {
-                killString = killString + " ";
+        String[] playerTab; int x = 0;
+        if (arena.getArenaState() == ArenaState.PLAYING) {
+            if (players.size() > 10) {
+                playerTab = new String[11 * 3];
+            } else {
+                playerTab = new String[players.size() * 3];
             }
-            kills.add(killString);
-            teamTab[x] = ChatColor.RED + killString;
-            x++;
-        }
-
-        Collections.sort(players, playerComp);
-        String nrOfPlayers = players.size() + " (" + teams.size() + " teams)";
-
-        String[] playerTab = new String[players.size() * 3];
-
-        x = 0;
-        for (ArenaPlayer player : players) {
-            if (x == 0) playerTab[x] = ChatColor.GRAY + "MVP  ->";
-            x++;
-            playerTab[x] = player.getTeam().getTeamColor() + player.getPlayerName();
-            x++;
-            String killString = player.getPlayerScore().getKills() + " Kills";
-            while (kills.contains(killString)) {
-                killString = killString + " ";
-            }
-            kills.add(killString);
-            playerTab[x] = ChatColor.RED + killString;
-            x++;
-            if (rank > 5) break;
-        }
-
-        rank = 1;
-        for (ArenaTeam team : teams) {
-            String teamName = team.getTeamColor() + team.getTeamName() + " ";
-            String ranking = ChatColor.GREEN + "Rank " + rank;
-            rank++;
-            for (ArenaPlayer aP : team.getPlayers()) {
-                Player p = Bukkit.getPlayerExact(aP.getPlayerName());
-                if (p != null) {
-                    setTabPlayer(p, status, arenaName, nrOfPlayers, spectators, false, teamName, ranking, teamTab, playerTab);
+            int rank = 1;
+            List<String> kills = new ArrayList<>();
+            for (ArenaPlayer player : players) {
+                playerTab[x] = ChatColor.GRAY + "Rank " + rank + "  ->"; rank++; x++;
+                playerTab[x] = player.getPlayerName(); x++;
+                String killString = player.getPlayerScore().getKills() + " Kills";
+                while (kills.contains(killString)) {
+                    killString = killString + " ";
                 }
+                kills.add(killString);
+                playerTab[x] = ChatColor.RED + killString; x++;
+                if (x > 33) break;
             }
+        } else {
+            if (players.size() > 32) {
+                playerTab = new String[33];
+            } else {
+                playerTab = new String[players.size()];
+            }
+            for (ArenaPlayer player : players) {
+                playerTab[x] = player.getPlayerName();
+                x++;
+                if (x > 33) break;
+            }
+        }
+
+        int rank = 1;
+        for (ArenaPlayer player : players) {
+            Player p = Bukkit.getPlayerExact(player.getPlayerName());
+            if (p != null) {
+                setTabPlayer(p, gameStatus, arenaName, nrOfPlayers, nrOfSpectators, false, player.getPlayerScore().getKills() + " Kills", "Rank " + rank, playerTab);
+            }
+            rank++;
         }
 
         for (Player p : arena.getArenaSpectators().getSpectators().keySet()) {
-            setTabPlayer(p, status, arenaName, nrOfPlayers, spectators, true, null, null, teamTab, playerTab);
+            setTabPlayer(p, gameStatus, arenaName, nrOfPlayers, nrOfSpectators, true, null, null, playerTab);
         }
-
         TabAPI.updateAll();
     }
 
-    private void setTabPlayer(Player p, String status, String arena, String players, String spectators, boolean spectator, String team, String rank, String[] teamTab, String[] playerTab) {
-        int row = tabController.setTopTab(p, Gamemodes.TDM);
+    private void setTabPlayer(Player p, String status, String arena, String players, String spectators, boolean specator, String kills, String rank, String[] playersTab) {
+        int row = tabController.setTopTab(p, Gamemodes.OITC); int colom = 0;
         TabAPI.setTabString(plugin, p, 2, 1, status);
         TabAPI.setTabString(plugin, p, 3, 1, arena);
         TabAPI.setTabString(plugin, p, 4, 1, players);
         TabAPI.setTabString(plugin, p, 4, 2, spectators);
-        if (spectator) {
-            TabAPI.setTabString(plugin, p, 5, 1, ChatColor.GRAY + "Spectators");
+        if (specator) {
+            TabAPI.setTabString(plugin, p, 5, 1, ChatColor.GRAY + "Spectator");
         } else {
-            TabAPI.setTabString(plugin, p, 5, 1, team);
-            TabAPI.setTabString(plugin, p, 5, 2, rank);
+            TabAPI.setTabString(plugin, p, 5, 1, ChatColor.GREEN + kills);
+            TabAPI.setTabString(plugin, p, 5, 2, ChatColor.GREEN + rank);
         }
-
-        int colom = 0;
-        for (String cell : teamTab) {
+        for (String cell : playersTab) {
             if (cell != null) {
                 TabAPI.setTabString(plugin, p, row, colom, cell);
             }
             colom++;
-            if (colom == 3) {
+            if (colom > 2) {
                 row++;
                 if (row > 19) return;
                 colom = 0;
-            }
-        }
-
-        row++;
-        if (row < 18) {
-            TabAPI.setTabString(plugin, p, row, 1, ChatColor.GOLD + "-- Players --");
-            row++;
-            colom = 0;
-            for (String cell : playerTab) {
-                if (cell != null) {
-                    TabAPI.setTabString(plugin, p, row, colom, cell);
-                }
-                colom++;
-                if (colom == 3) {
-                    row++;
-                    if (row > 19) return;
-                    colom = 0;
-                }
             }
         }
     }
 
     @Override
     public void sortLists() {
-        Collections.sort(arena.getTeams(), teamComp);
+        Collections.sort(arena.getTeams().get(0).getPlayers(), comp);
     }
 
-    @Override
-    protected void createComp() {
-        teamComp = new Comparator<ArenaTeam>() {
-            @Override
-            public int compare(ArenaTeam o1, ArenaTeam o2) {
-                if (o1.getScore() < o2.getScore()) return 1;
-                if (o1.getScore() > o2.getScore()) return -1;
-                return 0;
-            }
-        };
-        playerComp = new Comparator<ArenaPlayer>() {
+    protected void createComp(){
+        comp = new Comparator<ArenaPlayer>() {
             @Override
             public int compare(ArenaPlayer o1, ArenaPlayer o2) {
                 int o1Kills = o1.getPlayerScore().getKills();
