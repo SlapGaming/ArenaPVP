@@ -68,16 +68,18 @@ public class OITC extends Gamemode {
                 Arrow arrow = (Arrow) event.getDamager();
                 //Check if arrow was shot by a player.
                 if (arrow.getShooter() instanceof Player) {
-                    Player killer = (Player) arrow.getShooter();
-
-                    //Can't kill yourself
-                    if (!killer.getName().equalsIgnoreCase(damaged.getName())) {
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                            public void run() {
-                                damaged.setHealth(0);
-                            }
-                        }, 1);
-                        arrow.remove();
+                    //Check if player isn't already dying
+                    if (!arenaPlayer.isDying()){
+                        Player killer = (Player) arrow.getShooter();
+                        //Can't kill yourself
+                        if (!killer.getName().equalsIgnoreCase(damaged.getName())) {
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                public void run() {
+                                    damaged.setHealth(0);
+                                }
+                            }, 1);
+                            arrow.remove();
+                        }
                     }
                 }
             }

@@ -30,7 +30,6 @@ public class FFA extends Gamemode {
 	
 	public FFA(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
 		super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.FFA);
-		settings.setFriendlyFire(true);
 		createComp();
 	}
 

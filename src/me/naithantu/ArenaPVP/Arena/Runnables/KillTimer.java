@@ -17,13 +17,13 @@ public class KillTimer extends PlayerTimer{
         super(arenaPlayer.getTimers());
         this.player = player;
         this.arenaPlayer = arenaPlayer;
-        arenaPlayer.setIsDying(true);
+        arenaPlayer.setDying(true);
     }
 
     @Override
     public void run(){
         super.run();
         player.setHealth(0);
-        arenaPlayer.setIsDying(false);
+        arenaPlayer.setDying(false);
     }
 }

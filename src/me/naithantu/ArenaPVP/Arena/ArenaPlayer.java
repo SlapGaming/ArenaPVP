@@ -16,6 +16,8 @@ public class ArenaPlayer {
 	private ArenaPlayerState playerState = ArenaPlayerState.PLAYING;
 	private ChatChannel chatChannel;
 
+    private boolean dying;
+
 	public ArenaPlayer(ArenaPVP plugin, Player player, Arena arena, ArenaTeam team) {
 		this.playerName = player.getName();
 		this.arena = arena;
@@ -64,4 +66,12 @@ public class ArenaPlayer {
 	public enum ChatChannel {
 		TEAM, ALL, NONE
 	}
+
+    public void setDying(boolean dying){
+        this.dying = dying;
+    }
+
+    public boolean isDying(){
+        return dying;
+    }
 }
