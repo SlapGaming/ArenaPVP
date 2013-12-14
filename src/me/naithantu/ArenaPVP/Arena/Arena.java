@@ -78,7 +78,7 @@ public class Arena {
         arenaUtil = new ArenaUtil(this);
         arenaArea = new ArenaArea(plugin, this, settings, arenaConfig);
         arenaSpectators = new ArenaSpectators(this);
-        arenaChat = new ArenaChat(this);
+        arenaChat = new ArenaChat(plugin, arenaManager, this);
 
         tabController = plugin.getTabController();
 
