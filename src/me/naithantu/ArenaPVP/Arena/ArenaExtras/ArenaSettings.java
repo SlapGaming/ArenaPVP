@@ -1,29 +1,37 @@
 package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
+import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class ArenaSettings {
-	FileConfiguration config;
+    private YamlStorage arenaStorage;
+    private	FileConfiguration config;
 
-	int maxPlayers;
-	int respawnTime;
-	int scoreLimit;
-	int outOfBoundsTime;
-	int spawnProtection;
+    private	int maxPlayers;
+    private	int respawnTime;
+    private	int scoreLimit;
+    private	int outOfBoundsTime;
+    private	int spawnProtection;
 
-	boolean friendlyFire;
-	boolean autojoinPvpChat;
-	boolean outOfBoundsArea;
-	boolean autoBalance;
-	boolean allowItemDrop;
-	boolean allowBlockChange;
+    private	boolean friendlyFire;
+    private	boolean autojoinPvpChat;
+    private	boolean outOfBoundsArea;
+    private	boolean autoBalance;
+    private	boolean allowItemDrop;
+    private	boolean allowBlockChange;
 	
-	public ArenaSettings(FileConfiguration config) {
-		this.config = config;
+	public ArenaSettings(YamlStorage arenaStorage) {
+        this.arenaStorage = arenaStorage;
+		config = arenaStorage.getConfig();
 		initializeSettings();
 	}
 
-	public void initializeSettings() {
+    public void reloadSettings(){
+        arenaStorage.reloadConfig();
+        initializeSettings();
+    }
+
+	private void initializeSettings() {
 		maxPlayers = config.getInt("maxplayers");
 		respawnTime = config.getInt("respawntime");
 		scoreLimit = config.getInt("scorelimit");
@@ -80,49 +88,5 @@ public class ArenaSettings {
 	
 	public boolean isAllowBlockChange() {
 		return allowBlockChange;
-	}
-
-	public void setMaxPlayers(int maxPlayers) {
-		this.maxPlayers = maxPlayers;
-	}
-
-	public void setRespawnTime(int respawnTime) {
-		this.respawnTime = respawnTime;
-	}
-
-	public void setScoreLimit(int scoreLimit) {
-		this.scoreLimit = scoreLimit;
-	}
-
-	public void setOutOfBoundsTime(int outOfBoundsTime) {
-		this.outOfBoundsTime = outOfBoundsTime;
-	}
-
-	public void setSpawnProtection(int spawnProtection) {
-		this.spawnProtection = spawnProtection;
-	}
-	
-	public void setFriendlyFire(boolean friendlyFire) {
-		this.friendlyFire = friendlyFire;
-	}
-
-	public void setForcePvpChat(boolean forcePvpChat) {
-		this.autojoinPvpChat = forcePvpChat;
-	}
-
-	public void setOutOfBoundsArea(boolean outOfBoundsArea) {
-		this.outOfBoundsArea = outOfBoundsArea;
-	}
-
-	public void setAutoBalance(boolean autoBalance) {
-		this.autoBalance = autoBalance;
-	}
-	
-	public void setAllowItemDrop(boolean allowItemDrop) {
-		this.allowItemDrop = allowItemDrop;
-	}
-	
-	public void setAllowBlockChange(boolean allowBlockChange) {
-		this.allowBlockChange = allowBlockChange;
 	}
 }

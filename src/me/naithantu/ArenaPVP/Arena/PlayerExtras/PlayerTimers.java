@@ -14,6 +14,9 @@ import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
 import me.naithantu.ArenaPVP.Arena.Runnables.OutOfBoundsTimer;
 import me.naithantu.ArenaPVP.Util.Util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayerTimers {
 	ArenaPVP plugin;
 	Arena arena;
@@ -30,6 +33,9 @@ public class PlayerTimers {
 
 	//Don't need boolean for respawning, is done via playerstate.
 	int respawnTimerID;
+
+    //Contains all other timers that run on a player, should never contain
+    List<PlayerTimer> playerTimers = new ArrayList<PlayerTimer>();
 
 	public PlayerTimers(ArenaPVP plugin, Arena arena, ArenaPlayer arenaPlayer, Player player) {
 		this.plugin = plugin;
@@ -51,6 +57,10 @@ public class PlayerTimers {
 		if (arenaPlayer.getPlayerState() == ArenaPlayerState.RESPAWNING) {
 			arenaPlayer.setPlayerState(ArenaPlayerState.PLAYING);
 		}
+
+        for(PlayerTimer playerTimer: playerTimers){
+            playerTimer.cancel();
+        }
 	}
 
 	public boolean isOutOfBounds() {
@@ -108,4 +118,12 @@ public class PlayerTimers {
 			}
 		}, settings.getRespawnTime() * 20);
 	}
+
+    public void addTimer(PlayerTimer playerTimer){
+        playerTimers.add(playerTimer);
+    }
+
+    public void removeTimer(PlayerTimer playerTimer) {
+        playerTimers.remove(playerTimer);
+    }
 }

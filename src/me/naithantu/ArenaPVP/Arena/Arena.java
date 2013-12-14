@@ -73,7 +73,7 @@ public class Arena {
 
         nickName = arenaConfig.getString("nickname");
 
-        settings = new ArenaSettings(arenaConfig);
+        settings = new ArenaSettings(arenaStorage);
         arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaStorage);
         arenaUtil = new ArenaUtil(this);
         arenaArea = new ArenaArea(plugin, this, settings, arenaConfig);
@@ -249,7 +249,7 @@ public class Arena {
                 public void run() {
                     stop();
                 }
-            });
+            }, 1);
         } else {
             stop();
         }

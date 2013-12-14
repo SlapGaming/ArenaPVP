@@ -25,6 +25,8 @@ import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -48,6 +50,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.Vector;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
 public abstract class Gamemode {
@@ -197,7 +200,20 @@ public abstract class Gamemode {
         if(arena.getArenaState() == ArenaState.STARTING){
             //Check if player moved x or z (jumping/falling is fine).
             if (event.getTo().getX() != event.getFrom().getX() || event.getTo().getZ() != event.getFrom().getZ()) {
-                event.setCancelled(true);
+                Block target = event.getFrom().getBlock();
+                while(target.getRelative(BlockFace.DOWN).isEmpty()) {
+                    if(target.getRelative(BlockFace.DOWN).getY() == 0){
+                        event.setTo(arenaSpawns.getRespawnLocation(event.getPlayer(), arenaPlayer, SpawnType.SPECTATOR));
+                        return;
+                    }
+                    target = target.getRelative(BlockFace.DOWN);
+                }
+                Location targetLocation = target.getLocation();
+                targetLocation.setPitch(event.getTo().getPitch());
+                targetLocation.setYaw(event.getTo().getYaw());
+                targetLocation.setX(event.getFrom().getX());
+                targetLocation.setZ(event.getFrom().getZ());
+                event.setTo(targetLocation);
             }
         } else {
             if (settings.isOutOfBoundsArea() && !event.getPlayer().isDead()) {
@@ -307,15 +323,15 @@ public abstract class Gamemode {
 
 	public void onPlayerLeaveArena(final EventLeaveArena event) {
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				Player p = Bukkit.getPlayerExact(event.getArenaPlayer().getPlayerName());
-				if (p != null) {
-					clearTab(p);
-				}
-				updateTabs();
-			}
-		}, 1);
+            @Override
+            public void run() {
+                Player p = Bukkit.getPlayerExact(event.getArenaPlayer().getPlayerName());
+                if (p != null) {
+                    clearTab(p);
+                }
+                updateTabs();
+            }
+        }, 1);
 	}
 
 	public void onPlayerArenaRespawn(final EventRespawn event) {

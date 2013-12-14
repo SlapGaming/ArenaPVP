@@ -6,8 +6,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.*;
+import me.naithantu.ArenaPVP.Arena.Runnables.KillTimer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
@@ -76,20 +78,21 @@ public class Paintball extends Gamemode {
                 Snowball snowball = (Snowball) event.getDamager();
                 //Check if snowball was thrown by a player.
                 if (snowball.getShooter() instanceof Player) {
-                    Player killer = (Player) snowball.getShooter();
-                    ArenaTeam team = arenaManager.getPlayerByName(killer.getName()).getTeam();
-                    team.addScore();
-                    arenaUtil.sendMessageAll(team.getTeamColor() + killer.getName() + ChatColor.WHITE + " fragged " + arenaPlayer.getTeam().getTeamColor() + arenaPlayer.getPlayerName() + ChatColor.WHITE + "!");
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-                        public void run(){
-                            ((Player) event.getEntity()).setHealth(0);
+                    //Check if player isn't already dying
+                    if (!arenaPlayer.isDying()){
+                        Player killer = (Player) snowball.getShooter();
+                        killer.playSound(killer.getLocation(), Sound.ORB_PICKUP, 1, 0);
+                        ArenaTeam team = arenaManager.getPlayerByName(killer.getName()).getTeam();
+                        team.addScore();
+                        arenaUtil.sendMessageAll(team.getTeamColor() + killer.getName() + ChatColor.WHITE + " fragged " + arenaPlayer.getTeam().getTeamColor() + arenaPlayer.getPlayerName() + ChatColor.WHITE + "!");
+                        KillTimer killTimer = new KillTimer(arenaPlayer, (Player) event.getEntity());
+                        killTimer.runTaskLater(plugin, 1);
+                        if (team.getScore() >= settings.getScoreLimit()) {
+                            arena.stopGame(team);
+                        } else {
+                            sortLists();
+                            updateTabs();
                         }
-                    }, 1);
-                    if (team.getScore() >= settings.getScoreLimit()) {
-                        arena.stopGame(team);
-                    } else {
-                        sortLists();
-                        updateTabs();
                     }
                 }
             }

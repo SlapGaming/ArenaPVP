@@ -8,6 +8,7 @@ import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class StartArena extends BukkitRunnable {
@@ -18,17 +19,26 @@ public class StartArena extends BukkitRunnable {
 	public StartArena(Arena arena) {
 		this.arena = arena;
 		arenaUtil = arena.getArenatUtil();
-	}
+
+        arena.setArenaState(ArenaState.STARTING);
+        for(ArenaTeam team: arena.getTeams()){
+            for(ArenaPlayer arenaPlayer: team.getPlayers()){
+                Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
+                player.setWalkSpeed(0.0F);
+            }
+        }
+    }
 
 	public void run() {
-		arena.setArenaState(ArenaState.STARTING);
 		arenaUtil.sendMessageAll("The game is starting in " + timeLeft + "...");
 		timeLeft--;
 		if (timeLeft == 0) {
 			arenaUtil.sendMessageAll("You have been teleported to your teams spawn point, let the games begin!");
 			for (ArenaTeam team : arena.getTeams()) {
 				for (ArenaPlayer arenaPlayer : team.getPlayers()) {
-					Bukkit.getPlayer(arenaPlayer.getPlayerName()).teleport(arena.getArenaSpawns().getRespawnLocation(Bukkit.getPlayer(arenaPlayer.getPlayerName()), arenaPlayer, SpawnType.PLAYER));
+                    Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
+					player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
+                    player.setWalkSpeed(0.2F);
 				}
 			}
 			arena.setArenaState(ArenaState.PLAYING);
