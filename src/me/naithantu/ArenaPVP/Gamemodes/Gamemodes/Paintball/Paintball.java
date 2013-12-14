@@ -132,7 +132,7 @@ public class Paintball extends Gamemode {
                 killString = killString + " ";
             }
             kills.add(killString);
-            teamTab[x] = ChatColor.RED + killString;
+            teamTab[x] = ChatColor.GREEN + killString;
             x++;
         }
 

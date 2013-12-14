@@ -83,7 +83,7 @@ public class TDM extends Gamemode {
 				killString = killString + " ";
 			}
 			kills.add(killString);
-			teamTab[x] = ChatColor.RED + killString; x++;
+			teamTab[x] = ChatColor.GREEN + killString; x++;
 		}
 		
 		Collections.sort(players, playerComp);
