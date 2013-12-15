@@ -78,12 +78,12 @@ public class TDM extends Gamemode {
 			players.addAll(team.getPlayers());
 			teamTab[x] = ChatColor.GRAY + "Rank " + rank + " ->"; rank++; x++;
 			teamTab[x] = team.getTeamColor() + team.getTeamName(); x++;
-			String killString = team.getScore() + " Kills";
+			String killString = ChatColor.GREEN + "" + team.getScore() + " Kills";
 			while (kills.contains(killString)) {
 				killString = killString + " ";
 			}
 			kills.add(killString);
-			teamTab[x] = ChatColor.GREEN + killString; x++;
+			teamTab[x] = killString; x++;
 		}
 		
 		Collections.sort(players, playerComp);
@@ -96,12 +96,12 @@ public class TDM extends Gamemode {
 			if (x == 0) playerTab[x] = ChatColor.GRAY + "MVP  ->";
 			x++;
 			playerTab[x] = player.getTeam().getTeamColor() + player.getPlayerName(); x++;
-			String killString = player.getPlayerScore().getKills() + " Kills";
+			String killString = ChatColor.RED + "" + player.getPlayerScore().getKills() + " Kills";
 			while (kills.contains(killString)) {
 				killString = killString + " ";
 			}
 			kills.add(killString);
-			playerTab[x] = ChatColor.RED + killString; x++;
+			playerTab[x] = killString; x++;
 			if (rank > 5) break;
 		}
 		

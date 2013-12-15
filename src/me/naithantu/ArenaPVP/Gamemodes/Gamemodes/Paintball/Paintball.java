@@ -127,12 +127,12 @@ public class Paintball extends Gamemode {
             x++;
             teamTab[x] = team.getTeamColor() + team.getTeamName();
             x++;
-            String killString = team.getScore() + " Frags";
+            String killString = ChatColor.GREEN + "" + team.getScore() + " Frags";
             while (kills.contains(killString)) {
                 killString = killString + " ";
             }
             kills.add(killString);
-            teamTab[x] = ChatColor.GREEN + killString;
+            teamTab[x] = killString;
             x++;
         }
 
@@ -147,12 +147,12 @@ public class Paintball extends Gamemode {
             x++;
             playerTab[x] = player.getTeam().getTeamColor() + player.getPlayerName();
             x++;
-            String killString = player.getPlayerScore().getKills() + " Frags";
+            String killString = ChatColor.RED + "" + player.getPlayerScore().getKills() + " Frags";
             while (kills.contains(killString)) {
                 killString = killString + " ";
             }
             kills.add(killString);
-            playerTab[x] = ChatColor.RED + killString;
+            playerTab[x] = killString;
             x++;
             if (rank > 5) break;
         }
