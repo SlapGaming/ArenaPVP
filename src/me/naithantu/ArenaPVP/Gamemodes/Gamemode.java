@@ -97,14 +97,14 @@ public abstract class Gamemode {
 	public void sendScore(CommandSender sender) {
 		Util.msg(sender, "Score:");
 		for (ArenaTeam team : arena.getTeams()) {
-			Util.msg(sender, "Team " + team.getTeamColor() + team.getTeamName() + ChatColor.WHITE + ": " + team.getScore());
+			Util.msg(sender, "Team " + team.getColoredName() + ChatColor.WHITE + ": " + team.getScore());
 		}
 	}
 
 	public void sendScoreAll() {
 		arenaUtil.sendMessageAll("Score:");
 		for (ArenaTeam team : arena.getTeams()) {
-			arenaUtil.sendMessageAll("Team " + team.getTeamColor() + team.getTeamName() + ChatColor.WHITE + ": " + team.getScore());
+			arenaUtil.sendMessageAll("Team " + team.getColoredName() + ChatColor.WHITE + ": " + team.getScore());
 		}
 	}
 

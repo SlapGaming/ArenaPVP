@@ -125,7 +125,7 @@ public class Paintball extends Gamemode {
             teamTab[x] = ChatColor.GRAY + "Rank " + rank + " ->";
             rank++;
             x++;
-            teamTab[x] = team.getTeamColor() + team.getTeamName();
+            teamTab[x] = team.getColoredName();
             x++;
             String killString = ChatColor.GREEN + "" + team.getScore() + " Frags";
             while (kills.contains(killString)) {
@@ -159,7 +159,7 @@ public class Paintball extends Gamemode {
 
         rank = 1;
         for (ArenaTeam team : teams) {
-            String teamName = team.getTeamColor() + team.getTeamName() + " ";
+            String teamName = team.getColoredName() + " ";
             String ranking = ChatColor.GREEN + "Rank " + rank;
             rank++;
             for (ArenaPlayer aP : team.getPlayers()) {

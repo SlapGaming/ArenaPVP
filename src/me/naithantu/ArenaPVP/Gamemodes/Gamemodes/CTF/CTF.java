@@ -93,7 +93,7 @@ public class CTF extends Gamemode {
                             nearFlag = true;
                             if (getFlagCarrier(team) == null) {
                                 ArenaTeam stolenTeam = flags.get(playerName);
-                                arenaUtil.sendMessageAll(team.getTeamColor() + playerName + ChatColor.WHITE + " has captured the " + stolenTeam.getTeamColor() + stolenTeam.getTeamName() + ChatColor.WHITE + " flag!");
+                                arenaUtil.sendMessageAll(team.getTeamColor() + playerName + ChatColor.WHITE + " has captured the " + stolenTeam.getColoredName() + ChatColor.WHITE + " flag!");
                                 flags.remove(playerName);
                                 player.getInventory().setArmorContents(arenaPlayer.getTeam().getArmor());
                                 team.addScore();
@@ -124,7 +124,7 @@ public class CTF extends Gamemode {
                                     if (getFlagCarrier(arenaTeam) == null) {
                                         flags.put(player.getName(), arenaTeam);
                                         player.getInventory().setHelmet(flagBlocks.get(arenaTeam));
-                                        arenaUtil.sendMessageAll(arenaPlayer.getTeam().getTeamColor() + playerName + ChatColor.WHITE + " has taken the " + arenaTeam.getTeamColor() + arenaTeam.getTeamName() + ChatColor.WHITE + " flag!");
+                                        arenaUtil.sendMessageAll(arenaPlayer.getTeam().getTeamColor() + playerName + ChatColor.WHITE + " has taken the " + arenaTeam.getColoredName() + ChatColor.WHITE + " flag!");
                                         updateTabs();
                                     } else {
                                         if (!gotInfoMessage.contains(player.getName())) {
@@ -151,7 +151,7 @@ public class CTF extends Gamemode {
         String playerName = event.getEntity().getName();
         if (flags.containsKey(playerName)) {
             ArenaTeam stolenTeam = flags.get(arenaPlayer.getPlayerName());
-            arenaUtil.sendMessageAll("The " + stolenTeam.getTeamColor() + stolenTeam.getTeamName() + ChatColor.WHITE + " flag has been returned!");
+            arenaUtil.sendMessageAll("The " + stolenTeam.getColoredName() + ChatColor.WHITE + " flag has been returned!");
             flags.remove(playerName);
             event.getEntity().getInventory().setArmorContents(arenaPlayer.getTeam().getArmor());
             updateTabs();
@@ -164,7 +164,7 @@ public class CTF extends Gamemode {
         String playerName = event.getPlayer().getName();
         if (flags.containsKey(playerName)) {
             ArenaTeam stolenTeam = flags.get(arenaPlayer.getPlayerName());
-            arenaUtil.sendMessageAll("The " + stolenTeam.getTeamColor() + stolenTeam.getTeamName() + ChatColor.WHITE + " flag has been returned!");
+            arenaUtil.sendMessageAll("The " + stolenTeam.getColoredName() + ChatColor.WHITE + " flag has been returned!");
             flags.remove(playerName);
             updateTabs();
         }
@@ -205,7 +205,11 @@ public class CTF extends Gamemode {
                 nrOfPlayers++;
             }
             if (flags.containsValue(team)) {
-                teamString[z] = teamColor + "" + ChatColor.BOLD + "FLAG TAKEN!!";
+                for(Map.Entry<String, ArenaTeam> entrySet: flags.entrySet()){
+                    if(entrySet.getValue() == team){
+                        teamString[z] = teamColor + "Flag; " + entrySet.getKey();
+                    }
+                }
             } else {
                 teamString[z] = teamColor + "Flag in place";
             }
@@ -220,7 +224,7 @@ public class CTF extends Gamemode {
         String playerString = nrOfPlayers + " (" + teams.size() + " Teams)";
         int rank = 1;
         for (ArenaTeam team : teams) {
-            String teamName = team.getTeamColor() + team.getTeamName();
+            String teamName = team.getColoredName();
             String ranking = ChatColor.GREEN + "Rank " + rank;
             for (ArenaPlayer player : team.getPlayers()) {
                 Player p = Bukkit.getPlayerExact(player.getPlayerName());

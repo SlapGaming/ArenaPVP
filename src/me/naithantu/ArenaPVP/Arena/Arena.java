@@ -185,7 +185,7 @@ public class Arena {
         EventJoinArena event = new EventJoinArena(player, teamToJoin);
         gamemode.onPlayerJoinArena(event);
         if (!event.isCancelled()) {
-            Util.msg(player, "You joined team " + event.getTeam().getTeamName() + "!");
+            Util.msg(player, "You joined team " + event.getTeam().getColoredName() + "!");
 
             //Teleport first to avoid problems with MVInventories
             YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
@@ -229,14 +229,14 @@ public class Arena {
 
     public void stopGame(ArenaPlayer winPlayer) {
         if (winPlayer != null) {
-            arenaUtil.sendMessageAll(winPlayer.getPlayerName() + " has won the game!");
+            arenaUtil.sendMessageAll(winPlayer.getTeam().getTeamColor() + winPlayer.getPlayerName() + " has won the game!");
         }
         stopGame();
     }
 
     public void stopGame(ArenaTeam winTeam) {
         if (winTeam != null) {
-            arenaUtil.sendMessageAll("Team " + winTeam.getTeamName() + " has won the game!");
+            arenaUtil.sendMessageAll("Team " + winTeam.getColoredName() + " has won the game!");
         }
         stopGame();
     }

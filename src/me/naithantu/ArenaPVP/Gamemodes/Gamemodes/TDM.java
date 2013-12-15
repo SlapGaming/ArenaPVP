@@ -77,7 +77,7 @@ public class TDM extends Gamemode {
 		for (ArenaTeam team : arena.getTeams()) {
 			players.addAll(team.getPlayers());
 			teamTab[x] = ChatColor.GRAY + "Rank " + rank + " ->"; rank++; x++;
-			teamTab[x] = team.getTeamColor() + team.getTeamName(); x++;
+			teamTab[x] = team.getColoredName(); x++;
 			String killString = ChatColor.GREEN + "" + team.getScore() + " Kills";
 			while (kills.contains(killString)) {
 				killString = killString + " ";
@@ -107,7 +107,7 @@ public class TDM extends Gamemode {
 		
 		rank = 1;
 		for (ArenaTeam team : teams) {
-			String teamName = team.getTeamColor() + team.getTeamName() + " ";
+			String teamName = team.getColoredName() + " ";
 			String ranking = ChatColor.GREEN + "Rank " + rank; rank++;
 			for (ArenaPlayer aP : team.getPlayers()) {
 				Player p = Bukkit.getPlayerExact(aP.getPlayerName());

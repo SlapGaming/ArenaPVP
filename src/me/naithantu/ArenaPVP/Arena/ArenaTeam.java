@@ -55,6 +55,10 @@ public class ArenaTeam {
 		return teamColor;
 	}
 
+    public String getColoredName() {
+        return teamColor + teamName;
+    }
+
 	public void setTeamName(String teamName) {
 		this.teamName = teamName;
 	}
