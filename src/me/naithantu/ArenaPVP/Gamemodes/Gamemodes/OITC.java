@@ -95,6 +95,9 @@ public class OITC extends Gamemode {
 
     @Override
     public void onPlayerDeath(PlayerDeathEvent event, ArenaPlayer arenaPlayer) {
+        // Remove the death message, death messages are being sent in onPlayerKill
+        event.setDeathMessage(null);
+
         super.onPlayerDeath(event, arenaPlayer);
         Player killer = event.getEntity().getKiller();
         if (killer != null) {
@@ -102,9 +105,6 @@ public class OITC extends Gamemode {
             Player player = event.getEntity();
             onPlayerKill(killer, player, playerScore, arenaPlayer);
         }
-
-        // Remove the death message, death messages are being sent in onPlayerKill
-        event.setDeathMessage(null);
     }
 
     private void onPlayerKill(Player killer, Player player, PlayerScore playerScore, ArenaPlayer arenaPlayer) {
