@@ -24,6 +24,7 @@ public class ArenaSettings {
     private	boolean allowItemDrop;
     private	boolean allowBlockChange;
     private boolean allowSpectateFly;
+    private boolean allowSpectateInArea;
 	
 	public ArenaSettings(YamlStorage arenaStorage) {
         this.arenaStorage = arenaStorage;
@@ -50,6 +51,8 @@ public class ArenaSettings {
 		autoBalance = config.getBoolean("autobalance");
 		allowItemDrop = config.getBoolean("allowitemdrop");
 		allowBlockChange = config.getBoolean("allowblockchange");
+        allowSpectateInArea = config.getBoolean("allowspectateinarea");
+        allowSpectateFly = config.getBoolean("allowspectatefly");
 
         scoreLimit = new IntSetting(config.getInt("scorelimit"), SettingGroup.GAMESETTINGS, "Score limit");
 	}
@@ -104,5 +107,9 @@ public class ArenaSettings {
 
     public boolean isAllowSpectateFly() {
         return allowSpectateFly;
+    }
+
+    public boolean isAllowSpectateInArea() {
+        return allowSpectateInArea;
     }
 }

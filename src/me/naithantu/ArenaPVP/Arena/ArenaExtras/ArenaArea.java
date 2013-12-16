@@ -27,7 +27,7 @@ public class ArenaArea {
     ArenaSettings settings;
 
     WorldGuardPlugin worldGuard;
-    String worldGuardRegion;
+    String pvpRegion;
     String spectatorRegion;
 
     HashMap<String, OutOfBoundsTimer> outOfBoundsTimers = new HashMap<String, OutOfBoundsTimer>();
@@ -38,40 +38,46 @@ public class ArenaArea {
         this.settings = settings;
 
         worldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
-        worldGuardRegion = config.getString("outofboundsregion");
+        pvpRegion = config.getString("outofboundsregion");
         if (config.contains("spectatoroutofboundsregion")) {
             spectatorRegion = config.getString("spectatoroutofboundsregion");
         } else {
-            spectatorRegion = worldGuardRegion;
+            spectatorRegion = pvpRegion;
         }
     }
 
     public void handleMove(PlayerMoveEvent event, ArenaPlayer arenaPlayer) {
         PlayerTimers playerTimers = arenaPlayer.getTimers();
-        String regionName;
-        if (arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING) {
-            regionName = spectatorRegion;
-        } else {
-            regionName = worldGuardRegion;
-        }
-
         Player player = event.getPlayer();
         Location location = event.getTo();
         if (arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING) {
-            if (!checkArea(location, regionName)) {
-                if (player.isFlying() || !checkArea(location.add(0, 1, 0), regionName)) {
-                    event.setTo(event.getFrom());
-                    player.setVelocity(new Vector(0, 0, 0));
-                } else {
-                    //If player isn't flying and only has the region above him, teleport back to spectator spawn.
+            //If spectator leaves spectator area, prevent this.
+            if (!checkArea(location, spectatorRegion)) {
+                //If player isn't flying and only has the spectator region above him, teleport back to spectator spawn.
+                if (!player.isFlying() && checkArea(location.add(0, 1, 0), spectatorRegion)) {
                     player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, ArenaSpawns.SpawnType.SPECTATOR));
                     Util.msg(player, "You seem to have fallen out of the spectator area, teleported back to spectator spawn!");
+                } else {
+                    //If player isn't flying and only has the region above him, teleport back to spectator spawn.
+                    event.setTo(event.getFrom());
+                    player.setVelocity(new Vector(0, 0, 0));
+                }
+            //If spectator enters pvp area when he's not allowed to, prevent this.
+            } else if (!settings.isAllowSpectateInArea() && checkArea(location, pvpRegion)){
+                //If player isn't flying and fell down into the pvp region (no pvp region above him), teleport back to spectator spawn.
+                if (!player.isFlying() && !checkArea(location.add(0, 1, 0), pvpRegion)) {
+                    player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, ArenaSpawns.SpawnType.SPECTATOR));
+                    Util.msg(player, "You seem to have fallen into the pvp area, teleported back to spectator spawn!");
+                } else {
+                    //If player isn't flying and only has the region above him, teleport back to spectator spawn.
+                    event.setTo(event.getFrom());
+                    player.setVelocity(new Vector(0, 0, 0));
                 }
             }
         } else if (arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING && arena.getArenaState() == ArenaState.PLAYING) {
-            if (playerTimers.isOutOfBounds() && checkArea(location, regionName)) {
+            if (playerTimers.isOutOfBounds() && checkArea(location, pvpRegion)) {
                 arenaPlayer.getTimers().setOutOfBounds(player, false);
-            } else if (!playerTimers.isOutOfBounds() && !checkArea(location, regionName)) {
+            } else if (!playerTimers.isOutOfBounds() && !checkArea(location, pvpRegion)) {
                 arenaPlayer.getTimers().setOutOfBounds(player, true);
             }
         }
