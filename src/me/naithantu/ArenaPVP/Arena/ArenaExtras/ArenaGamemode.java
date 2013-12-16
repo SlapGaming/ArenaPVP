@@ -1,5 +1,6 @@
 package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
+import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemodes.*;

@@ -26,12 +26,13 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ArenaPVP extends JavaPlugin {
-	CommandHandler commandHandler;
-	ArenaManager arenaManager;
-	
-	Logger logger;
-	
-	TabController tabController;
+	private CommandHandler commandHandler;
+    private ArenaManager arenaManager;
+
+    private PluginManager pm;
+    private Logger logger;
+
+    private TabController tabController;
 			
 	@Override
 	public void onEnable(){
@@ -42,15 +43,15 @@ public class ArenaPVP extends JavaPlugin {
 			logger.log(Level.INFO, "No config found, generating default config.");
 			saveDefaultConfig();
 		}
-		generateConfig();
-		
+
 		arenaManager = new ArenaManager();
 		commandHandler = new CommandHandler(this, arenaManager);
 		
 		tabController = new TabController(this);
-		
-		registerListeners();
-		
+
+        pm = Bukkit.getPluginManager();
+        registerListeners();
+
 		//Create required directories
 		new File(getDataFolder() + File.separator + "maps").mkdirs();
 		new File(getDataFolder() + File.separator + "players").mkdirs();
@@ -66,7 +67,6 @@ public class ArenaPVP extends JavaPlugin {
 	}
 	
 	public void registerListeners(){
-		PluginManager pm = Bukkit.getPluginManager();
 		//Player events.
 		pm.registerEvents(new BlockListener(arenaManager), this);
 		pm.registerEvents(new ChatListener(arenaManager), this);
@@ -83,12 +83,11 @@ public class ArenaPVP extends JavaPlugin {
         pm.registerEvents(new ProjectileHitListener(arenaManager), this);
 
 	}
-	
-	public void generateConfig(){
-		//Configuration config = getConfig();
-		
-	}
-	
+
+    public void unRegisterListeners(){
+        //TODO unregister listeners when no arenas are loaded. Re-register when an arena is selected.
+    }
+
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		return commandHandler.handle(sender, cmd, args);
 	}

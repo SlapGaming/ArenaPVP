@@ -1,8 +1,8 @@
 package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
-import java.util.List;
 import java.util.Random;
 
+import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;

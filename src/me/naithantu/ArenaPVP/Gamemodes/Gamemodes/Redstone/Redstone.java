@@ -9,8 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.inventory.ItemStack;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
 import me.naithantu.ArenaPVP.ArenaManager;
@@ -20,7 +18,7 @@ import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSettings;
+import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;

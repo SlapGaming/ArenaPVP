@@ -9,7 +9,7 @@ import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaArea;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaChat;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSettings;
+import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpectators;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
@@ -27,7 +27,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Entity;
@@ -45,13 +44,11 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.util.Vector;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
 public abstract class Gamemode {
@@ -166,7 +163,6 @@ public abstract class Gamemode {
 					newProjectile.setShooter(damageProjectile.getShooter());
 					damageProjectile.remove();
 				}
-
 			}
 		} else {
 			//All mob versus Player damage is fine, check if damager is a player.
@@ -217,14 +213,25 @@ public abstract class Gamemode {
                 event.setTo(targetLocation);
             }
         } else {
-            if (settings.isOutOfBoundsArea() && !event.getPlayer().isDead()) {
-                //Check if player actually moved to prevent unnecessary checking.
-                if (event.getTo().getX() != event.getFrom().getX() || event.getTo().getZ() != event.getFrom().getZ() || event.getTo().getY() != event.getFrom().getY()) {
-                    arenaArea.handleMove(arenaPlayer, event.getPlayer(), event.getTo());
+            System.out.println(arenaPlayer.getPlayerState().name() + " : " + settings.isSpectatorOutOfBoundsArea());
+            if(arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING){
+                if (settings.isSpectatorOutOfBoundsArea() && !event.getPlayer().isDead()){
+                    checkMove(event, arenaPlayer);
+                }
+            } else {
+                if (settings.isOutOfBoundsArea() && !event.getPlayer().isDead()) {
+                    checkMove(event, arenaPlayer);
                 }
             }
         }
 	}
+
+    private void checkMove(PlayerMoveEvent event, ArenaPlayer arenaPlayer){
+        //Check if player actually moved to prevent unnecessary checking.
+        if (event.getTo().getX() != event.getFrom().getX() || event.getTo().getZ() != event.getFrom().getZ() || event.getTo().getY() != event.getFrom().getY()) {
+            arenaArea.handleMove(event, arenaPlayer);
+        }
+    }
 
 	public void onPlayerQuit(PlayerQuitEvent event, ArenaPlayer arenaPlayer) {
 		Player player = Bukkit.getPlayer(arenaPlayer.getPlayerName());
@@ -280,7 +287,7 @@ public abstract class Gamemode {
 	}
 
 	public void onPlayerBreakBlock(BlockBreakEvent event, ArenaPlayer arenaPlayer) {
-		if (arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
+		if (arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING || arena.getArenaState() != ArenaState.PLAYING) {
 			event.setCancelled(true);
 		} else {
 			if (!arena.getSettings().isAllowBlockChange()) {

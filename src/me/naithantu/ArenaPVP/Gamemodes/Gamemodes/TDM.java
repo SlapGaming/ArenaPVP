@@ -17,7 +17,7 @@ import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSettings;
+import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;

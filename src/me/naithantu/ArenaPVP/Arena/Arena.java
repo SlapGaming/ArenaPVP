@@ -15,7 +15,7 @@ import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaArea;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaChat;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaGamemode;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSettings;
+import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpectators;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
@@ -176,8 +176,10 @@ public class Arena {
     }
 
     public void changeToSpectate(Player player, ArenaPlayer arenaPlayer) {
-        player.setAllowFlight(true);
-        player.setFlying(true);
+        if(settings.isAllowSpectateFly()){
+            player.setAllowFlight(true);
+            player.setFlying(true);
+        }
         arenaSpectators.addSpectator(arenaPlayer, player);
     }
 

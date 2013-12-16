@@ -8,7 +8,7 @@ import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSettings;
+import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
 import me.naithantu.ArenaPVP.Arena.Runnables.OutOfBoundsTimer;

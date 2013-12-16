@@ -7,15 +7,14 @@ import java.util.List;
 
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.*;
 import me.naithantu.ArenaPVP.Arena.Runnables.KillTimer;
+import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
 import me.naithantu.ArenaPVP.ArenaManager;
