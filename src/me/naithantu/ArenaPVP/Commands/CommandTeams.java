@@ -87,7 +87,7 @@ public class CommandTeams extends AbstractCommand {
 				}
 			}
 			
-			this.msg(sender, team.getColoredName() + ChatColor.WHITE + "(" + team.getPlayers().size() + "): " + strBuilder.toString());
+			this.msg(sender, team.getColoredName() + "(" + team.getPlayers().size() + "): " + strBuilder.toString());
 		}
 	}
 }

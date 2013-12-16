@@ -90,7 +90,7 @@ public class CTF extends Gamemode {
                             nearFlag = true;
                             if (getFlagCarrier(team) == null) {
                                 ArenaTeam stolenTeam = flags.get(playerName);
-                                arenaUtil.sendMessageAll(team.getTeamColor() + playerName + ChatColor.WHITE + " has captured the " + stolenTeam.getColoredName() + ChatColor.WHITE + " flag!");
+                                arenaUtil.sendMessageAll(team.getTeamColor() + playerName + ChatColor.WHITE + " has captured the " + stolenTeam.getColoredName() + " flag!");
                                 flags.remove(playerName);
                                 player.getInventory().setArmorContents(arenaPlayer.getTeam().getArmor());
                                 team.addScore();
@@ -121,10 +121,10 @@ public class CTF extends Gamemode {
                                     if (getFlagCarrier(arenaTeam) == null) {
                                         flags.put(player.getName(), arenaTeam);
                                         player.getInventory().setHelmet(flagBlocks.get(arenaTeam));
-                                        arenaUtil.sendMessageAll(arenaPlayer.getTeam().getTeamColor() + playerName + ChatColor.WHITE + " has taken the " + arenaTeam.getColoredName() + ChatColor.WHITE + " flag!");
+                                        arenaUtil.sendMessageAll(arenaPlayer.getTeam().getTeamColor() + playerName + ChatColor.WHITE + " has taken the " + arenaTeam.getColoredName() + " flag!");
                                         updateTabs();
                                     } else {
-                                        if (!gotInfoMessage.contains(player.getName())) {
+                                            if (!gotInfoMessage.contains(player.getName())) {
                                             Util.msg(player, "Someone in your team already has the enemy flag!");
                                             gotInfoMessage.add(player.getName());
                                         }
@@ -148,7 +148,7 @@ public class CTF extends Gamemode {
         String playerName = event.getEntity().getName();
         if (flags.containsKey(playerName)) {
             ArenaTeam stolenTeam = flags.get(arenaPlayer.getPlayerName());
-            arenaUtil.sendMessageAll("The " + stolenTeam.getColoredName() + ChatColor.WHITE + " flag has been returned!");
+            arenaUtil.sendMessageAll("The " + stolenTeam.getColoredName() + " flag has been returned!");
             flags.remove(playerName);
             event.getEntity().getInventory().setArmorContents(arenaPlayer.getTeam().getArmor());
             updateTabs();
@@ -161,7 +161,7 @@ public class CTF extends Gamemode {
         String playerName = event.getPlayer().getName();
         if (flags.containsKey(playerName)) {
             ArenaTeam stolenTeam = flags.get(arenaPlayer.getPlayerName());
-            arenaUtil.sendMessageAll("The " + stolenTeam.getColoredName() + ChatColor.WHITE + " flag has been returned!");
+            arenaUtil.sendMessageAll("The " + stolenTeam.getColoredName() + " flag has been returned!");
             flags.remove(playerName);
             updateTabs();
         }

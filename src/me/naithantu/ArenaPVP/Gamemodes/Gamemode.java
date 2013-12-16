@@ -94,14 +94,14 @@ public abstract class Gamemode {
 	public void sendScore(CommandSender sender) {
 		Util.msg(sender, "Score:");
 		for (ArenaTeam team : arena.getTeams()) {
-			Util.msg(sender, "Team " + team.getColoredName() + ChatColor.WHITE + ": " + team.getScore());
+			Util.msg(sender, "Team " + team.getColoredName() + ": " + team.getScore());
 		}
 	}
 
 	public void sendScoreAll() {
 		arenaUtil.sendMessageAll("Score:");
 		for (ArenaTeam team : arena.getTeams()) {
-			arenaUtil.sendMessageAll("Team " + team.getColoredName() + ChatColor.WHITE + ": " + team.getScore());
+			arenaUtil.sendMessageAll("Team " + team.getColoredName() + ": " + team.getScore());
 		}
 	}
 
@@ -213,7 +213,6 @@ public abstract class Gamemode {
                 event.setTo(targetLocation);
             }
         } else {
-            System.out.println(arenaPlayer.getPlayerState().name() + " : " + settings.isSpectatorOutOfBoundsArea());
             if(arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING){
                 if (settings.isSpectatorOutOfBoundsArea() && !event.getPlayer().isDead()){
                     checkMove(event, arenaPlayer);

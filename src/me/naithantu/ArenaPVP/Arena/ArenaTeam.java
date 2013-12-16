@@ -56,7 +56,7 @@ public class ArenaTeam {
 	}
 
     public String getColoredName() {
-        return teamColor + teamName;
+        return teamColor + teamName + ChatColor.WHITE;
     }
 
 	public void setTeamName(String teamName) {
