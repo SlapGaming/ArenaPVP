@@ -155,7 +155,7 @@ public class Arena {
         arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
         arenaManager.addPlayer(arenaPlayer);
         player.teleport(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
-        arenaSpectators.addSpectator(arenaPlayer, player);
+        arenaSpectators.addSpectator(player);
         arenaSpectators.getSpectators().put(player, arenaPlayer);
         changeToSpectate(player, arenaPlayer);
         gamemode.updateTabs();
@@ -180,7 +180,7 @@ public class Arena {
             player.setAllowFlight(true);
             player.setFlying(true);
         }
-        arenaSpectators.addSpectator(arenaPlayer, player);
+        arenaSpectators.addSpectator(player);
     }
 
     public boolean joinGame(Player player, ArenaTeam teamToJoin) {
@@ -208,7 +208,6 @@ public class Arena {
         if (!event.isCancelled()) {
             Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
             if (player != null) {
-                arenaSpectators.onPlayerLeave(player);
                 YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
                 Configuration playerConfig = playerStorage.getConfig();
                 if (player.isDead()) {

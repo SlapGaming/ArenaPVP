@@ -12,85 +12,83 @@ import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
 
 public class ArenaSpectators {
-	Arena arena;
+    Arena arena;
 
-	HashMap<Player, ArenaPlayer> spectators = new HashMap<Player, ArenaPlayer>();
+    HashMap<Player, ArenaPlayer> spectators = new HashMap<Player, ArenaPlayer>();
 
-    Team team;
+    public ArenaSpectators(Arena arena) {
+        this.arena = arena;
+    }
 
-	public ArenaSpectators(Arena arena) {
-		this.arena = arena;
+    public HashMap<Player, ArenaPlayer> getSpectators() {
+        return spectators;
+    }
 
-        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
-        Scoreboard scoreboard = scoreboardManager.getNewScoreboard();
-        team = scoreboard.registerNewTeam("spectators");
-        team.setCanSeeFriendlyInvisibles(true);
-        //TODO Make spectators see other spectators as ghosts (is this possible without adding annoying potion effects?)
-	}
+    public void addSpectator(Player spectator) {
+        //Hide spectator from players.
+        for (ArenaTeam team : arena.getTeams()) {
+            List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
+            for (ArenaPlayer arenaPlayer : players) {
+                Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
+                player.hidePlayer(spectator);
+                if (arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING) {
+                    spectator.hidePlayer(player);
+                }
+            }
+        }
 
-	public HashMap<Player, ArenaPlayer> getSpectators() {
-		return spectators;
-	}
-
-	public void addSpectator(ArenaPlayer arenaSpectator, Player spectator) {
-		//Hide spectator from players.
-		for (ArenaTeam team : arena.getTeams()) {
-			List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
-			for (ArenaPlayer arenaPlayer : players) {
-				Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
-				player.hidePlayer(spectator);
-			}
-		}
-
-		//Hide spectator from other spectators and hide other spectators from spectator.
-		for (Player player : spectators.keySet()) {
+        //Hide spectator from other spectators and hide other spectators from spectator.
+        for (Player player : spectators.keySet()) {
             spectator.hidePlayer(player);
-			player.hidePlayer(spectator);
-		}
+            player.hidePlayer(spectator);
+        }
+    }
 
-        team.addPlayer(spectator);
- 	}
+    public void removeSpectator(Player spectator) {
+        //Show spectator to other players and show other players to spectator.
+        for (ArenaTeam team : arena.getTeams()) {
+            List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
+            for (ArenaPlayer arenaPlayer : players) {
+                Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
+                player.showPlayer(spectator);
+                spectator.showPlayer(player);
+            }
+        }
 
-	public void removeSpectator(Player spectator) {		
-		//Show spectator to other players.
-		for (ArenaTeam team : arena.getTeams()) {
-			List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
-			for (ArenaPlayer arenaPlayer : players) {
-				Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
-				player.showPlayer(spectator);
-			}
-		}
+        //Show spectator to other spectators and show other spectators to spectator.
+        for (Player player : spectators.keySet()) {
+            player.showPlayer(spectator);
+            spectator.showPlayer(player);
+        }
+    }
 
-		//Show spectator to other spectators and show other spectators to spectator.
-		for (Player player : spectators.keySet()) {
-			player.showPlayer(spectator);
-			spectator.showPlayer(player);
-		}
+    public void removeAllSpectators() {
+        Set<Player> tempSpectator = new HashSet<Player>(spectators.keySet());
+        for (Player spectator : tempSpectator) {
+            removeSpectator(spectator);
+        }
+    }
 
-        team.removePlayer(spectator);
-	}
+    public void onPlayerJoin(Player player) {
+        //Check if spectating is actually enabled.
+        if (arena.getArenaStorage().getConfig().getBoolean("allowspectate")) { //TODO move allowspectate to settings class
+            //Hide spectators
+            for (Player spectator : spectators.keySet()) {
+                player.hidePlayer(spectator);
+            }
 
-	public void removeAllSpectators() {
-		Set<Player> tempSpectator = new HashSet<Player>(spectators.keySet());
-		for (Player spectator : tempSpectator) {
-			removeSpectator(spectator);
-		}
-	}
-
-	public void onPlayerJoin(Player player) {
-		for (Player spectator : spectators.keySet()) {
-			player.hidePlayer(spectator);
-		}
-	}
-
-	public void onPlayerLeave(Player player) {
-		for (Player spectator : spectators.keySet()) {
-			player.showPlayer(spectator);
-		}
-	}
+            //Hide hidden players.
+            for (ArenaTeam team : arena.getTeams()) {
+                List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
+                for (ArenaPlayer arenaPlayer : players) {
+                    Player pvpPlayer = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
+                    if (arenaPlayer.getPlayerState() == ArenaPlayerState.SPECTATING) {
+                        player.hidePlayer(pvpPlayer);
+                    }
+                }
+            }
+        }
+    }
 }
