@@ -41,26 +41,26 @@ import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 
 public class Arena {
-    ArenaPVP plugin;
-    ArenaManager arenaManager;
-    ArenaSpawns arenaSpawns;
-    ArenaSettings settings;
-    ArenaUtil arenaUtil;
-    ArenaArea arenaArea;
-    ArenaChat arenaChat;
-    ArenaSpectators arenaSpectators;
+    private ArenaPVP plugin;
+    private ArenaManager arenaManager;
+    private ArenaSpawns arenaSpawns;
+    private ArenaSettings settings;
+    private ArenaUtil arenaUtil;
+    private ArenaArea arenaArea;
+    private ArenaChat arenaChat;
+    private ArenaSpectators arenaSpectators;
 
-    List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
-    String nickName;
+    private List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
+    private String nickName;
 
-    String arenaName;
-    ArenaState arenaState;
-    Gamemode gamemode;
+    private String arenaName;
+    private ArenaState arenaState;
+    private Gamemode gamemode;
 
-    YamlStorage arenaStorage;
-    FileConfiguration arenaConfig;
+    private YamlStorage arenaStorage;
+    private FileConfiguration arenaConfig;
 
-    TabController tabController;
+    private TabController tabController;
 
     public Arena(ArenaPVP plugin, ArenaManager arenaManager, String arenaName) {
         this.plugin = plugin;
@@ -73,7 +73,7 @@ public class Arena {
 
         nickName = arenaConfig.getString("nickname");
 
-        settings = new ArenaSettings(arenaStorage);
+        settings = new ArenaSettings(plugin, arenaStorage);
         arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaStorage);
         arenaUtil = new ArenaUtil(this);
         arenaArea = new ArenaArea(plugin, this, settings, arenaConfig);
@@ -296,7 +296,7 @@ public class Arena {
         }
 
         //Remove arena from arenamanager.
-        arenaManager.getArenas().remove(arenaName);
+        arenaManager.removeArena(arenaName);
     }
 
     public void addTeam(ArenaTeam team) {

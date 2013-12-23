@@ -42,6 +42,8 @@ public class CommandHandler {
                 commandObj = new CommandChatspy(sender, cmdArgs, plugin, arenaManager);
             } else if (command.equals("create")) {
                 commandObj = new CommandCreate(sender, cmdArgs, plugin, arenaManager);
+            } else if (command.equals("change")) {
+                commandObj = new CommandChange(sender, cmdArgs, plugin, arenaManager);
             } else if (command.equals("join")) {
                 commandObj = new CommandJoin(sender, cmdArgs, plugin, arenaManager);
             } else if (command.equals("leave")) {

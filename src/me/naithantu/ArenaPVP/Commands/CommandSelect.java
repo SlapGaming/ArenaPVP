@@ -41,7 +41,7 @@ public class CommandSelect extends AbstractCommand {
         }
 
 		Arena arena = new Arena(plugin, arenaManager, arenaName);
-		arenaManager.getArenas().put(arenaName, arena);
+		arenaManager.addArena(arenaName, arena);
 		
 		this.msg(sender, "Loaded arena with name " + arena.getArenaName() + "!");
 		return true;

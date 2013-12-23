@@ -6,19 +6,35 @@ import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 public class ArenaManager {
-	HashMap<String, Arena> arenas = new HashMap<String, Arena>();
+    private ArenaPVP plugin;
+
+    private HashMap<String, Arena> arenas = new HashMap<String, Arena>();
 
     //Allplayers contains players and spectators
-    HashMap<String, ArenaPlayer> allPlayers = new HashMap<String, ArenaPlayer>();
+    private HashMap<String, ArenaPlayer> allPlayers = new HashMap<String, ArenaPlayer>();
 
-	public ArenaManager() {
-
+	public ArenaManager(ArenaPVP plugin) {
+        this.plugin = plugin;
 	}
 
 	public HashMap<String, Arena> getArenas() {
 		return arenas;
 	}
-	
+
+    public void addArena(String arenaName, Arena arena){
+        if(arenas.isEmpty()){
+            plugin.registerListeners();
+        }
+        arenas.put(arenaName, arena);
+    }
+
+    public void removeArena(String arenaName){
+        arenas.remove(arenaName);
+        if(arenas.isEmpty()){
+            plugin.unRegisterListeners();
+        }
+    }
+
 	public Arena getFirstArena(){
 		return arenas.entrySet().iterator().next().getValue();
 	}

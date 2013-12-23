@@ -1,12 +1,19 @@
 package me.naithantu.ArenaPVP.Arena.Settings;
 
-public abstract class Setting {
-    SettingGroup settingGroup;
-    String name;
+public class Setting<T> {
+    private SettingGroup settingGroup;
+    private String configKey;
+    private String name;
+    private String description;
 
-    public Setting(SettingGroup settingGroup, String name){
+    private T setting;
+
+    public Setting( T setting, SettingGroup settingGroup, String configKey, String name, String description){
         this.settingGroup = settingGroup;
+        this.setting = setting;
+        this.configKey = configKey;
         this.name = name;
+        this.description = description;
     }
 
     public Object getSettingGroup(){
@@ -15,5 +22,17 @@ public abstract class Setting {
 
     public String getName(){
         return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getConfigKey(){
+        return configKey;
+    }
+
+    public T getSetting(){
+        return setting;
     }
 }

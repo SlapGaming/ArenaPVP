@@ -22,6 +22,7 @@ import me.naithantu.ArenaPVP.Events.BukkitEvents.ProjectileHitListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -44,13 +45,12 @@ public class ArenaPVP extends JavaPlugin {
 			saveDefaultConfig();
 		}
 
-		arenaManager = new ArenaManager();
+		arenaManager = new ArenaManager(this);
 		commandHandler = new CommandHandler(this, arenaManager);
 		
 		tabController = new TabController(this);
 
         pm = Bukkit.getPluginManager();
-        registerListeners();
 
 		//Create required directories
 		new File(getDataFolder() + File.separator + "maps").mkdirs();
@@ -85,7 +85,7 @@ public class ArenaPVP extends JavaPlugin {
 	}
 
     public void unRegisterListeners(){
-        //TODO unregister listeners when no arenas are loaded. Re-register when an arena is selected.
+        HandlerList.unregisterAll(this);
     }
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
