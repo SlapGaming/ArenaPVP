@@ -52,6 +52,10 @@ public class SettingMenu {
         setupMenu();
     }
 
+    public void destroy(){
+        iconMenu.destroy();
+    }
+
     public ChangeStatus getChangeStatus() {
         return changeStatus;
     }
@@ -155,7 +159,11 @@ public class SettingMenu {
         }
         iconMenu.setOption(i, new ItemStack(Material.STAINED_CLAY, 1, (short) 13), "Add", "Adds a new spawn location at your position");
 
-        menuStatus = MenuStatus.SPAWNS;
+        if(configKey.equals("spectator")){
+            menuStatus = MenuStatus.SPECTATORSPAWNS;
+        } else {
+            menuStatus = MenuStatus.SPAWNS;
+        }
     }
 
     private void setupSpawnMenu(String teamKey, String spawnKey) {
@@ -166,7 +174,8 @@ public class SettingMenu {
 
         iconMenu.setOption(9, new ItemStack(Material.STAINED_CLAY, 1, (short) 3), spawnKey, location.getX() + "," + location.getY() + "," + location.getZ());
         iconMenu.setOption(18, new ItemStack(Material.STAINED_CLAY, 1, (short) 13), "Move", "Moves this spawn location to your position");
-        iconMenu.setOption(19, new ItemStack(Material.STAINED_CLAY, 1, (short) 14), "Remove", "Removes this spawn location");
+        iconMenu.setOption(19, new ItemStack(Material.STAINED_CLAY, 1, (short) 1), "Teleport", "Teleport to this spawn location");
+        iconMenu.setOption(20, new ItemStack(Material.STAINED_CLAY, 1, (short) 14), "Remove", "Removes this spawn location");
 
         if(teamKey.equals("spectator")){
             menuStatus = MenuStatus.SPECTATORSPAWN;
@@ -331,36 +340,46 @@ public class SettingMenu {
                         teamName = "spectators";
                     }
 
-                    if (name.equals("Move")) {
-                        String configKey = "spawns." + teamKey + "." + iconMenu.getName(9);
-                        Util.saveLocation(player.getLocation(), arenaStorage, configKey, true);
-                        Util.msg(player, "Changed spawn location #" + iconMenu.getName(9) + "!");
-                        stopChanging();
-                        iconMenu.update(player);
-                    } else if (name.equals("Remove")) {
-                        int spawnNumber = Integer.parseInt(iconMenu.getName(9));
+                    String configKey = "spawns." + teamKey + "." + iconMenu.getName(9);
 
-                        int spawns = arena.getArenaSpawns().getSpawns(teamKey).size();
-
-                        if (spawns == 1) {
-                            Util.msg(player, "This is the only spawn the team has, you may not remove it!");
+                    switch(name){
+                        case "Move":
+                            Util.saveLocation(player.getLocation(), arenaStorage, configKey, true);
+                            Util.msg(player, "Changed spawn location #" + iconMenu.getName(9) + "!");
                             stopChanging();
                             iconMenu.update(player);
-                        } else {
-                            arenaConfig.set("spawns." + teamKey + "." + spawnNumber, null);
+                            break;
+                        case "Teleport":
+                            player.teleport(Util.getLocation(arenaStorage, configKey));
+                            Util.msg(player, "Teleported to spawn location #" + iconMenu.getName(9) + "!");
+                            stopChanging();
+                            event.setWillClose(true);
+                            break;
+                        case "Remove":
+                            int spawnNumber = Integer.parseInt(iconMenu.getName(9));
 
-                            //If the removed spawn wasn't the last spawn, move last spawn to this number.
-                            int lastSpawn = spawns - 1;
-                            if (spawnNumber != lastSpawn) {
-                                Location location = Util.getLocation(arenaStorage, "spawns." + teamKey + "." + lastSpawn);
-                                arenaConfig.set("spawns." + teamKey + "." + lastSpawn, null);
-                                Util.saveLocation(location, arenaStorage, "spawns." + teamKey + "." + spawnNumber);
+                            int spawns = arena.getArenaSpawns().getSpawns(teamKey).size();
+
+                            if (spawns == 1) {
+                                Util.msg(player, "This is the only spawn the team has, you may not remove it!");
+                                stopChanging();
+                                iconMenu.update(player);
+                            } else {
+                                arenaConfig.set("spawns." + teamKey + "." + spawnNumber, null);
+
+                                //If the removed spawn wasn't the last spawn, move last spawn to this number.
+                                int lastSpawn = spawns - 1;
+                                if (spawnNumber != lastSpawn) {
+                                    Location location = Util.getLocation(arenaStorage, "spawns." + teamKey + "." + lastSpawn);
+                                    arenaConfig.set("spawns." + teamKey + "." + lastSpawn, null);
+                                    Util.saveLocation(location, arenaStorage, "spawns." + teamKey + "." + spawnNumber);
+                                }
+
+                                Util.msg(player, "Removed spawn #" + spawnNumber + " from team " + teamName);
+                                stopChanging();
+                                iconMenu.update(player);
                             }
-
-                            Util.msg(player, "Removed spawn #" + spawnNumber + " from team " + teamName);
-                            stopChanging();
-                            iconMenu.update(player);
-                        }
+                            break;
                     }
                 } else if (menuStatus == MenuStatus.GAMEMODES) {
                     Gamemode.Gamemodes gamemode = Gamemode.Gamemodes.valueOf(name.toUpperCase());
@@ -369,9 +388,8 @@ public class SettingMenu {
                         arenaStorage.saveConfig();
                         Util.msg(player, "Restarting arena...");
                         final String arenaName = arena.getArenaName();
+                        event.setWillClose(true);
                         arena.stopGame();
-                        stopChanging();
-                        iconMenu.update(player);
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
                             public void run(){
                                 Arena arena = new Arena(plugin, arenaManager, arenaName);
