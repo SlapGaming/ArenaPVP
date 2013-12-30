@@ -295,6 +295,9 @@ public class Arena {
             }
         }
 
+        //Destroy iconMenu (otherwise listener will stay loaded)
+        settings.getSettingMenu().destroy();
+
         //Remove arena from arenamanager.
         arenaManager.removeArena(arenaName);
     }
