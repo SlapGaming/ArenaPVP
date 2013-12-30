@@ -146,3 +146,4 @@ allowitemdrop: false
 autobalance: true
 allowspectate: true
 allowspectatefly: false
+nohungerloss: true

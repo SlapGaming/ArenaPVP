@@ -147,4 +147,8 @@ public class ArenaSettings {
     public boolean isAllowSpectateInArea() {
         return allowSpectateInArea.getSetting();
     }
+
+    public boolean isNoHungerLoss() {
+        return noHungerLoss.getSetting();
+    }
 }

@@ -7,16 +7,7 @@ import java.util.logging.Logger;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Commands.CommandHandler;
 import me.naithantu.ArenaPVP.Events.BukkitEvents.BlockRedstoneListener;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.BlockListener;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.ChatListener;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DamageListener;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DeathListener;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.DropItemListener;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.InventoryClickListener;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.MoveListener;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.PickupItemListener;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.QuitListener;
-import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.RespawnListener;
+import me.naithantu.ArenaPVP.Events.BukkitEvents.Player.*;
 
 import me.naithantu.ArenaPVP.Events.BukkitEvents.ProjectileHitListener;
 import org.bukkit.Bukkit;
@@ -73,6 +64,7 @@ public class ArenaPVP extends JavaPlugin {
 		pm.registerEvents(new DamageListener(arenaManager), this);
 		pm.registerEvents(new DeathListener(arenaManager), this);
 		pm.registerEvents(new DropItemListener(arenaManager), this);
+        pm.registerEvents(new FoodLevelChangeListener(arenaManager), this);
 		pm.registerEvents(new PickupItemListener(arenaManager), this);
 		pm.registerEvents(new InventoryClickListener(arenaManager), this);
 		pm.registerEvents(new MoveListener(arenaManager), this);

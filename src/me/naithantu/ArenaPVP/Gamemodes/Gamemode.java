@@ -37,6 +37,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -304,6 +305,12 @@ public abstract class Gamemode {
     }
 
     public void onRedstoneUpdate(BlockRedstoneEvent event) {
+    }
+
+    public void onFoodLevelChange(FoodLevelChangeEvent event){
+        if(settings.isNoHungerLoss()){
+            event.setCancelled(true);
+        }
     }
 
 	// Arena made events.
