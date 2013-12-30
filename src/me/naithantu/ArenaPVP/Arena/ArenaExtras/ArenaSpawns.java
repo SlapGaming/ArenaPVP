@@ -1,7 +1,10 @@
 package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import org.bukkit.Location;
@@ -60,6 +63,15 @@ public class ArenaSpawns {
 		}
 		return null;
 	}
+
+    public List<Location> getSpawns(String configKey){
+        ConfigurationSection configurationSection = arenaConfig.getConfigurationSection("spawns." + configKey);
+        List<Location> spawns = new ArrayList<>();
+        for (String key : configurationSection.getKeys(false)) {
+            spawns.add(Util.getLocation(arenaStorage, "spawns." + configKey + "." + key));
+        }
+        return spawns;
+    }
 
 	public enum SpawnType {
 		SPECTATOR, PLAYER

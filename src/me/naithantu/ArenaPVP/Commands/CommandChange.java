@@ -67,6 +67,6 @@ public class CommandChange extends AbstractCommand {
 
 	public void changeArena(Player player, Arena arena) {
         arena.getSettings().getSettingMenu().openMenu(player);
-        this.msg(player, "Opened main setting menu! (Beware: not done yet!)");
+        this.msg(player, "Opened main setting menu!");
 	}
 }

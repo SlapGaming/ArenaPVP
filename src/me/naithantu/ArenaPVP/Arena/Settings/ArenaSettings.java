@@ -1,5 +1,7 @@
 package me.naithantu.ArenaPVP.Arena.Settings;
 
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,12 +31,13 @@ public class ArenaSettings {
     private	Setting<Boolean>  allowBlockChange;
     private Setting<Boolean>  allowSpectateFly;
     private Setting<Boolean>  allowSpectateInArea;
+    private Setting<Boolean> noHungerLoss;
 	
-	public ArenaSettings(ArenaPVP plugin, YamlStorage arenaStorage) {
+	public ArenaSettings(ArenaPVP plugin, YamlStorage arenaStorage, ArenaManager arenaManager, Arena arena) {
         this.arenaStorage = arenaStorage;
 		config = arenaStorage.getConfig();
 		initializeSettings();
-        settingMenu = new SettingMenu(plugin, arenaStorage, this);
+        settingMenu = new SettingMenu(plugin, arenaStorage, arenaManager, arena, this);
     }
 
     public void reloadSettings(){
@@ -47,37 +50,39 @@ public class ArenaSettings {
         settings.clear();
 
         //General settings
-        maxPlayers = new Setting<Integer>(config.getInt("maxplayers"), SettingGroup.GENERAL, "maxplayers", "Max players", "Number of players that can join.");
-        scoreLimit = new Setting<Integer>(config.getInt("scorelimit"), SettingGroup.GENERAL, "scorelimit", "Score limit", "Score needed to win.");
-        autoBalance = new Setting<Boolean>(config.getBoolean("autobalance"), SettingGroup.GENERAL, "autobalance", "Auto balance", "Balance teams before game start.");
-        friendlyFire = new Setting<Boolean>(config.getBoolean("friendlyfire"), SettingGroup.GENERAL, "friendlyfire", "Friendly fire", "Allow teammates to hit eachother.");
+        maxPlayers = new Setting<>(config.getInt("maxplayers"), SettingGroup.GENERAL, "maxplayers", "Max players", "Number of players that can join.");
+        scoreLimit = new Setting<>(config.getInt("scorelimit"), SettingGroup.GENERAL, "scorelimit", "Score limit", "Score needed to win.");
+        autoBalance = new Setting<>(config.getBoolean("autobalance"), SettingGroup.GENERAL, "autobalance", "Auto balance", "Balance teams before game start.");
+        friendlyFire = new Setting<>(config.getBoolean("friendlyfire"), SettingGroup.GENERAL, "friendlyfire", "Friendly fire", "Allow teammates to hit eachother.");
         settings.add(maxPlayers);
         settings.add(scoreLimit);
         settings.add(autoBalance);
         settings.add(friendlyFire);
 
         //Other? settings
-        allowItemDrop = new Setting<Boolean>(config.getBoolean("allowitemdrop"), SettingGroup.OTHER, "allowitemdrop", "Allow item drop", "Allow players to drop items and armour.");
-        allowBlockChange = new Setting<Boolean>(config.getBoolean("allowblockchange"), SettingGroup.OTHER, "allowblockchange", "Allow block change", "Allow players to change blocks");
+        allowItemDrop = new Setting<>(config.getBoolean("allowitemdrop"), SettingGroup.OTHER, "allowitemdrop", "Allow item drop", "Allow players to drop items and armour.");
+        allowBlockChange = new Setting<>(config.getBoolean("allowblockchange"), SettingGroup.OTHER, "allowblockchange", "Allow block change", "Allow players to change blocks");
+        noHungerLoss = new Setting<>(config.getBoolean("nohungerloss"), SettingGroup.OTHER, "nohungerloss", "No hunger loss", "Always keep players at full hunger");
         settings.add(allowItemDrop);
         settings.add(allowBlockChange);
+        settings.add(noHungerLoss);
 
         //Respawn settings
-        respawnTime = new Setting<Integer>(config.getInt("respawntime"), SettingGroup.RESPAWN, "respawntime", "Respawn time", "Number of seconds before a player respawns");
-        spawnProtection = new Setting<Integer>(config.getInt("spawnprotection"), SettingGroup.RESPAWN, "spawnprotection", "Spawn protection", "Number of seconds a player is invulnerable after respawning");
+        respawnTime = new Setting<>(config.getInt("respawntime"), SettingGroup.RESPAWN, "respawntime", "Respawn time", "Number of seconds before a player respawns");
+        spawnProtection = new Setting<>(config.getInt("spawnprotection"), SettingGroup.RESPAWN, "spawnprotection", "Spawn protection", "Number of seconds a player is invulnerable after respawning");
         settings.add(respawnTime);
         settings.add(spawnProtection);
 
         //Out of bounds settings
-        outOfBoundsArea = new Setting<Boolean>(config.getBoolean("outofboundsarea"), SettingGroup.OUTOFBOUNDS, "outofboundsarea", "Out of bounds area", "Have an out of bounds area.");
-        outOfBoundsTime = new Setting<Integer>(config.getInt("outofboundstime"), SettingGroup.OUTOFBOUNDS, "outofboundstime", "Out of bounds time", "Number of seconds before an out of bounds player is killed");
+        outOfBoundsArea = new Setting<>(config.getBoolean("outofboundsarea"), SettingGroup.OUTOFBOUNDS, "outofboundsarea", "Out of bounds area", "Have an out of bounds area.");
+        outOfBoundsTime = new Setting<>(config.getInt("outofboundstime"), SettingGroup.OUTOFBOUNDS, "outofboundstime", "Out of bounds time", "Number of seconds before an out of bounds player is killed");
         settings.add(outOfBoundsArea);
         settings.add(outOfBoundsTime);
 
         //Spectate settings
-        allowSpectateInArea = new Setting<Boolean>(config.getBoolean("allowspectateinarea"), SettingGroup.SPECTATOR, "allowspectateinarea", "Allow spectate in area", "Allow spectators to get into the pvp out of bounds area.");
-        allowSpectateFly = new Setting<Boolean>(config.getBoolean("allowspectatefly"), SettingGroup.SPECTATOR, "allowspectatefly", "Allow spectate fly" , "Allow spectators to fly around.");
-        spectatorOutOfBoundsArea = new Setting<Boolean>(config.getBoolean("spectatoroutofboundsarea"), SettingGroup.SPECTATOR, "spectatoroutofboundsarea", "Spectator out of bounds area", "Have a seperate out of bounds area for spectators.");
+        allowSpectateInArea = new Setting<>(config.getBoolean("allowspectateinarea"), SettingGroup.SPECTATOR, "allowspectateinarea", "Allow spectate in area", "Allow spectators to get into the pvp out of bounds area.");
+        allowSpectateFly = new Setting<>(config.getBoolean("allowspectatefly"), SettingGroup.SPECTATOR, "allowspectatefly", "Allow spectate fly" , "Allow spectators to fly around.");
+        spectatorOutOfBoundsArea = new Setting<>(config.getBoolean("spectatoroutofboundsarea"), SettingGroup.SPECTATOR, "spectatoroutofboundsarea", "Spectator out of bounds area", "Have a seperate out of bounds area for spectators.");
         settings.add(allowSpectateInArea);
         settings.add(allowSpectateFly);
         settings.add(spectatorOutOfBoundsArea);

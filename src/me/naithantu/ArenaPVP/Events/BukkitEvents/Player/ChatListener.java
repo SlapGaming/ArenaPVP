@@ -24,13 +24,18 @@ public class ChatListener implements Listener {
 
         for (Arena arena : arenaManager.getArenas().values()) {
             SettingMenu settingMenu = arena.getSettings().getSettingMenu();
-            if (settingMenu.getChangeStatus() == SettingMenu.ChangeStatus.INTEGER && settingMenu.getChangingPlayer().equals(player.getName())) {
-                try {
-                    Integer newSetting = Integer.parseInt(event.getMessage());
-                    Util.msg(event.getPlayer(), "Changed " + settingMenu.getChangingSetting().getName() + " to " + newSetting + "!");
-                    settingMenu.changeIntegerSetting(settingMenu.getChangingSetting(), newSetting);
+            if(settingMenu.getChangingPlayer() != null && settingMenu.getChangingPlayer().equals(player.getName())){
+                if(settingMenu.getChangeStatus() == SettingMenu.ChangeStatus.STRING){
+                    settingMenu.handleChatInput(player, event.getMessage());
                     event.setCancelled(true);
-                } catch (NumberFormatException e) {
+                } else if (settingMenu.getChangeStatus() == SettingMenu.ChangeStatus.INTEGER && settingMenu.getChangingPlayer().equals(player.getName())) {
+                    try {
+                        Integer integer = Integer.parseInt(event.getMessage());
+                        settingMenu.handleChatInput(player, integer);
+                        event.setCancelled(true);
+                    } catch (NumberFormatException e) {
+                        Util.msg(player, "That is not a valid number!");
+                    }
                 }
             }
         }

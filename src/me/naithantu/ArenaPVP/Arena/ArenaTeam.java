@@ -34,14 +34,18 @@ public class ArenaTeam {
 		this.plugin = plugin;
 		this.arenaConfig = arenaConfig;
 		this.teamNumber = teamNumber;
-		this.teamColor = ChatColor.getByChar(arenaConfig.getString("teamcolors." + teamNumber));
-
-		teamName = arenaConfig.getString("teams." + teamNumber);
-		List<ItemStack> inventoryContents = (List<ItemStack>) arenaConfig.getList("classes." + teamNumber + ".inventory");
-		inventory = inventoryContents.toArray(new ItemStack[36]);
-		List<ItemStack> armorContents = (List<ItemStack>) arenaConfig.getList("classes." + teamNumber + ".armor");
-		armor = armorContents.toArray(new ItemStack[4]);
+        setupTeam();
 	}
+
+    public void setupTeam(){
+        this.teamColor = ChatColor.getByChar(arenaConfig.getString("teamcolors." + teamNumber));
+
+        teamName = arenaConfig.getString("teams." + teamNumber);
+        List<ItemStack> inventoryContents = (List<ItemStack>) arenaConfig.getList("classes." + teamNumber + ".inventory");
+        inventory = inventoryContents.toArray(new ItemStack[36]);
+        List<ItemStack> armorContents = (List<ItemStack>) arenaConfig.getList("classes." + teamNumber + ".armor");
+        armor = armorContents.toArray(new ItemStack[4]);
+    }
 	
 	public int getTeamNumber() {
 		return teamNumber;
@@ -58,10 +62,6 @@ public class ArenaTeam {
     public String getColoredName() {
         return teamColor + teamName + ChatColor.WHITE;
     }
-
-	public void setTeamName(String teamName) {
-		this.teamName = teamName;
-	}
 
 	public List<ArenaPlayer> getPlayers() {
 		return players;
