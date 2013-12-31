@@ -328,14 +328,4 @@ public class CTF extends Gamemode {
             }
         };
     }
-
-    public AbstractCommand handleGamemodeCommand(CommandSender sender, String command, String[] cmdArgs) {
-        AbstractCommand commandObj = null;
-        if (command.equals("setflagblock")) {
-            commandObj = new CommandSetFlagBlock(sender, cmdArgs, plugin, arenaManager, arena);
-        } else if (command.equals("setflag")) {
-            commandObj = new CommandSetFlag(sender, cmdArgs, plugin, arenaManager, arena);
-        }
-        return commandObj;
-    }
 }

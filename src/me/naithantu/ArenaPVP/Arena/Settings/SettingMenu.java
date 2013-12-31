@@ -437,7 +437,6 @@ public class SettingMenu {
                                 Util.msg(player, "Reloaded arena with gamemode " + event.getName());
                             }
                         }, 2);
-
                     }
                 } else {
                     for (Setting setting : arenaSettings.getSettings()) {

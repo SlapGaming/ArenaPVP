@@ -50,8 +50,6 @@ public class CommandHandler {
                 commandObj = new CommandLeave(sender, cmdArgs, plugin, arenaManager);
             } else if (command.equals("maps")) {
                 commandObj = new CommandMaps(sender, cmdArgs, plugin, arenaManager);
-            } else if (command.equals("saveinventory")) {
-                commandObj = new CommandSaveInventory(sender, cmdArgs, plugin, arenaManager);
             } else if (command.equals("saveschematic")) {
                 commandObj = new CommandSaveSchematic(sender, cmdArgs, plugin, arenaManager);
             } else if (command.equals("score")) {
