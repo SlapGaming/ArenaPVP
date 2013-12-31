@@ -43,11 +43,11 @@ public class IconMenu implements Listener {
         return this;
     }
 
-    public String getName(int position){
+    public String getName(int position) {
         return optionNames[position];
     }
 
-    public void clearMenu(){
+    public void clearMenu() {
         optionNames = new String[size];
         optionIcons = new ItemStack[size];
     }
@@ -62,7 +62,7 @@ public class IconMenu implements Listener {
         player.openInventory(inventory);
     }
 
-    public void update(Player player){
+    public void update(Player player) {
         inventory.clear();
         for (int i = 0; i < optionIcons.length; i++) {
             if (optionIcons[i] != null) {
@@ -80,24 +80,24 @@ public class IconMenu implements Listener {
         optionIcons = null;
     }
 
-    @EventHandler(priority=EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     void onInventoryClose(InventoryCloseEvent event) {
-        if (event.getInventory().getTitle().equals(name)){
+        if (event.getInventory().getTitle().equals(name)) {
 
         }
     }
 
-    @EventHandler(priority=EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     void onInventoryClick(InventoryClickEvent event) {
         if (event.getInventory().getTitle().equals(name)) {
             event.setCancelled(true);
             int slot = event.getRawSlot();
             if (slot >= 0 && slot < size && optionNames[slot] != null) {
                 Plugin plugin = this.plugin;
-                OptionClickEvent e = new OptionClickEvent((Player)event.getWhoClicked(), slot, optionNames[slot]);
+                OptionClickEvent e = new OptionClickEvent(this, (Player) event.getWhoClicked(), slot, optionNames[slot]);
                 clickEventHandler.onOptionClick(e);
                 if (e.willClose()) {
-                    final Player p = (Player)event.getWhoClicked();
+                    final Player p = (Player) event.getWhoClicked();
                     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                         public void run() {
                             p.closeInventory();
@@ -116,18 +116,24 @@ public class IconMenu implements Listener {
     }
 
     public class OptionClickEvent {
+        private IconMenu iconMenu;
         private Player player;
         private int position;
         private String name;
         private boolean close;
         private boolean destroy;
 
-        public OptionClickEvent(Player player, int position, String name) {
+        public OptionClickEvent(IconMenu iconMenu, Player player, int position, String name) {
+            this.iconMenu = iconMenu;
             this.player = player;
             this.position = position;
             this.name = name;
             this.close = true;
             this.destroy = false;
+        }
+
+        public IconMenu getIconMenu() {
+            return iconMenu;
         }
 
         public Player getPlayer() {

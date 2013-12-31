@@ -52,7 +52,7 @@ public class SettingMenu {
         setupMenu();
     }
 
-    public void destroy(){
+    public void destroy() {
         iconMenu.destroy();
     }
 
@@ -102,8 +102,10 @@ public class SettingMenu {
         }
 
         //Add alternative settings
-        iconMenu.setOption(36, new ItemStack(Material.STAINED_GLASS, 1), "Gamemode");
-        iconMenu.setOption(37, new ItemStack(Material.STAINED_GLASS, 1), "Teams");
+        iconMenu.setOption(36, new ItemStack(Material.STAINED_GLASS, 1), "Arena");
+        iconMenu.setOption(37, new ItemStack(Material.STAINED_GLASS, 1), "Gamemodes", "Choose gamemode");
+        iconMenu.setOption(38, new ItemStack(Material.STAINED_GLASS, 1), "Teams");
+        iconMenu.setOption(39, new ItemStack(Material.STAINED_GLASS, 1), "Gamemode", "Change gamemode settings");
     }
 
     private void setupBooleanChangeMenu(Setting setting) {
@@ -114,7 +116,7 @@ public class SettingMenu {
         iconMenu.setOption(19, new ItemStack(Material.STAINED_CLAY, 1, (short) 14), "No");
     }
 
-    private void setupChooseTeamMenu() {
+    public void setupChooseTeamMenu(boolean includeSpectators) {
         iconMenu.clearMenu();
         setupMenu();
 
@@ -123,9 +125,9 @@ public class SettingMenu {
             iconMenu.setOption(i, new ItemStack(Material.STAINED_CLAY, 1, (short) 3), Integer.toString(team.getTeamNumber()), team.getColoredName());
             i++;
         }
-        iconMenu.setOption(i, new ItemStack(Material.STAINED_CLAY, 1, (short) 3), "spectator", "Spectators");
-
-        menuStatus = MenuStatus.TEAMS;
+        if (includeSpectators) {
+            iconMenu.setOption(i, new ItemStack(Material.STAINED_CLAY, 1, (short) 3), "spectator", "Spectators");
+        }
     }
 
     private void setupTeamMenu(ArenaTeam team) {
@@ -159,7 +161,7 @@ public class SettingMenu {
         }
         iconMenu.setOption(i, new ItemStack(Material.STAINED_CLAY, 1, (short) 13), "Add", "Adds a new spawn location at your position");
 
-        if(configKey.equals("spectator")){
+        if (configKey.equals("spectator")) {
             menuStatus = MenuStatus.SPECTATORSPAWNS;
         } else {
             menuStatus = MenuStatus.SPAWNS;
@@ -177,11 +179,20 @@ public class SettingMenu {
         iconMenu.setOption(19, new ItemStack(Material.STAINED_CLAY, 1, (short) 1), "Teleport", "Teleport to this spawn location");
         iconMenu.setOption(20, new ItemStack(Material.STAINED_CLAY, 1, (short) 14), "Remove", "Removes this spawn location");
 
-        if(teamKey.equals("spectator")){
+        if (teamKey.equals("spectator")) {
             menuStatus = MenuStatus.SPECTATORSPAWN;
         } else {
             menuStatus = MenuStatus.SPAWN;
         }
+    }
+
+    private void setupArenaMenu() {
+        iconMenu.clearMenu();
+        setupMenu();
+
+        iconMenu.setOption(9, new ItemStack(Material.STAINED_CLAY, 1, (short) 13), "Nickname", "The in-game name of the arena");
+
+        menuStatus = MenuStatus.ARENA;
     }
 
     private void setupGamemodeMenu() {
@@ -211,7 +222,8 @@ public class SettingMenu {
         }, 1);
     }
 
-    private void stopChanging() {
+    public void stopChanging() {
+        arena.getGamemode().stopChanging();
         menuStatus = MenuStatus.NONE;
         nextChange = Change.NONE;
         changingSetting = null;
@@ -243,15 +255,35 @@ public class SettingMenu {
             } else if (event.getPosition() >= 36) {
                 //Clicked an alternative setting (gamemode etc.)
                 stopChanging();
-                if (name.equals("Gamemode")) {
-                    setupGamemodeMenu();
-                    iconMenu.update(player);
-                } else if (name.equals("Teams")) {
-                    setupChooseTeamMenu();
-                    iconMenu.update(player);
+                switch (name) {
+                    case "Arena":
+                        setupArenaMenu();
+                        iconMenu.update(player);
+                        break;
+                    case "Gamemodes":
+                        setupGamemodeMenu();
+                        iconMenu.update(player);
+                        break;
+                    case "Teams":
+                        setupChooseTeamMenu(true);
+                        menuStatus = MenuStatus.TEAMS;
+                        iconMenu.update(player);
+                        break;
+                    case "Gamemode":
+                        if (arena.getGamemode().hasConfigSettings()) {
+                            menuStatus = MenuStatus.GAMEMODE;
+                            arena.getGamemode().setupIconMenu(iconMenu);
+                            setupMenu();
+                            iconMenu.update(player);
+                        } else {
+                            Util.msg(player, "That gamemode has no settings you can change!");
+                        }
+                        break;
                 }
             } else {
-                if (menuStatus == MenuStatus.BOOLEAN) {
+                if (menuStatus == MenuStatus.GAMEMODE) {
+                    arena.getGamemode().handleMenuClick(event);
+                } else if (menuStatus == MenuStatus.BOOLEAN) {
                     boolean settingChanged = false;
                     if (name.equals("Yes")) {
                         arenaConfig.set(changingSetting.getConfigKey(), true);
@@ -268,7 +300,7 @@ public class SettingMenu {
                         iconMenu.update(player);
                     }
                 } else if (menuStatus == MenuStatus.TEAMS) {
-                    if(name.equals("spectator")){
+                    if (name.equals("spectator")) {
                         setupSpawnsMenu(player, "spectator");
                     } else {
                         changingTeam = arena.getTeam(Integer.parseInt(name));
@@ -276,7 +308,7 @@ public class SettingMenu {
                     }
                     iconMenu.update(player);
                 } else if (menuStatus == MenuStatus.TEAM) {
-                    switch(name){
+                    switch (name) {
                         case "Name":
                             nextChange = Change.TEAMNAME;
                             changeStatus = ChangeStatus.STRING;
@@ -310,7 +342,7 @@ public class SettingMenu {
                     String teamKey;
                     String teamName;
 
-                    if(menuStatus == MenuStatus.SPAWNS){
+                    if (menuStatus == MenuStatus.SPAWNS) {
                         teamKey = Integer.toString(changingTeam.getTeamNumber());
                         teamName = changingTeam.getColoredName();
                     } else {
@@ -332,7 +364,7 @@ public class SettingMenu {
                     String teamKey;
                     String teamName;
 
-                    if(menuStatus == MenuStatus.SPAWN){
+                    if (menuStatus == MenuStatus.SPAWN) {
                         teamKey = Integer.toString(changingTeam.getTeamNumber());
                         teamName = changingTeam.getColoredName();
                     } else {
@@ -342,7 +374,7 @@ public class SettingMenu {
 
                     String configKey = "spawns." + teamKey + "." + iconMenu.getName(9);
 
-                    switch(name){
+                    switch (name) {
                         case "Move":
                             Util.saveLocation(player.getLocation(), arenaStorage, configKey, true);
                             Util.msg(player, "Changed spawn location #" + iconMenu.getName(9) + "!");
@@ -381,17 +413,25 @@ public class SettingMenu {
                             }
                             break;
                     }
+                } else if (menuStatus == MenuStatus.ARENA) {
+                    if (event.getName().equals("Nickname")) {
+                        nextChange = Change.ARENANAME;
+                        changeStatus = ChangeStatus.STRING;
+                        changingPlayer = player.getName();
+                        Util.msg(player, "Type the new name for arena " + arena.getNickName() + "!");
+                        event.setWillClose(true);
+                    }
                 } else if (menuStatus == MenuStatus.GAMEMODES) {
                     Gamemode.Gamemodes gamemode = Gamemode.Gamemodes.valueOf(name.toUpperCase());
-                    if(arena.getGamemode().getGamemode() != gamemode){
+                    if (arena.getGamemode().getGamemode() != gamemode) {
                         arenaConfig.set("gamemode", gamemode.name());
                         arenaStorage.saveConfig();
                         Util.msg(player, "Restarting arena...");
                         final String arenaName = arena.getArenaName();
                         event.setWillClose(true);
                         arena.stopGame();
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-                            public void run(){
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            public void run() {
                                 Arena arena = new Arena(plugin, arenaManager, arenaName);
                                 arenaManager.addArena(arenaName, arena);
                                 Util.msg(player, "Reloaded arena with gamemode " + event.getName());
@@ -426,7 +466,13 @@ public class SettingMenu {
     }
 
     public void handleChatInput(Player player, String string) {
-        if (nextChange == Change.TEAMNAME) {
+        if (nextChange == Change.ARENANAME) {
+            arenaConfig.set("nickname", string);
+            arenaStorage.saveConfig();
+            Util.msg(player, "Changed arena name to " + string + "! (requires arena restart)");
+            stopChanging();
+            openMenuDelayed(player);
+        } else if (nextChange == Change.TEAMNAME) {
             arenaConfig.set("teams." + changingTeam.getTeamNumber(), string);
             arenaStorage.saveConfig();
             changingTeam.setupTeam();
@@ -462,7 +508,7 @@ public class SettingMenu {
 
     //MenuStatus is how the iconmenu currently looks.
     public enum MenuStatus {
-        NONE, BOOLEAN, TEAMS, TEAM, SPECTATOR, SPAWNS, SPECTATORSPAWNS, SPAWN, SPECTATORSPAWN, GAMEMODES
+        NONE, BOOLEAN, ARENA, TEAMS, TEAM, SPECTATOR, SPAWNS, SPECTATORSPAWNS, SPAWN, SPECTATORSPAWN, GAMEMODES, GAMEMODE
     }
 
     //ChangeStatus is the next expected chat input.
@@ -471,6 +517,6 @@ public class SettingMenu {
     }
 
     public enum Change {
-        NONE, TEAMNAME, TEAMCOLOR
+        NONE, ARENANAME, TEAMNAME, TEAMCOLOR
     }
 }

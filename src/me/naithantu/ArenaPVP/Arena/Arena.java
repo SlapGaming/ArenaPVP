@@ -68,10 +68,9 @@ public class Arena {
         this.arenaName = arenaName;
         arenaState = ArenaState.BEFORE_JOIN;
         arenaStorage = new YamlStorage(plugin, "maps", arenaName);
-        arenaStorage.copyDefaultConfig();
+        //Make sure config contains all necessary values
+        arenaStorage.copyDefaultConfig("arena.yml");
         arenaConfig = arenaStorage.getConfig();
-
-        nickName = arenaConfig.getString("nickname");
 
         settings = new ArenaSettings(plugin, arenaStorage, arenaManager, this);
         arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaStorage);
@@ -83,6 +82,21 @@ public class Arena {
         tabController = plugin.getTabController();
 
         initializeArena();
+    }
+
+    private void initializeArena(){
+        nickName = arenaConfig.getString("nickname");
+
+        // Create teams with proper names.
+        for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
+            ArenaTeam team = new ArenaTeam(plugin, arenaConfig, Integer.parseInt(teamNumber));
+            teams.add(team);
+        }
+
+        String gamemodeName = arenaConfig.getString("gamemode");
+
+        // Create gamemode.
+        gamemode = ArenaGamemode.getGamemode(plugin, arenaManager, this, settings, arenaSpawns, arenaUtil, arenaStorage, gamemodeName, tabController);
     }
 
     public String getNickName() {
@@ -131,19 +145,6 @@ public class Arena {
 
     public void setArenaState(ArenaState arenaState) {
         this.arenaState = arenaState;
-    }
-
-    public void initializeArena() {
-        // Create teams with proper names.
-        for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
-            ArenaTeam team = new ArenaTeam(plugin, arenaConfig, Integer.parseInt(teamNumber));
-            teams.add(team);
-        }
-
-        String gamemodeName = arenaConfig.getString("gamemode");
-
-        // Create gamemode.
-        gamemode = ArenaGamemode.getGamemode(plugin, arenaManager, this, settings, arenaSpawns, arenaUtil, arenaStorage, gamemodeName, tabController);
     }
 
     public void joinSpectate(Player player) {

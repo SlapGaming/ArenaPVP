@@ -1,7 +1,9 @@
 package me.naithantu.ArenaPVP.Gamemodes;
 
+import me.naithantu.ArenaPVP.Arena.Settings.SettingMenu;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.IconMenu;
 import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
@@ -87,6 +89,17 @@ public abstract class Gamemode {
 	public abstract String getName();
 	
 	public abstract boolean isTeamGame();
+
+    //IconMenu related methods.
+    public boolean hasConfigSettings(){
+        return false;
+    }
+
+    public void setupIconMenu(IconMenu iconMenu){}
+
+    public void handleMenuClick(IconMenu.OptionClickEvent event){}
+
+    public void stopChanging(){};
 	
 	public Gamemodes getGamemode(){
 		return gm;

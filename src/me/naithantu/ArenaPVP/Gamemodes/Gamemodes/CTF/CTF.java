@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import me.naithantu.ArenaPVP.Commands.AbstractCommand;
+import me.naithantu.ArenaPVP.IconMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -32,6 +33,8 @@ import me.naithantu.ArenaPVP.Util.Util;
 
 public class CTF extends Gamemode {
 
+    private CTFMenu ctfMenu;
+
     private HashMap<String, ArenaTeam> flags = new HashMap<String, ArenaTeam>();
     private HashMap<ArenaTeam, ItemStack> flagBlocks = new HashMap<ArenaTeam, ItemStack>();
     private HashMap<ArenaTeam, Location> flagLocations = new HashMap<ArenaTeam, Location>();
@@ -45,6 +48,15 @@ public class CTF extends Gamemode {
 
     public CTF(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
         super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.CTF);
+        //Make sure config contains all necessary values
+        arenaStorage.copyDefaultConfig("me/naithantu/ArenaPVP/Gamemodes/Gamemodes/CTF/defaults.yml");
+
+        ctfMenu = new CTFMenu(arena, arenaStorage, this);
+
+        initialize();
+    }
+
+    public void initialize(){
         for (ArenaTeam arenaTeam : arena.getTeams()) {
             flagLocations.put(arenaTeam, Util.getLocation(arenaStorage, "gamemodes.ctf.flags." + arenaTeam.getTeamNumber()));
             ItemStack flagBlock = (ItemStack) arenaStorage.getConfig().get("gamemodes.ctf.blocks." + arenaTeam.getTeamNumber());
@@ -61,6 +73,26 @@ public class CTF extends Gamemode {
     @Override
     public boolean isTeamGame() {
         return true;
+    }
+
+    @Override
+    public boolean hasConfigSettings() {
+        return true;
+    }
+
+    @Override
+    public void setupIconMenu(IconMenu iconMenu){
+        ctfMenu.setupIconMenu(iconMenu);
+    }
+
+    @Override
+    public void handleMenuClick(IconMenu.OptionClickEvent event){
+        ctfMenu.handleMenuClick(event);
+    }
+
+    @Override
+    public void stopChanging(){
+        ctfMenu.stopChanging();
     }
 
     @Override
