@@ -12,7 +12,7 @@ public class CommandPVP extends AbstractCommand {
 	}
 
 	@Override
-	public boolean handle() {
+    protected boolean handle() {
 		if(!testPermission(sender, "pvp") && !testPermission(sender, "player")){
 			this.noPermission(sender);
 			return true;

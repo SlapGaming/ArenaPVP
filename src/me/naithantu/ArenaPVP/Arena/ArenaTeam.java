@@ -1,18 +1,17 @@
 package me.naithantu.ArenaPVP.Arena;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
+import me.naithantu.ArenaPVP.ArenaManager;
+import me.naithantu.ArenaPVP.ArenaPVP;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArenaTeam {
 	ItemStack[] inventory;
@@ -29,7 +28,6 @@ public class ArenaTeam {
 
 	List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
 
-	@SuppressWarnings("unchecked")
 	public ArenaTeam(ArenaPVP plugin, Configuration arenaConfig, int teamNumber) {
 		this.plugin = plugin;
 		this.arenaConfig = arenaConfig;
@@ -37,6 +35,7 @@ public class ArenaTeam {
         setupTeam();
 	}
 
+    @SuppressWarnings("unchecked")
     public void setupTeam(){
         this.teamColor = ChatColor.getByChar(arenaConfig.getString("teamcolors." + teamNumber));
 

@@ -15,7 +15,7 @@ public class CommandLeave extends AbstractCommand {
 	}
 
 	@Override
-	public boolean handle() {
+    protected boolean handle() {
 		if (!testPermission(sender, "leave") && !testPermission(sender, "player")) {
 			this.noPermission(sender);
 			return true;

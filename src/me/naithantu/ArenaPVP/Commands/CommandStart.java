@@ -1,65 +1,37 @@
 package me.naithantu.ArenaPVP.Commands;
 
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
-
+import me.naithantu.ArenaPVP.ArenaManager;
+import me.naithantu.ArenaPVP.ArenaPVP;
 import org.bukkit.command.CommandSender;
 
-public class CommandStart extends AbstractCommand {
+import java.util.Collection;
+
+public class CommandStart extends AbstractArenaCommand {
 
 	protected CommandStart(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
 		super(sender, args, plugin, arenaManager);
 	}
 
 	@Override
-	public boolean handle() {
+    protected boolean handle() {
 		if (!testPermission(sender, "start") && !testPermission(sender, "mod")) {
 			this.noPermission(sender);
 			return true;
 		}
 
-		// Check how many arenas the player can start.
-		int availableArenas = 0;
-		for (Arena arena : arenaManager.getArenas().values()) {
-			if (arena.getArenaState() == ArenaState.LOBBY) {
-				availableArenas++;
-			}
-		}
-
-		if (availableArenas == 0) {
-			this.msg(sender, "There are currently no arenas that you can start.");
-			return true;
-		}
-
-		if (availableArenas > 1) {
-			// If there are several arenas, find out what arena players want to
-			// join.
-			if (args.length == 0) {
-				this.msg(sender, "There are currently several arenas to start, please specify the arena you want to start.");
-				this.msg(sender, "/pvp start <arenaname>");
-				return true;
-			}
-
-			String arenaName = args[0].toLowerCase();
-
-			if (arenaManager.getArenas().containsKey(arenaName)) {
-				startArena(arenaManager.getArenas().get(arenaName));
-				return true;
-			}
-
-			this.msg(sender, "No arena with given name was found, type /pvp arenas to see available arenas.");
-			return true;
-		} else {
-			// If there is only one arena
-			Arena arena = arenaManager.getFirstArena();
-			startArena(arena);
-		}
+        this.executeCommand(getArenas());
 		return true;
 	}
 
-	public void startArena(Arena arena) {
+    @Override
+    protected Collection<Arena> getArenas() {
+        return this.selectArena(args, ArenaState.LOBBY, ArenaState.WARMUP);
+    }
+
+    @Override
+    protected void runCommand(Arena arena) {
 		arena.startGame();
 		this.msg(sender, "You have started arena " + arena.getArenaName() + "!");
 	}

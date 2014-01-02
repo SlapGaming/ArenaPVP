@@ -13,7 +13,7 @@ public class CommandChatspy extends AbstractCommand {
 	}
 
 	@Override
-	public boolean handle() {
+    protected boolean handle() {
 		if(!testPermission(sender, "chatspy") && !testPermission(sender, "mod")){
 			this.noPermission(sender);
 			return true;

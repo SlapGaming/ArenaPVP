@@ -1,7 +1,6 @@
 package me.naithantu.ArenaPVP.Arena.Settings;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaGamemode;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
@@ -9,12 +8,10 @@ import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.IconMenu;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -48,7 +45,7 @@ public class SettingMenu {
         this.arenaManager = arenaManager;
         arenaConfig = arenaStorage.getConfig();
         menuStatus = MenuStatus.NONE;
-        iconMenu = new IconMenu("Setting menu", 5 * 9, new MenuClickEventHandler(), plugin);
+        iconMenu = new IconMenu("Setting menu", 5 * 9, new MenuClickEventHandler(), false, null, plugin);
         setupMenu();
     }
 

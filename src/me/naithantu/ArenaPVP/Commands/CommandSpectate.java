@@ -7,14 +7,16 @@ import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CommandSpectate extends AbstractCommand {
+import java.util.Collection;
+
+public class CommandSpectate extends AbstractArenaCommand {
 
 	protected CommandSpectate(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
 		super(sender, args, plugin, arenaManager);
 	}
 
-	@Override
-	public boolean handle() {
+    @Override
+    protected boolean handle() {
 		if(!testPermission(sender, "spectate") && !testPermission(sender, "player")){
 			this.noPermission(sender);
 			return true;
@@ -24,55 +26,27 @@ public class CommandSpectate extends AbstractCommand {
 			this.msg(sender, "That command can only be used in-game.");
 			return true;
 		}
-		
-		if(arenaManager.getPlayerByName(sender.getName()) != null){
-			this.msg(sender, "You are already in a game, you can leave with /pvp leave!");
-			return true;
-		}
 
-		Player player = (Player) sender;
+        if(arenaManager.getPlayerByName(sender.getName()) != null){
+            this.msg(sender, "You are already in a game, you can leave with /pvp leave!");
+            return true;
+        }
 
-		//Check how many arenas the player can join.
-		int availableArenas = 0;
-		for (Arena arena : arenaManager.getArenas().values()) {
-			if (arena.getArenaState() != ArenaState.BEFORE_JOIN) {
-				availableArenas++;
-			}
-		}
-		
-		if (availableArenas == 0) {
-			this.msg(sender, "There are currently no arenas that you can spectate.");
-			return true;
-		}
-
-		if (availableArenas > 1) {
-			// If there are several arenas, find out what arena players want to join.
-			if (args.length == 0) {
-				this.msg(sender, "There are currently several arenas to spectate, please specify the arena you want to spectate.");
-				this.msg(sender, "/pvp spectate <arenaname> <teamname>");
-				return true;
-			}
-
-			if(arenaManager.getArenas().containsKey(args[0])){
-				Arena arena = arenaManager.getArenas().get(args[0]);
-				joinSpectate(arena, player);
-			} else {
-				this.msg(sender, "No arena with given name was found, type /pvp arenas to see available arenas.");
-			}
-			return true;
-		} else {
-			//If there is only arena
-			Arena arena = arenaManager.getFirstArena();
-			joinSpectate(arena, player);
-		}
+        this.executeCommand(getArenas());
 		return true;
 	}
-	
-	public void joinSpectate(Arena arena, Player player){
-		if(arena.getArenaStorage().getConfig().getBoolean("allowspectate")){
-			arena.joinSpectate(player);
-		} else {
-			this.msg(sender, "You may not spectate that arena!");
-		}
-	}
+
+    @Override
+    protected Collection<Arena> getArenas() {
+        return this.selectArena(args, ArenaState.WARMUP, ArenaState.PLAYING, ArenaState.STARTING, ArenaState.LOBBY, ArenaState.FINISHED);
+    }
+
+    @Override
+    protected void runCommand(Arena arena) {
+        if(arena.getArenaStorage().getConfig().getBoolean("allowspectate")){
+            arena.joinSpectate((Player) sender);
+        } else {
+            this.msg(sender, "You may not spectate that arena!");
+        }
+    }
 }

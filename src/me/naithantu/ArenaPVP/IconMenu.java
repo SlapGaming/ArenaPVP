@@ -1,8 +1,7 @@
 package me.naithantu.ArenaPVP;
 
-import java.util.Arrays;
-
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,23 +14,30 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
+
 public class IconMenu implements Listener {
 
     private String name;
     private int size;
     private OptionClickEventHandler clickEventHandler;
     private Plugin plugin;
+    private boolean destroyOnClose;
+    private String playerName;
 
     private String[] optionNames;
     private ItemStack[] optionIcons;
 
     private Inventory inventory;
 
-    public IconMenu(String name, int size, OptionClickEventHandler clickEventHandler, Plugin plugin) {
-        this.name = name;
+    public IconMenu(String name, int size, OptionClickEventHandler clickEventHandler, boolean destroyOnClose, String playerName, Plugin plugin) {
+        //Add chatcolors to make it impossible for players to "create" an iconmenu via anvil
+        this.name = ChatColor.WHITE + "" + ChatColor.RESET + name;
+        this.playerName = playerName;
         this.size = size;
         this.clickEventHandler = clickEventHandler;
         this.plugin = plugin;
+        this.destroyOnClose = destroyOnClose;
         this.optionNames = new String[size];
         this.optionIcons = new ItemStack[size];
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -62,6 +68,7 @@ public class IconMenu implements Listener {
         player.openInventory(inventory);
     }
 
+    @SuppressWarnings("deprecation")
     public void update(Player player) {
         inventory.clear();
         for (int i = 0; i < optionIcons.length; i++) {
@@ -83,29 +90,35 @@ public class IconMenu implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     void onInventoryClose(InventoryCloseEvent event) {
         if (event.getInventory().getTitle().equals(name)) {
-
+            if (playerName == null || playerName.equals(event.getPlayer().getName())) {
+                if (destroyOnClose) {
+                    destroy();
+                }
+            }
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     void onInventoryClick(InventoryClickEvent event) {
         if (event.getInventory().getTitle().equals(name)) {
-            event.setCancelled(true);
-            int slot = event.getRawSlot();
-            if (slot >= 0 && slot < size && optionNames[slot] != null) {
-                Plugin plugin = this.plugin;
-                OptionClickEvent e = new OptionClickEvent(this, (Player) event.getWhoClicked(), slot, optionNames[slot]);
-                clickEventHandler.onOptionClick(e);
-                if (e.willClose()) {
-                    final Player p = (Player) event.getWhoClicked();
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                        public void run() {
-                            p.closeInventory();
-                        }
-                    }, 1);
-                }
-                if (e.willDestroy()) {
-                    destroy();
+            if (playerName == null || playerName.equals(event.getWhoClicked().getName())) {
+                event.setCancelled(true);
+                int slot = event.getRawSlot();
+                if (slot >= 0 && slot < size && optionNames[slot] != null) {
+                    Plugin plugin = this.plugin;
+                    OptionClickEvent e = new OptionClickEvent(this, (Player) event.getWhoClicked(), slot, optionNames[slot]);
+                    clickEventHandler.onOptionClick(e);
+                    if (e.willClose()) {
+                        final Player p = (Player) event.getWhoClicked();
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            public void run() {
+                                p.closeInventory();
+                            }
+                        }, 1);
+                    }
+                    if (e.willDestroy()) {
+                        destroy();
+                    }
                 }
             }
         }

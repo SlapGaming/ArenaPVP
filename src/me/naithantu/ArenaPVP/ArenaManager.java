@@ -21,6 +21,15 @@ public class ArenaManager {
 		return arenas;
 	}
 
+    public Arena getArena(String arenaName){
+        for(Arena arena : arenas.values()){
+            if(arena.getArenaName().equalsIgnoreCase(arenaName)){
+                return arena;
+            }
+        }
+        return null;
+    }
+
     public void addArena(String arenaName, Arena arena){
         if(arenas.isEmpty()){
             plugin.registerListeners();

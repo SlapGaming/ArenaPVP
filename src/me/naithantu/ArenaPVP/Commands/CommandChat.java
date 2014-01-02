@@ -17,7 +17,7 @@ public class CommandChat extends AbstractCommand {
 	}
 
 	@Override
-	public boolean handle() {
+    protected boolean handle() {
 		if (!testPermission(sender, "chat") && !testPermission(sender, "player")) {
 			this.noPermission(sender);
 			return true;
@@ -61,7 +61,8 @@ public class CommandChat extends AbstractCommand {
 		}
 		return true;
 	}
-	public ChatChannel checkChannel(String channelName) {
+
+	private ChatChannel checkChannel(String channelName) {
 		for (ChatChannel chatChannel : ChatChannel.values()) {
 			if (chatChannel.name().equalsIgnoreCase(channelName)) {
 				return chatChannel;

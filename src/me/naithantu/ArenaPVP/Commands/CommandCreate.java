@@ -1,15 +1,14 @@
 package me.naithantu.ArenaPVP.Commands;
 
-import java.io.File;
-
+import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
+
+import java.io.File;
 
 public class CommandCreate extends AbstractCommand {
 
@@ -18,7 +17,7 @@ public class CommandCreate extends AbstractCommand {
 	}
 
 	@Override
-	public boolean handle() {
+    protected boolean handle() {
 		if(!testPermission(sender, "create") && !testPermission(sender, "admin")){
 			this.noPermission(sender);
 			return true;

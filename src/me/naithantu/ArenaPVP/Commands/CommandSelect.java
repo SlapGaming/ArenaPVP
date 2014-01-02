@@ -1,10 +1,8 @@
 package me.naithantu.ArenaPVP.Commands;
 
+import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaValidator;
-
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
@@ -16,7 +14,7 @@ public class CommandSelect extends AbstractCommand {
 	}
 
 	@Override
-	public boolean handle() {
+    protected boolean handle() {
 		if(!testPermission(sender, "select") && !testPermission(sender, "mod")){
 			this.noPermission(sender);
 			return true;

@@ -1,15 +1,13 @@
 package me.naithantu.ArenaPVP.Commands;
 
+import com.google.common.base.Joiner;
+import me.naithantu.ArenaPVP.ArenaManager;
+import me.naithantu.ArenaPVP.ArenaPVP;
+import org.bukkit.command.CommandSender;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
-
-import org.bukkit.command.CommandSender;
-
-import com.google.common.base.Joiner;
 
 public class CommandMaps extends AbstractCommand {
 
@@ -18,7 +16,7 @@ public class CommandMaps extends AbstractCommand {
 	}
 
 	@Override
-	public boolean handle() {
+    protected boolean handle() {
 		if (!testPermission(sender, "maps") && !testPermission(sender, "mod")) {
 			this.noPermission(sender);
 			return true;

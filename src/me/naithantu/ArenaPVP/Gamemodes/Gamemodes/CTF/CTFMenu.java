@@ -37,8 +37,6 @@ public class CTFMenu {
         String name = event.getName();
         IconMenu iconMenu = event.getIconMenu();
 
-        System.out.println(name);
-
         if (changeStatus == ChangeStatus.NONE) {
             switch (name) {
                 case "Flags":

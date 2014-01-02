@@ -1,20 +1,21 @@
 package me.naithantu.ArenaPVP.Commands;
 
+import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CommandScore extends AbstractCommand {
+import java.util.Collection;
+
+public class CommandScore extends AbstractArenaCommand {
 
 	protected CommandScore(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
 		super(sender, args, plugin, arenaManager);
 	}
 
 	@Override
-	public boolean handle() {
+    protected boolean handle() {
 		if(!testPermission(sender, "score") && !testPermission(sender, "player")){
 			this.noPermission(sender);
 			return true;
@@ -24,14 +25,18 @@ public class CommandScore extends AbstractCommand {
 			this.msg(sender, "That command can only be used in-game.");
 			return true;
 		}
-		
-		ArenaPlayer arenaPlayer;
-		if((arenaPlayer = arenaManager.getPlayerByName(sender.getName())) == null){
-			this.msg(sender, "You are not in a game!");
-			return true;
-		}
 
-		arenaPlayer.getArena().getGamemode().sendScore(sender);	
+        this.executeCommand(getArenas());
 		return true;
 	}
+
+    @Override
+    protected Collection<Arena> getArenas() {
+        return this.selectArena(args);
+    }
+
+    @Override
+    protected void runCommand(Arena arena){
+        arena.getGamemode().sendScore(sender);
+    }
 }

@@ -13,7 +13,7 @@ public class CommandArenas extends AbstractCommand {
 	}
 
 	@Override
-	public boolean handle() {
+    protected boolean handle() {
 		if(!testPermission(sender, "arenas") && !testPermission(sender, "player")){
 			this.noPermission(sender);
 			return true;

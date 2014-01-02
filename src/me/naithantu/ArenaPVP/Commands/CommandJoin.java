@@ -1,22 +1,24 @@
 package me.naithantu.ArenaPVP.Commands;
 
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
+import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.Arena.ArenaTeam;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CommandJoin extends AbstractCommand {
+import java.util.Collection;
+
+public class CommandJoin extends AbstractArenaCommand {
 
 	protected CommandJoin(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
 		super(sender, args, plugin, arenaManager);
 	}
 
 	@Override
-	public boolean handle() {
+    protected boolean handle() {
 		if(!testPermission(sender, "join") && !testPermission(sender, "player")){
 			this.noPermission(sender);
 			return true;
@@ -32,65 +34,42 @@ public class CommandJoin extends AbstractCommand {
 			return true;
 		}
 
-		Player player = (Player) sender;
-
-		//Check how many arenas the player can join.
-		int availableArenas = 0;
-		for (Arena arena : arenaManager.getArenas().values()) {
-			if (arena.getArenaState() == ArenaState.LOBBY || arena.getArenaState() == ArenaState.WARMUP) {
-				availableArenas++;
-			}
-		}
-		
-		if (availableArenas == 0) {
-			this.msg(sender, "There are currently no arenas that you can join.");
-			return true;
-		}
-
-		if (availableArenas > 1) {
-			// If there are several arenas, find out what arena players want to join.
-			if (args.length == 0) {
-				this.msg(sender, "There are currently several arenas to join, please specify the arena you want to join.");
-				this.msg(sender, "/pvp join <arenaname> <teamname>");
-				return true;
-			}
-
-			if(arenaManager.getArenas().containsKey(args[0])){
-				Arena arena = arenaManager.getArenas().get(args[0]);
-				if (args.length >= 2) {
-					joinArena(arena, player, arena.getTeam(args[1]));
-				} else {
-					joinArena(arena, player, null);
-				}
-			} else {
-				this.msg(sender, "No arena with given name was found, type /pvp arenas to see available arenas.");
-			}
-			return true;
-		} else {
-			//If there is only arena
-			Arena arena = arenaManager.getFirstArena();
-			if (args.length > 0) {
-				try{
-					int teamNumber = Integer.parseInt(args[0]);
-					joinArena(arena, player, arena.getTeam(teamNumber));
-				} catch (NumberFormatException e){
-					joinArena(arena, player, arena.getTeam(args[0]));
-				}
-			} else {
-				joinArena(arena, player, null);
-			}
-		}
+        this.executeCommand(getArenas());
 		return true;
 	}
-	
-	public void joinArena(Arena arena, Player player, ArenaTeam team){
+
+    @Override
+    protected Collection<Arena> getArenas() {
+        return this.selectArena(args, ArenaState.LOBBY, ArenaState.WARMUP);
+    }
+
+    @Override
+    protected void runCommand(Arena arena){
+        Player player = (Player) sender;
+
         if(player.isInsideVehicle()){
             Util.msg(sender, "You can't join while inside a vehicle!");
             return;
         }
 
+        ArenaTeam team = null;
+        int index = -1;
+        if(args.length == 1){
+            index = 0;
+        } else if (args.length == 2){
+            index = 1;
+        }
+
+        if(index != -1){
+            try{
+                team  = arena.getTeam(Integer.parseInt(args[index]));
+            } catch (NumberFormatException e){
+                team = arena.getTeam(args[index]);
+            }
+        }
+
 		if(!arena.joinGame(player, team)){
 			this.msg(sender, "You were unable to join arena " + arena.getArenaName() + ", try a different arena!");
 		}
-	}
+    }
 }
