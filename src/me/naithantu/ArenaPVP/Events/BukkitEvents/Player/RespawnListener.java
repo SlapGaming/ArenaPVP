@@ -22,7 +22,7 @@ public class RespawnListener implements Listener {
 		YamlStorage playerStorage = new YamlStorage("players", player.getName());
 		if(playerStorage.exists()){
 			Configuration playerConfig = playerStorage.getConfig();
-			if(playerConfig.contains("hastoleave")){
+			if(playerConfig.getBoolean("hastoleave") == true){
 				Util.loadPlayerConfig(player, playerStorage);
                 event.setRespawnLocation(Util.getLocation(playerStorage, "location"));
 				playerConfig.set("location", null);

@@ -1,5 +1,6 @@
 package me.naithantu.ArenaPVP.Util;
 
+import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
@@ -13,6 +14,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 
 public class Util {
 
@@ -79,11 +81,14 @@ public class Util {
 
         //Check if playerConfig was properly saved.
         if(!playerConfig.contains("gamemode")){
-            System.out.println("Unable to load player config for player " + player.getName() +  "!");
+            ArenaPVP.getInstance().getLogger().log(Level.SEVERE, "Unable to load player config for player " + player.getName() +  "!");
+            System.out.println();
             return;
         }
+        ArenaPVP.getInstance().getLogger().log(Level.INFO, "Loading config for " + player.getName() +  "!");
+        //TODO Remove debug log
 
-		//Clear players inventory and then load saved inventory.
+        //Clear players inventory and then load saved inventory.
 		PlayerInventory inventory = player.getInventory();
 		inventory.clear();
 		inventory.setArmorContents(new ItemStack[4]);
@@ -121,7 +126,8 @@ public class Util {
 	}
 
 	public static void savePlayerConfig(Player player, YamlStorage playerStorage) {
-		Configuration playerConfig = playerStorage.getConfig();
+        ArenaPVP.getInstance().getLogger().log(Level.INFO, "Saving config for " + player.getName() +  "!");
+        Configuration playerConfig = playerStorage.getConfig();
 
 		//Save players inventory and then clear it.
 		PlayerInventory inventory = player.getInventory();
