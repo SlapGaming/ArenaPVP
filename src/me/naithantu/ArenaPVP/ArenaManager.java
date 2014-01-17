@@ -1,27 +1,26 @@
 package me.naithantu.ArenaPVP;
 
-import java.util.HashMap;
-
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
-public class ArenaManager {
-    private ArenaPVP plugin;
+import java.util.HashMap;
 
-    private HashMap<String, Arena> arenas = new HashMap<String, Arena>();
+public class ArenaManager {
+    private static ArenaPVP plugin = ArenaPVP.getInstance();
+
+    private static HashMap<String, Arena> arenas = new HashMap<String, Arena>();
 
     //Allplayers contains players and spectators
-    private HashMap<String, ArenaPlayer> allPlayers = new HashMap<String, ArenaPlayer>();
+    private static HashMap<String, ArenaPlayer> allPlayers = new HashMap<String, ArenaPlayer>();
 
-	public ArenaManager(ArenaPVP plugin) {
-        this.plugin = plugin;
+	private ArenaManager() {
 	}
 
-	public HashMap<String, Arena> getArenas() {
+	public static HashMap<String, Arena> getArenas() {
 		return arenas;
 	}
 
-    public Arena getArena(String arenaName){
+    public static Arena getArena(String arenaName){
         for(Arena arena : arenas.values()){
             if(arena.getArenaName().equalsIgnoreCase(arenaName)){
                 return arena;
@@ -30,37 +29,37 @@ public class ArenaManager {
         return null;
     }
 
-    public void addArena(String arenaName, Arena arena){
+    public static void addArena(String arenaName, Arena arena){
         if(arenas.isEmpty()){
             plugin.registerListeners();
         }
         arenas.put(arenaName, arena);
     }
 
-    public void removeArena(String arenaName){
+    public static void removeArena(String arenaName){
         arenas.remove(arenaName);
         if(arenas.isEmpty()){
             plugin.unRegisterListeners();
         }
     }
 
-	public Arena getFirstArena(){
+	public static Arena getFirstArena(){
 		return arenas.entrySet().iterator().next().getValue();
 	}
 
-	public ArenaPlayer getPlayerByName(String playerName) {
+	public static ArenaPlayer getPlayerByName(String playerName) {
 		return allPlayers.get(playerName);
 	}
 
-	public void addPlayer(ArenaPlayer arenaPlayer) {
+	public static void addPlayer(ArenaPlayer arenaPlayer) {
 		allPlayers.put(arenaPlayer.getPlayerName(), arenaPlayer);
 	}
 
-	public void removePlayer(ArenaPlayer arenaPlayer) {
+	public static void removePlayer(ArenaPlayer arenaPlayer) {
 		allPlayers.remove(arenaPlayer.getPlayerName());
 	}
 
-	public HashMap<String, ArenaPlayer> getAllPlayers() {
+	public static HashMap<String, ArenaPlayer> getAllPlayers() {
 		return allPlayers;
 	}
 }
