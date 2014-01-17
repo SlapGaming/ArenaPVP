@@ -1,15 +1,7 @@
 package me.naithantu.ArenaPVP.Util;
 
-import java.util.Collection;
-import java.util.List;
-
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,7 +11,14 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 
+import java.util.Collection;
+import java.util.List;
+
 public class Util {
+
+    private Util(){
+    }
+
 	public static void broadcast(String msg) {
 		msg = ChatColor.translateAlternateColorCodes('&', msg);
 		Bukkit.getServer().broadcastMessage(ChatColor.DARK_RED + "[PVP] " + ChatColor.WHITE + msg);
@@ -75,8 +74,15 @@ public class Util {
 
 
 	@SuppressWarnings("unchecked")
-	public static void playerLeave(Player player, YamlStorage playerStorage) {
+	public static void loadPlayerConfig(Player player, YamlStorage playerStorage) {
 		Configuration playerConfig = playerStorage.getConfig();
+
+        //Check if playerConfig was properly saved.
+        if(!playerConfig.contains("gamemode")){
+            System.out.println("Unable to load player config for player " + player.getName() +  "!");
+            return;
+        }
+
 		//Clear players inventory and then load saved inventory.
 		PlayerInventory inventory = player.getInventory();
 		inventory.clear();
@@ -114,7 +120,7 @@ public class Util {
 		playerStorage.saveConfig();
 	}
 
-	public static void playerJoin(Player player, YamlStorage playerStorage) {
+	public static void savePlayerConfig(Player player, YamlStorage playerStorage) {
 		Configuration playerConfig = playerStorage.getConfig();
 
 		//Save players inventory and then clear it.
