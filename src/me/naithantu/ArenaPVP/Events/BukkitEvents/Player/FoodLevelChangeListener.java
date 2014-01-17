@@ -8,10 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 public class FoodLevelChangeListener implements Listener {
-    ArenaManager arenaManager;
 
-    public FoodLevelChangeListener(ArenaManager arenaManager){
-        this.arenaManager = arenaManager;
+    public FoodLevelChangeListener(){
     }
 
     @EventHandler
@@ -19,7 +17,7 @@ public class FoodLevelChangeListener implements Listener {
         if(event.getEntity() instanceof Player){
             Player player = (Player) event.getEntity();
 
-            ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
+            ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(player.getName());
             if(arenaPlayer != null){
                 arenaPlayer.getArena().getGamemode().onFoodLevelChange(event);
             }

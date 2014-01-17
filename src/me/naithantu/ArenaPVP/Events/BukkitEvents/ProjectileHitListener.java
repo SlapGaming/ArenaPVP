@@ -9,17 +9,15 @@ import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 public class ProjectileHitListener implements Listener {
-	ArenaManager arenaManager;
 
-	public ProjectileHitListener(ArenaManager arenaManager) {
-		this.arenaManager = arenaManager;
+	public ProjectileHitListener() {
 	}
 
 	@EventHandler
 	public void onProjectileHit(ProjectileHitEvent event) {
 		if (event.getEntity().getShooter() instanceof Player) {
 			Player player = (Player) event.getEntity().getShooter();
-			ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
+			ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(player.getName());
 			if (arenaPlayer != null) {
 				arenaPlayer.getArena().getGamemode().onProjectileHit(event, arenaPlayer);
 			}

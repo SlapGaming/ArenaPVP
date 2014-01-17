@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerTimers {
-	ArenaPVP plugin;
+	ArenaPVP plugin = ArenaPVP.getInstance();
 	Arena arena;
 	ArenaSettings settings;
 	ArenaPlayer arenaPlayer;
@@ -37,8 +37,7 @@ public class PlayerTimers {
     //Contains all other timers that run on a player, should never contain
     List<PlayerTimer> playerTimers = new ArrayList<PlayerTimer>();
 
-	public PlayerTimers(ArenaPVP plugin, Arena arena, ArenaPlayer arenaPlayer, Player player) {
-		this.plugin = plugin;
+	public PlayerTimers(Arena arena, ArenaPlayer arenaPlayer, Player player) {
 		this.arena = arena;
 		this.arenaPlayer = arenaPlayer;
 		this.settings = arena.getSettings();

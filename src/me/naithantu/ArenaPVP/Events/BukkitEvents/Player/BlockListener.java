@@ -11,16 +11,14 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BlockListener implements Listener {
-	ArenaManager arenaManager;
-	
-	public BlockListener(ArenaManager arenaManager){
-		this.arenaManager = arenaManager;
+
+	public BlockListener(){
 	}
 	
 	@EventHandler
 	public void onPlayerBreakBlock(BlockBreakEvent event){
 		Player player = event.getPlayer();
-		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
+		ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(player.getName());
 		if(arenaPlayer != null){
 			arenaPlayer.getArena().getGamemode().onPlayerBreakBlock(event, arenaPlayer);
 		}
@@ -29,7 +27,7 @@ public class BlockListener implements Listener {
 	@EventHandler
 	public void onPlayerPlaceBlock(BlockPlaceEvent event){
 		Player player = event.getPlayer();
-		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
+		ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(player.getName());
 		if(arenaPlayer != null){
 			arenaPlayer.getArena().getGamemode().onPlayerPlaceBlock(event, arenaPlayer);
 		}
@@ -38,7 +36,7 @@ public class BlockListener implements Listener {
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
+		ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(player.getName());
 		if(arenaPlayer != null){
 			arenaPlayer.getArena().getGamemode().onPlayerInteractBlock(event, arenaPlayer);
 		}

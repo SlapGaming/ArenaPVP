@@ -8,18 +8,15 @@ import org.mcsg.double0negative.tabapi.TabAPI;
 
 public class TabController {
 
-    private ArenaPVP plugin;
-
     private boolean tabApiFound;
 
-    public TabController(ArenaPVP plugin) {
-        this.plugin = plugin;
+    public TabController() {
         tabApiFound = findTabAPI();
     }
 
     private boolean findTabAPI() {
         boolean returnBool = false;
-        TabAPI api = (TabAPI) plugin.getServer().getPluginManager().getPlugin("TabAPI");
+        TabAPI api = (TabAPI) ArenaPVP.getInstance().getServer().getPluginManager().getPlugin("TabAPI");
         if (api != null) returnBool = true;
         return returnBool;
     }
@@ -29,6 +26,7 @@ public class TabController {
     }
 
     public int setTopTab(Player p, Gamemode.Gamemodes gm) {
+        ArenaPVP plugin = ArenaPVP.getInstance();
         int returnInt = 5;
 
         TabAPI.clearTab(p);

@@ -1,19 +1,16 @@
 package me.naithantu.ArenaPVP.Commands;
 
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
+import com.google.common.base.Joiner;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer.ChatChannel;
-
+import me.naithantu.ArenaPVP.ArenaManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.google.common.base.Joiner;
-
 public class CommandChat extends AbstractCommand {
 
-	protected CommandChat(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
-		super(sender, args, plugin, arenaManager);
+	protected CommandChat(CommandSender sender, String[] args) {
+		super(sender, args);
 	}
 
 	@Override
@@ -28,7 +25,7 @@ public class CommandChat extends AbstractCommand {
 			return true;
 		}
 
-		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(sender.getName());
+		ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(sender.getName());
 		if (arenaPlayer == null) {
 			this.msg(sender, "You are not in a game!");
 			return true;

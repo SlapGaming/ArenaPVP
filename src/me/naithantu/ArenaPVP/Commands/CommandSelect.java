@@ -9,8 +9,8 @@ import java.io.File;
 
 public class CommandSelect extends AbstractCommand {
 
-	protected CommandSelect(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
-		super(sender, args, plugin, arenaManager);
+	protected CommandSelect(CommandSender sender, String[] args) {
+		super(sender, args);
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class CommandSelect extends AbstractCommand {
 		
 		String arenaName = args[0].toLowerCase();
 		
-		if(arenaManager.getArenas().containsKey(arenaName)){
+		if(ArenaManager.getArenas().containsKey(arenaName)){
 			this.msg(sender, "That arena is already loaded! You can unload it with /pvp stop [arenaname].");
 			return true;
 		}
@@ -38,8 +38,8 @@ public class CommandSelect extends AbstractCommand {
             return true;
         }
 
-		Arena arena = new Arena(plugin, arenaManager, arenaName);
-		arenaManager.addArena(arenaName, arena);
+		Arena arena = new Arena(arenaName);
+		ArenaManager.addArena(arenaName, arena);
 		
 		this.msg(sender, "Loaded arena with name " + arena.getArenaName() + "!");
 		return true;

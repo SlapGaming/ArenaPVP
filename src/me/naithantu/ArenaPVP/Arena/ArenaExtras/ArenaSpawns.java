@@ -1,35 +1,27 @@
 package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import me.naithantu.ArenaPVP.Arena.ArenaTeam;
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
+import me.naithantu.ArenaPVP.Events.ArenaEvents.EventRespawn;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
+import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
-import me.naithantu.ArenaPVP.Events.ArenaEvents.EventRespawn;
-import me.naithantu.ArenaPVP.Util.Util;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class ArenaSpawns {
-	ArenaPVP plugin;
-	ArenaManager arenaManager;
 	Arena arena;
 	ArenaSettings settings;
 	YamlStorage arenaStorage;
     FileConfiguration arenaConfig;
 
-	public ArenaSpawns(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, YamlStorage arenaStorage) {
-		this.plugin = plugin;
-		this.arenaManager = arenaManager;
+	public ArenaSpawns(Arena arena, ArenaSettings settings, YamlStorage arenaStorage) {
 		this.arena = arena;
 		this.settings = settings;
 		this.arenaStorage = arenaStorage;

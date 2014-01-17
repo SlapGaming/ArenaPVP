@@ -21,7 +21,7 @@ public class IconMenu implements Listener {
     private String name;
     private int size;
     private OptionClickEventHandler clickEventHandler;
-    private Plugin plugin;
+    private Plugin plugin = ArenaPVP.getInstance();
     private boolean destroyOnClose;
     private String playerName;
 
@@ -30,17 +30,16 @@ public class IconMenu implements Listener {
 
     private Inventory inventory;
 
-    public IconMenu(String name, int size, OptionClickEventHandler clickEventHandler, boolean destroyOnClose, String playerName, Plugin plugin) {
+    public IconMenu(String name, int size, OptionClickEventHandler clickEventHandler, boolean destroyOnClose, String playerName) {
         //Add chatcolors to make it impossible for players to "create" an iconmenu via anvil
         this.name = ChatColor.WHITE + "" + ChatColor.RESET + name;
         this.playerName = playerName;
         this.size = size;
         this.clickEventHandler = clickEventHandler;
-        this.plugin = plugin;
         this.destroyOnClose = destroyOnClose;
         this.optionNames = new String[size];
         this.optionIcons = new ItemStack[size];
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
     }
 
     public IconMenu setOption(int position, ItemStack icon, String name, String... info) {

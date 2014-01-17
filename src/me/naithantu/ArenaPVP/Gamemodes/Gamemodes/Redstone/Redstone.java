@@ -37,8 +37,8 @@ public class Redstone extends Gamemode {
 
     private boolean hasWinner = false;
 
-    public Redstone(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
-        super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.LTS);
+    public Redstone(Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
+        super(arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.LTS);
         for (ArenaTeam arenaTeam : arena.getTeams()) {
             redstoneLocations.put(arenaTeam, Util.getLocation(arenaStorage, "gamemodes.redstone.locations." + arenaTeam.getTeamNumber()));
         }
@@ -175,7 +175,7 @@ public class Redstone extends Gamemode {
     public AbstractCommand handleGamemodeCommand(CommandSender sender, String command, String[] cmdArgs) {
         AbstractCommand commandObj = null;
         if (command.equals("setredstone")) {
-            commandObj = new CommandSetRedstone(sender, cmdArgs, plugin, arenaManager, arena);
+            commandObj = new CommandSetRedstone(sender, cmdArgs, arena);
         }
         return commandObj;
     }

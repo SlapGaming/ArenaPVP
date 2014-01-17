@@ -9,10 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class InventoryClickListener implements Listener {
-	ArenaManager arenaManager;
 
-	public InventoryClickListener(ArenaManager arenaManager) {
-		this.arenaManager = arenaManager;
+	public InventoryClickListener() {
 	}
 
 	@EventHandler
@@ -20,7 +18,7 @@ public class InventoryClickListener implements Listener {
 		if(event.getWhoClicked() instanceof Player){
 			Player player = (Player) event.getWhoClicked();
 			
-			ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
+			ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(player.getName());
 			if (arenaPlayer != null) {
 				arenaPlayer.getArena().getGamemode().onPlayerInventoryClick(event, arenaPlayer);
 			}

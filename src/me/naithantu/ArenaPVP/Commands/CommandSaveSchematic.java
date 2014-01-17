@@ -20,8 +20,8 @@ import java.util.Collection;
 
 public class CommandSaveSchematic extends AbstractArenaCommand {
 
-	protected CommandSaveSchematic(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
-		super(sender, args, plugin, arenaManager);
+	protected CommandSaveSchematic(CommandSender sender, String[] args) {
+		super(sender, args);
 	}
 
     @Override

@@ -1,28 +1,21 @@
 package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
-import java.util.HashMap;
-
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerTimers;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
-import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
-import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerTimers;
-import me.naithantu.ArenaPVP.Arena.Runnables.OutOfBoundsTimer;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
 public class ArenaArea {
-    ArenaPVP plugin;
     Arena arena;
     ArenaSettings settings;
 
@@ -30,10 +23,7 @@ public class ArenaArea {
     String pvpRegion;
     String spectatorRegion;
 
-    HashMap<String, OutOfBoundsTimer> outOfBoundsTimers = new HashMap<String, OutOfBoundsTimer>();
-
-    public ArenaArea(ArenaPVP plugin, Arena arena, ArenaSettings settings, FileConfiguration config) {
-        this.plugin = plugin;
+    public ArenaArea(Arena arena, ArenaSettings settings, FileConfiguration config) {
         this.arena = arena;
         this.settings = settings;
 

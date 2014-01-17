@@ -17,7 +17,7 @@ public class ArenaTeam {
 	ItemStack[] inventory;
 	ItemStack[] armor;
 
-	ArenaPVP plugin;
+	ArenaPVP plugin = ArenaPVP.getInstance();
 	Configuration arenaConfig;
 	int teamNumber;
 
@@ -28,8 +28,7 @@ public class ArenaTeam {
 
 	List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
 
-	public ArenaTeam(ArenaPVP plugin, Configuration arenaConfig, int teamNumber) {
-		this.plugin = plugin;
+	public ArenaTeam(Configuration arenaConfig, int teamNumber) {
 		this.arenaConfig = arenaConfig;
 		this.teamNumber = teamNumber;
         setupTeam();
@@ -86,13 +85,13 @@ public class ArenaTeam {
 		this.score = score;
 	}
 
-	public void joinTeam(Player player, ArenaManager arenaManager, Arena arena) {
+	public void joinTeam(Player player, Arena arena) {
 		ArenaPlayer arenaPlayer = new ArenaPlayer(plugin, player, arena, this);
-		arenaManager.addPlayer(arenaPlayer);
-		joinTeam(player, arenaManager, arena, arenaPlayer);
+		ArenaManager.addPlayer(arenaPlayer);
+		joinTeam(player, arena, arenaPlayer);
 	}
 
-	public void joinTeam(Player player, ArenaManager arenaManager, Arena arena, ArenaPlayer arenaPlayer) {
+	public void joinTeam(Player player, Arena arena, ArenaPlayer arenaPlayer) {
 		players.add(arenaPlayer);
 		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() != ArenaPlayerState.SPECTATING) {
 			if (arena.getSettings().getRespawnTime() == 0) {
@@ -105,8 +104,8 @@ public class ArenaTeam {
 		}
 	}
 
-	public void leaveTeam(ArenaManager arenaManager, ArenaPlayer arenaPlayer, Player player) {
-		arenaManager.removePlayer(arenaPlayer);
+	public void leaveTeam(ArenaPlayer arenaPlayer, Player player) {
+		ArenaManager.removePlayer(arenaPlayer);
 		players.remove(arenaPlayer);
 		arenaPlayer.getTimers().cancelAllTimers();
 	}

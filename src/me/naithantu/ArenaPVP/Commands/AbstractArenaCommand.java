@@ -4,7 +4,6 @@ import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.IconMenu;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -16,13 +15,13 @@ import java.util.Collection;
 import java.util.List;
 
 /*
- AbstractArenaCommand is an extension of AbstractCommand.
+ AbstractArenaCommand is an extension of AbstractCommand
  It adds methods to select an arena via arenastate/arena name and then use an iconmenu if there are several applicable arenas.
  */
 public abstract class AbstractArenaCommand extends AbstractCommand {
 
-    protected AbstractArenaCommand(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
-        super(sender, args, plugin, arenaManager);
+    protected AbstractArenaCommand(CommandSender sender, String[] args) {
+        super(sender, args);
     }
 
     protected abstract void runCommand(Arena arena);
@@ -36,12 +35,12 @@ public abstract class AbstractArenaCommand extends AbstractCommand {
     protected List<Arena> selectArena(String[] args, ArenaState... arenaStates) {
         List<Arena> arenas = new ArrayList<>();
         //If player is in a game, only add that arena
-        ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(sender.getName());
+        ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(sender.getName());
         if (arenaPlayer != null) {
             arenas.add(arenaPlayer.getArena());
         } else if (args.length > 0) {
             //If player defined arena name in command, get it with that
-            Arena arena = arenaManager.getArena(args[0]);
+            Arena arena = ArenaManager.getArena(args[0]);
             if (arena != null) {
                 if (checkState(arena, arenaStates)) {
                     arenas.add(arena);
@@ -53,7 +52,7 @@ public abstract class AbstractArenaCommand extends AbstractCommand {
             }
         } else {
             //Else get all arenas that are in the correct arenastate
-            for (Arena arena : arenaManager.getArenas().values()) {
+            for (Arena arena : ArenaManager.getArenas().values()) {
                 if (checkState(arena, arenaStates)) {
                     arenas.add(arena);
                 }
@@ -86,14 +85,14 @@ public abstract class AbstractArenaCommand extends AbstractCommand {
                     @Override
                     public void onOptionClick(IconMenu.OptionClickEvent event) {
                         event.setWillDestroy(true);
-                        Arena arena = arenaManager.getArena(event.getName());
+                        Arena arena = ArenaManager.getArena(event.getName());
                         if(getArenas().contains(arena)){
                             runCommand(arena);
                         } else {
                             badMsg(sender, "You can't use that command on that arena anymore!");
                         }
                     }
-                }, true, sender.getName(), plugin);
+                }, true, sender.getName());
                 int i = 0;
                 for (Arena arena : arenas) {
                     iconMenu.setOption(i, new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 3), arena.getArenaName(), arena.getNickName());

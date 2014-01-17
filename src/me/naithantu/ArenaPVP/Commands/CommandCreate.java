@@ -2,7 +2,6 @@ package me.naithantu.ArenaPVP.Commands;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -12,8 +11,8 @@ import java.io.File;
 
 public class CommandCreate extends AbstractCommand {
 
-	protected CommandCreate(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
-		super(sender, args, plugin, arenaManager);
+	protected CommandCreate(CommandSender sender, String[] args) {
+		super(sender, args);
 	}
 
 	@Override
@@ -43,13 +42,13 @@ public class CommandCreate extends AbstractCommand {
 			return true;
 		}
 		
-		Arena arena = new Arena(plugin, arenaManager, arenaName);
+		Arena arena = new Arena(arenaName);
 		YamlStorage arenaStorage = arena.getArenaStorage();
 		Configuration arenaConfig = arenaStorage.getConfig();
 		arenaConfig.set("nickname", arenaName);
 		arenaStorage.saveConfig();
         arena.setupArena();
-		arenaManager.getArenas().put(arenaName, arena);
+		ArenaManager.getArenas().put(arenaName, arena);
 		
 		
 		

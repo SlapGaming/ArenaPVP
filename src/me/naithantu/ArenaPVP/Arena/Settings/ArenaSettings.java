@@ -1,8 +1,6 @@
 package me.naithantu.ArenaPVP.Arena.Settings;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -33,11 +31,11 @@ public class ArenaSettings {
     private Setting<Boolean>  allowSpectateInArea;
     private Setting<Boolean> noHungerLoss;
 	
-	public ArenaSettings(ArenaPVP plugin, YamlStorage arenaStorage, ArenaManager arenaManager, Arena arena) {
+	public ArenaSettings(YamlStorage arenaStorage, Arena arena) {
         this.arenaStorage = arenaStorage;
 		config = arenaStorage.getConfig();
 		initializeSettings();
-        settingMenu = new SettingMenu(plugin, arenaStorage, arenaManager, arena, this);
+        settingMenu = new SettingMenu(arenaStorage, arena, this);
     }
 
     public void reloadSettings(){

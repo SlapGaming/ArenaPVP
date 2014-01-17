@@ -33,8 +33,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class Arena {
-    private ArenaPVP plugin;
-    private ArenaManager arenaManager;
+    private ArenaPVP plugin = ArenaPVP.getInstance();
     private ArenaSpawns arenaSpawns;
     private ArenaSettings settings;
     private ArenaUtil arenaUtil;
@@ -54,24 +53,22 @@ public class Arena {
 
     private TabController tabController;
 
-    public Arena(ArenaPVP plugin, ArenaManager arenaManager, String arenaName) {
-        this.plugin = plugin;
-        this.arenaManager = arenaManager;
+    public Arena(String arenaName) {
         this.arenaName = arenaName;
         arenaState = ArenaState.BEFORE_JOIN;
-        arenaStorage = new YamlStorage(plugin, "maps", arenaName);
+        arenaStorage = new YamlStorage("maps", arenaName);
         //Make sure config contains all necessary values
         arenaConfig = arenaStorage.getConfig();
         if(!arenaConfig.contains("teams.0")){
             arenaStorage.copyDefaultConfig("arena.yml");
         }
 
-        settings = new ArenaSettings(plugin, arenaStorage, arenaManager, this);
-        arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaStorage);
+        settings = new ArenaSettings(arenaStorage, this);
+        arenaSpawns = new ArenaSpawns(this, settings, arenaStorage);
         arenaUtil = new ArenaUtil(this);
-        arenaArea = new ArenaArea(plugin, this, settings, arenaConfig);
+        arenaArea = new ArenaArea(this, settings, arenaConfig);
         arenaSpectators = new ArenaSpectators(this);
-        arenaChat = new ArenaChat(plugin, arenaManager, this);
+        arenaChat = new ArenaChat(this);
 
         tabController = plugin.getTabController();
 
@@ -86,14 +83,14 @@ public class Arena {
     private void initializeArena(){
         // Create teams with proper names.
         for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
-            ArenaTeam team = new ArenaTeam(plugin, arenaConfig, Integer.parseInt(teamNumber));
+            ArenaTeam team = new ArenaTeam(arenaConfig, Integer.parseInt(teamNumber));
             teams.add(team);
         }
 
         String gamemodeName = arenaConfig.getString("gamemode");
 
         // Create gamemode.
-        gamemode = ArenaGamemode.getGamemode(plugin, arenaManager, this, settings, arenaSpawns, arenaUtil, arenaStorage, gamemodeName, tabController);
+        gamemode = ArenaGamemode.getGamemode(this, settings, arenaSpawns, arenaUtil, arenaStorage, gamemodeName, tabController);
     }
 
     public String getNickName() {
@@ -146,12 +143,12 @@ public class Arena {
 
     public void joinSpectate(Player player) {
         //Teleport first to avoid problems with MVInventories
-        YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
+        YamlStorage playerStorage = new YamlStorage("players", player.getName());
         Util.saveLocation(player.getLocation(), playerStorage, "location");
         Util.savePlayerConfig(player, playerStorage);
         ArenaPlayer arenaPlayer = new ArenaPlayer(plugin, player, this, null);
         arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
-        arenaManager.addPlayer(arenaPlayer);
+        ArenaManager.addPlayer(arenaPlayer);
         player.teleport(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
         arenaSpectators.addSpectator(player);
         arenaSpectators.getSpectators().put(player, arenaPlayer);
@@ -160,8 +157,8 @@ public class Arena {
     }
 
     public void leaveSpectate(Player player, ArenaPlayer arenaPlayer) {
-        YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
-        arenaManager.removePlayer(arenaPlayer);
+        YamlStorage playerStorage = new YamlStorage("players", player.getName());
+        ArenaManager.removePlayer(arenaPlayer);
         arenaSpectators.removeSpectator(player);
         arenaSpectators.getSpectators().remove(player);
         Configuration playerConfig = playerStorage.getConfig();
@@ -188,10 +185,10 @@ public class Arena {
             Util.msg(player, "You joined team " + event.getTeam().getColoredName() + "!");
 
             //Teleport first to avoid problems with MVInventories
-            YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
+            YamlStorage playerStorage = new YamlStorage("players", player.getName());
             Util.saveLocation(player.getLocation(), playerStorage, "location");
 
-            event.getTeam().joinTeam(player, arenaManager, this);
+            event.getTeam().joinTeam(player, this);
 
             Util.savePlayerConfig(player, playerStorage);
             arenaSpectators.onPlayerJoin(player);
@@ -206,7 +203,7 @@ public class Arena {
         if (!event.isCancelled()) {
             Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
             if (player != null) {
-                YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
+                YamlStorage playerStorage = new YamlStorage("players", player.getName());
                 Configuration playerConfig = playerStorage.getConfig();
                 if (player.isDead()) {
                     playerConfig.set("hastoleave", true);
@@ -217,7 +214,7 @@ public class Arena {
                 }
                 playerStorage.saveConfig();
             }
-            arenaPlayer.getTeam().leaveTeam(arenaManager, arenaPlayer, player);
+            arenaPlayer.getTeam().leaveTeam(arenaPlayer, player);
         }
     }
 
@@ -296,8 +293,8 @@ public class Arena {
         //Destroy iconMenu (otherwise listener will stay loaded)
         settings.getSettingMenu().destroy();
 
-        //Remove arena from arenamanager.
-        arenaManager.removeArena(arenaName);
+        //Remove arena from arenaManager.
+        ArenaManager.removeArena(arenaName);
     }
 
     public void addTeam(ArenaTeam team) {

@@ -1,10 +1,10 @@
 package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer.ChatChannel;
+import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,21 +12,15 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer.ChatChannel;
-import me.naithantu.ArenaPVP.Arena.ArenaTeam;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArenaChat {
-    private ArenaPVP plugin;
-    private ArenaManager arenaManager;
 	private Arena arena;
 
 	private List<String> tempNoneChannel = new ArrayList<String>();
 
-	public ArenaChat(ArenaPVP plugin, ArenaManager arenaManager, Arena arena) {
-        this.plugin = plugin;
-        this.arenaManager = arenaManager;
+	public ArenaChat(Arena arena) {
 		this.arena = arena;
 	}
 
@@ -49,7 +43,7 @@ public class ArenaChat {
 		}
 
         if(chatChannel != ChatChannel.NONE){
-            sendChatSpy(player, arenaPlayer, message, chatChannel);
+            sendChatSpy(player, message, chatChannel);
         }
 	}
 
@@ -62,7 +56,7 @@ public class ArenaChat {
 		}
 	}
 
-    private void sendChatSpy(Player player, ArenaPlayer arenaPlayer, String message, ChatChannel chatChannel){
+    private void sendChatSpy(Player player, String message, ChatChannel chatChannel){
         String chatSpyMessage;
 
         if (chatChannel == ChatChannel.TEAM) {
@@ -73,12 +67,12 @@ public class ArenaChat {
 
         for(Player chatSpyPlayer: Bukkit.getOnlinePlayers()){
             if(chatSpyPlayer.hasPermission("arenapvp.mod") || player.hasPermission("arenapvp.chatspy")){
-                YamlStorage playerStorage = new YamlStorage(plugin, "players", chatSpyPlayer.getName());
+                YamlStorage playerStorage = new YamlStorage("players", chatSpyPlayer.getName());
                 FileConfiguration playerConfig = playerStorage.getConfig();
                 //Check if player has chatspy enabled.
                 if(playerConfig.getBoolean("chatspy")){
                     //Check if player is not in a game.
-                    if(arenaManager.getPlayerByName(chatSpyPlayer.getName()) == null){
+                    if(ArenaManager.getPlayerByName(chatSpyPlayer.getName()) == null){
                         chatSpyPlayer.sendMessage(chatSpyMessage);
                     }
                 }

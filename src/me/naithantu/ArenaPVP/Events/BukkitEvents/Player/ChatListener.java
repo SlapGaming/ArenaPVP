@@ -12,17 +12,15 @@ import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 public class ChatListener implements Listener {
-    ArenaManager arenaManager;
 
-    public ChatListener(ArenaManager arenaManager) {
-        this.arenaManager = arenaManager;
+    public ChatListener() {
     }
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
 
-        for (Arena arena : arenaManager.getArenas().values()) {
+        for (Arena arena : ArenaManager.getArenas().values()) {
             SettingMenu settingMenu = arena.getSettings().getSettingMenu();
             if(settingMenu.getChangingPlayer() != null && settingMenu.getChangingPlayer().equals(player.getName())){
                 if(settingMenu.getChangeStatus() == SettingMenu.ChangeStatus.STRING){
@@ -41,7 +39,7 @@ public class ChatListener implements Listener {
         }
 
         if(!event.isCancelled()){
-            ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
+            ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(player.getName());
             if (arenaPlayer != null) {
                 arenaPlayer.getArena().getGamemode().onPlayerChat(event, arenaPlayer);
             }

@@ -23,7 +23,7 @@ public class ArenaPlayer {
 		this.arena = arena;
 		this.team = team;
 		this.playerScore = new PlayerScore(playerName);
-		this.timers = new PlayerTimers(plugin, arena, this, player);
+		this.timers = new PlayerTimers(arena, this, player);
 		this.chatChannel = ChatChannel.valueOf(arena.getArenaStorage().getConfig().getString("defaultchatchannel"));
 	}
 

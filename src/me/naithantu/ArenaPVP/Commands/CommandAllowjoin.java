@@ -2,8 +2,6 @@ package me.naithantu.ArenaPVP.Commands;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -12,8 +10,8 @@ import java.util.Collection;
 
 public class CommandAllowjoin extends AbstractArenaCommand {
 
-	protected CommandAllowjoin(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
-		super(sender, args, plugin, arenaManager);
+	protected CommandAllowjoin(CommandSender sender, String[] args) {
+		super(sender, args);
 	}
 
     @Override

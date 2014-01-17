@@ -1,31 +1,25 @@
 package me.naithantu.ArenaPVP.Events.BukkitEvents.Player;
 
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.ArenaManager;
+import me.naithantu.ArenaPVP.Storage.YamlStorage;
+import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
-import me.naithantu.ArenaPVP.Storage.YamlStorage;
-import me.naithantu.ArenaPVP.Util.Util;
-
 public class RespawnListener implements Listener {
-	ArenaPVP plugin;
-	ArenaManager arenaManager;
 
-	public RespawnListener(ArenaPVP plugin, ArenaManager arenaManager) {
-		this.plugin = plugin;
-		this.arenaManager = arenaManager;
+	public RespawnListener() {
 	}
 
 	@EventHandler
 	public void onPlayerRespawn(final PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
 		
-		YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
+		YamlStorage playerStorage = new YamlStorage("players", player.getName());
 		if(playerStorage.exists()){
 			Configuration playerConfig = playerStorage.getConfig();
 			if(playerConfig.contains("hastoleave")){
@@ -35,7 +29,7 @@ public class RespawnListener implements Listener {
 			}
 		}
 		
-		final ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
+		final ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(player.getName());
 		if (arenaPlayer != null) {
 			arenaPlayer.getArena().getGamemode().onPlayerRespawn(event, arenaPlayer);
 		}

@@ -1,17 +1,14 @@
 package me.naithantu.ArenaPVP.Commands;
 
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Arena.Arena;
-
 import org.bukkit.command.CommandSender;
 
 import java.util.Collection;
 
 public class CommandStop extends AbstractArenaCommand {
 
-	protected CommandStop(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
-		super(sender, args, plugin, arenaManager);
+	protected CommandStop(CommandSender sender, String[] args) {
+		super(sender, args);
 	}
 
 	@Override

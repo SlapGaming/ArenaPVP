@@ -9,16 +9,14 @@ import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 public class QuitListener implements Listener {
-	ArenaManager arenaManager;
-	
-	public QuitListener(ArenaManager arenaManager){
-		this.arenaManager = arenaManager;
+
+	public QuitListener(){
 	}
 	
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event){
 		Player player = event.getPlayer();
-		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
+		ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(player.getName());
 		if(arenaPlayer != null){
 			arenaPlayer.getArena().getGamemode().onPlayerQuit(event, arenaPlayer);
 		}

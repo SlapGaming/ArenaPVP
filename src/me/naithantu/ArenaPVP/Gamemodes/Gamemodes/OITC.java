@@ -11,8 +11,6 @@ import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerScore;
 import me.naithantu.ArenaPVP.Arena.Runnables.KillTimer;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.TabController;
@@ -41,8 +39,8 @@ public class OITC extends Gamemode {
 
     private ItemStack arrow;
 
-    public OITC(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
-        super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.PAINTBALL);
+    public OITC(Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
+        super(arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.PAINTBALL);
         this.arenaUtil = arenaUtil;
         arrow = new ItemStack(Material.ARROW, 1);
     }

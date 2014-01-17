@@ -1,17 +1,15 @@
 package me.naithantu.ArenaPVP.Commands;
 
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
-
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.ArenaManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CommandLeave extends AbstractCommand {
 
-	protected CommandLeave(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
-		super(sender, args, plugin, arenaManager);
+	protected CommandLeave(CommandSender sender, String[] args) {
+		super(sender, args);
 	}
 
 	@Override
@@ -27,7 +25,7 @@ public class CommandLeave extends AbstractCommand {
 		}
 
 		ArenaPlayer arenaPlayer;
-		if ((arenaPlayer = arenaManager.getPlayerByName(sender.getName())) == null) {
+		if ((arenaPlayer = ArenaManager.getPlayerByName(sender.getName())) == null) {
 			this.msg(sender, "You are not in a game!");
 			return true;
 		}

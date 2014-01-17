@@ -37,8 +37,8 @@ public class Paintball extends Gamemode {
     private PaintballTimer paintballTimer;
 
 
-    public Paintball(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
-        super(plugin, arenaManager, arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.PAINTBALL);
+    public Paintball(Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
+        super(arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.PAINTBALL);
         this.arenaUtil = arenaUtil;
         paintballTimer = new PaintballTimer(arena.getTeams());
     }
@@ -81,7 +81,7 @@ public class Paintball extends Gamemode {
                     if (!arenaPlayer.isDying()){
                         Player killer = (Player) snowball.getShooter();
                         killer.playSound(killer.getLocation(), Sound.ORB_PICKUP, 1, 0);
-                        ArenaTeam team = arenaManager.getPlayerByName(killer.getName()).getTeam();
+                        ArenaTeam team = ArenaManager.getPlayerByName(killer.getName()).getTeam();
                         team.addScore();
                         arenaUtil.sendMessageAll(team.getTeamColor() + killer.getName() + ChatColor.WHITE + " fragged " + arenaPlayer.getTeam().getTeamColor() + arenaPlayer.getPlayerName() + ChatColor.WHITE + "!");
                         KillTimer killTimer = new KillTimer(arenaPlayer, (Player) event.getEntity());

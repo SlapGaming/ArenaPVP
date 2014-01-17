@@ -5,8 +5,6 @@ import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -14,8 +12,8 @@ import java.util.Collection;
 
 public class CommandTeams extends AbstractArenaCommand {
 
-	protected CommandTeams(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
-		super(sender, args, plugin, arenaManager);
+	protected CommandTeams(CommandSender sender, String[] args) {
+		super(sender, args);
 	}
 
 	@Override

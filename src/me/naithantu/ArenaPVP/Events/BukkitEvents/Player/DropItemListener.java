@@ -9,16 +9,14 @@ import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 public class DropItemListener implements Listener {
-	ArenaManager arenaManager;
 
-	public DropItemListener(ArenaManager arenaManager) {
-		this.arenaManager = arenaManager;
+	public DropItemListener() {
 	}
 
 	@EventHandler
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		Player player = event.getPlayer();
-		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
+		ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(player.getName());
 		if (arenaPlayer != null) {
 			arenaPlayer.getArena().getGamemode().onPlayerDropItem(event, arenaPlayer);
 		}

@@ -41,7 +41,6 @@ import org.mcsg.double0negative.tabapi.TabAPI;
 
 public abstract class Gamemode {
 	protected ArenaPVP plugin;
-	protected ArenaManager arenaManager;
 	protected Arena arena;
 	protected ArenaSettings settings;
 	protected ArenaSpawns arenaSpawns;
@@ -54,9 +53,8 @@ public abstract class Gamemode {
 	protected TabController tabController;
 	protected Gamemodes gm;
 
-	public Gamemode(ArenaPVP plugin, ArenaManager arenaManager, Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController, Gamemodes gm) {
-		this.plugin = plugin;
-		this.arenaManager = arenaManager;
+	public Gamemode(Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController, Gamemodes gm) {
+		this.plugin = ArenaPVP.getInstance();
 		this.arena = arena;
 		this.settings = settings;
 		this.arenaSpawns = arenaSpawns;
@@ -119,7 +117,7 @@ public abstract class Gamemode {
             // Add death and kill to players.
 			arenaPlayer.getPlayerScore().addDeath();
 			if (player.getKiller() != null)
-				arenaManager.getPlayerByName(player.getKiller().getName()).getPlayerScore().addKill();
+				ArenaManager.getPlayerByName(player.getKiller().getName()).getPlayerScore().addKill();
 		}
         event.setDeathMessage(null);
     }
@@ -170,7 +168,7 @@ public abstract class Gamemode {
 				if (arena.getArenaState() != ArenaState.PLAYING || arenaPlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
 					event.setCancelled(true);
 				} else {
-					ArenaPlayer damagePlayer = arenaManager.getPlayerByName(((Player) damager).getName());
+					ArenaPlayer damagePlayer = ArenaManager.getPlayerByName(((Player) damager).getName());
 					//Block damage if damager is not in same arena.
 					if (damagePlayer == null || !damagePlayer.getArena().equals(arenaPlayer.getArena()) || damagePlayer.getPlayerState() != ArenaPlayerState.PLAYING) {
 						event.setCancelled(true);

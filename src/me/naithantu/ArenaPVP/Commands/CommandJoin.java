@@ -4,7 +4,6 @@ import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,8 +12,8 @@ import java.util.Collection;
 
 public class CommandJoin extends AbstractArenaCommand {
 
-	protected CommandJoin(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager) {
-		super(sender, args, plugin, arenaManager);
+	protected CommandJoin(CommandSender sender, String[] args) {
+		super(sender, args);
 	}
 
 	@Override
@@ -29,7 +28,7 @@ public class CommandJoin extends AbstractArenaCommand {
 			return true;
 		}
 		
-		if(arenaManager.getPlayerByName(sender.getName()) != null){
+		if(ArenaManager.getPlayerByName(sender.getName()) != null){
 			this.msg(sender, "You are already in a game, you can leave with /pvp leave!");
 			return true;
 		}

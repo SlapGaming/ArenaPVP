@@ -20,9 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SettingMenu {
-    private ArenaPVP plugin;
+    private ArenaPVP plugin = ArenaPVP.getInstance();
     private Arena arena;
-    private ArenaManager arenaManager;
     private ArenaSettings arenaSettings;
     private YamlStorage arenaStorage;
     private FileConfiguration arenaConfig;
@@ -37,15 +36,13 @@ public class SettingMenu {
 
     private ArenaTeam changingTeam;
 
-    public SettingMenu(ArenaPVP plugin, YamlStorage arenaStorage, ArenaManager arenaManager, Arena arena, final ArenaSettings arenaSettings) {
-        this.plugin = plugin;
+    public SettingMenu(YamlStorage arenaStorage, Arena arena, final ArenaSettings arenaSettings) {
         this.arena = arena;
         this.arenaSettings = arenaSettings;
         this.arenaStorage = arenaStorage;
-        this.arenaManager = arenaManager;
         arenaConfig = arenaStorage.getConfig();
         menuStatus = MenuStatus.NONE;
-        iconMenu = new IconMenu("Setting menu", 5 * 9, new MenuClickEventHandler(), false, null, plugin);
+        iconMenu = new IconMenu("Setting menu", 5 * 9, new MenuClickEventHandler(), false, null);
         setupMenu();
     }
 
@@ -429,8 +426,8 @@ public class SettingMenu {
                         arena.stopGame();
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             public void run() {
-                                Arena arena = new Arena(plugin, arenaManager, arenaName);
-                                arenaManager.addArena(arenaName, arena);
+                                Arena arena = new Arena(arenaName);
+                                ArenaManager.addArena(arenaName, arena);
                                 Util.msg(player, "Reloaded arena with gamemode " + event.getName());
                             }
                         }, 2);

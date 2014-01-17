@@ -2,8 +2,6 @@ package me.naithantu.ArenaPVP.Gamemodes.Gamemodes.Redstone;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Commands.AbstractCommand;
 import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.command.CommandSender;
@@ -12,8 +10,8 @@ import org.bukkit.entity.Player;
 public class CommandSetRedstone extends AbstractCommand {
     Arena arena;
 
-    protected CommandSetRedstone(CommandSender sender, String[] args, ArenaPVP plugin, ArenaManager arenaManager, Arena arena) {
-        super(sender, args, plugin, arenaManager);
+    protected CommandSetRedstone(CommandSender sender, String[] args, Arena arena) {
+        super(sender, args);
         this.arena = arena;
     }
 

@@ -9,16 +9,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class MoveListener implements Listener {
-	ArenaManager arenaManager;
 
-	public MoveListener(ArenaManager arenaManager) {
-		this.arenaManager = arenaManager;
+	public MoveListener() {
 	}
 
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
+		ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(player.getName());
 		if (arenaPlayer != null) {
 			arenaPlayer.getArena().getGamemode().onPlayerMove(event, arenaPlayer);
 		}

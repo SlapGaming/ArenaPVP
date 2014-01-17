@@ -1,12 +1,13 @@
 package me.naithantu.ArenaPVP.Storage;
 
-import java.io.*;
-import java.util.logging.Level;
-
 import me.naithantu.ArenaPVP.ArenaPVP;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
 
 public class YamlStorage {
     ArenaPVP plugin;
@@ -15,8 +16,8 @@ public class YamlStorage {
     String path;
     FileConfiguration config;
 
-    public YamlStorage(ArenaPVP plugin, String path, String fileName) {
-        this.plugin = plugin;
+    public YamlStorage(String path, String fileName) {
+        this.plugin = ArenaPVP.getInstance();
         this.path = path;
         this.fileName = fileName + ".yml";
     }
