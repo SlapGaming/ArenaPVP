@@ -53,18 +53,21 @@ public class CommandJoin extends AbstractArenaCommand {
         }
 
         ArenaTeam team = null;
-        int index = -1;
-        if(args.length == 1){
-            index = 0;
-        } else if (args.length == 2){
-            index = 1;
-        }
-
-        if(index != -1){
-            try{
-                team  = arena.getTeam(Integer.parseInt(args[index]));
-            } catch (NumberFormatException e){
-                team = arena.getTeam(args[index]);
+        if(args.length != 0){
+            if(ArenaManager.getArenas().keySet().contains(args[0])){
+                if(args.length != 1){
+                    try{
+                        team  = arena.getTeam(Integer.parseInt(args[1]));
+                    } catch (NumberFormatException e){
+                        team = arena.getTeam(args[1]);
+                    }
+                }
+            } else {
+                try{
+                    team  = arena.getTeam(Integer.parseInt(args[0]));
+                } catch (NumberFormatException e){
+                    team = arena.getTeam(args[0]);
+                }
             }
         }
 
