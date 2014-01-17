@@ -465,7 +465,8 @@ public class SettingMenu {
         if (nextChange == Change.ARENANAME) {
             arenaConfig.set("nickname", string);
             arenaStorage.saveConfig();
-            Util.msg(player, "Changed arena name to " + string + "! (requires arena restart)");
+            arena.setupArena();
+            Util.msg(player, "Changed arena name to " + string + "!");
             stopChanging();
             openMenuDelayed(player);
         } else if (nextChange == Change.TEAMNAME) {

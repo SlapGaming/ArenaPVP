@@ -1,37 +1,5 @@
 package me.naithantu.ArenaPVP.Arena;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.TabController;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaArea;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaChat;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaGamemode;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
-import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpectators;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
-import me.naithantu.ArenaPVP.Arena.Runnables.StartArena;
-import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
-import me.naithantu.ArenaPVP.Events.ArenaEvents.EventLeaveArena;
-import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
-import me.naithantu.ArenaPVP.Storage.YamlStorage;
-import me.naithantu.ArenaPVP.Util.Util;
-
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
@@ -39,6 +7,30 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.*;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
+import me.naithantu.ArenaPVP.Arena.Runnables.StartArena;
+import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
+import me.naithantu.ArenaPVP.ArenaManager;
+import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
+import me.naithantu.ArenaPVP.Events.ArenaEvents.EventLeaveArena;
+import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
+import me.naithantu.ArenaPVP.Storage.YamlStorage;
+import me.naithantu.ArenaPVP.TabController;
+import me.naithantu.ArenaPVP.Util.Util;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class Arena {
     private ArenaPVP plugin;
@@ -69,8 +61,10 @@ public class Arena {
         arenaState = ArenaState.BEFORE_JOIN;
         arenaStorage = new YamlStorage(plugin, "maps", arenaName);
         //Make sure config contains all necessary values
-        arenaStorage.copyDefaultConfig("arena.yml");
         arenaConfig = arenaStorage.getConfig();
+        if(!arenaConfig.contains("teams.0")){
+            arenaStorage.copyDefaultConfig("arena.yml");
+        }
 
         settings = new ArenaSettings(plugin, arenaStorage, arenaManager, this);
         arenaSpawns = new ArenaSpawns(plugin, arenaManager, this, settings, arenaStorage);
@@ -81,12 +75,15 @@ public class Arena {
 
         tabController = plugin.getTabController();
 
+        setupArena();
         initializeArena();
     }
 
-    private void initializeArena(){
+    public void setupArena(){
         nickName = arenaConfig.getString("nickname");
+    }
 
+    private void initializeArena(){
         // Create teams with proper names.
         for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
             ArenaTeam team = new ArenaTeam(plugin, arenaConfig, Integer.parseInt(teamNumber));
@@ -151,7 +148,7 @@ public class Arena {
         //Teleport first to avoid problems with MVInventories
         YamlStorage playerStorage = new YamlStorage(plugin, "players", player.getName());
         Util.saveLocation(player.getLocation(), playerStorage, "location");
-        Util.playerJoin(player, playerStorage);
+        Util.savePlayerConfig(player, playerStorage);
         ArenaPlayer arenaPlayer = new ArenaPlayer(plugin, player, this, null);
         arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
         arenaManager.addPlayer(arenaPlayer);
@@ -168,7 +165,7 @@ public class Arena {
         arenaSpectators.removeSpectator(player);
         arenaSpectators.getSpectators().remove(player);
         Configuration playerConfig = playerStorage.getConfig();
-        Util.playerLeave(player, playerStorage);
+        Util.loadPlayerConfig(player, playerStorage);
         player.teleport(Util.getLocation(playerStorage, "location"));
         playerConfig.set("location", null);
         playerStorage.saveConfig();
@@ -196,7 +193,7 @@ public class Arena {
 
             event.getTeam().joinTeam(player, arenaManager, this);
 
-            Util.playerJoin(player, playerStorage);
+            Util.savePlayerConfig(player, playerStorage);
             arenaSpectators.onPlayerJoin(player);
             return true;
         }
@@ -214,7 +211,7 @@ public class Arena {
                 if (player.isDead()) {
                     playerConfig.set("hastoleave", true);
                 } else {
-                    Util.playerLeave(player, playerStorage);
+                    Util.loadPlayerConfig(player, playerStorage);
                     player.teleport(Util.getLocation(playerStorage, "location"));
                     playerConfig.set("location", null);
                 }
