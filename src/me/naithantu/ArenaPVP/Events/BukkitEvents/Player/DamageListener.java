@@ -16,12 +16,12 @@ public class DamageListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerDamage(EntityDamageByEntityEvent event){
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof Player){
 			Player player = (Player) event.getEntity();
 			ArenaPlayer arenaPlayer = arenaManager.getPlayerByName(player.getName());
 			if(arenaPlayer != null){
-				arenaPlayer.getArena().getGamemode().onPlayerDamage(event, arenaPlayer);
+				arenaPlayer.getArena().getGamemode().onPlayerDamageByEntity(event, arenaPlayer);
 			}
 		}
 	}

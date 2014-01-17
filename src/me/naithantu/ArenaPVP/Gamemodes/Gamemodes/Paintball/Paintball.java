@@ -67,8 +67,8 @@ public class Paintball extends Gamemode {
     }
 
     @Override
-    public void onPlayerDamage(final EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
-        super.onPlayerDamage(event, arenaPlayer);
+    public void onPlayerDamageByEntity(final EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
+        super.onPlayerDamageByEntity(event, arenaPlayer);
 
         // If the damage is not allowed, then the event will be cancelled.
         if (!event.isCancelled()) {

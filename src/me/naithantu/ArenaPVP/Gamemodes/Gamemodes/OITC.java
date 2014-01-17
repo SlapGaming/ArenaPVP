@@ -1,15 +1,22 @@
 package me.naithantu.ArenaPVP.Gamemodes.Gamemodes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import com.google.common.base.Joiner;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.*;
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerScore;
 import me.naithantu.ArenaPVP.Arena.Runnables.KillTimer;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
+import me.naithantu.ArenaPVP.ArenaManager;
+import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
+import me.naithantu.ArenaPVP.Storage.YamlStorage;
+import me.naithantu.ArenaPVP.TabController;
+import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,15 +29,10 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.TabController;
-import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
-import me.naithantu.ArenaPVP.Arena.ArenaTeam;
-import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
-import me.naithantu.ArenaPVP.Storage.YamlStorage;
-import me.naithantu.ArenaPVP.Util.Util;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class OITC extends Gamemode {
     private Comparator<ArenaPlayer> comp;
@@ -66,8 +68,8 @@ public class OITC extends Gamemode {
     }
 
     @Override
-    public void onPlayerDamage(EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
-        super.onPlayerDamage(event, arenaPlayer);
+    public void onPlayerDamageByEntity(EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
+        super.onPlayerDamageByEntity(event, arenaPlayer);
         final Player damaged = (Player) event.getEntity();
 
         // If the damage is not allowed, then the event will be cancelled.

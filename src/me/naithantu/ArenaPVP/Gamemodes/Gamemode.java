@@ -1,31 +1,22 @@
 package me.naithantu.ArenaPVP.Gamemodes;
 
-import me.naithantu.ArenaPVP.Arena.Settings.SettingMenu;
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.IconMenu;
-import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.*;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaArea;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaChat;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpectators;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
+import me.naithantu.ArenaPVP.ArenaManager;
+import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Commands.AbstractCommand;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventLeaveArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventRespawn;
+import me.naithantu.ArenaPVP.IconMenu;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
+import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Util.Util;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -44,13 +35,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.PlayerInventory;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
@@ -153,7 +138,7 @@ public abstract class Gamemode {
 		}
 	}
 
-	public void onPlayerDamage(EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
+	public void onPlayerDamageByEntity(EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
         Entity damager = event.getDamager();
 		if (damager instanceof Projectile) {
 			damager = ((Projectile) damager).getShooter();
