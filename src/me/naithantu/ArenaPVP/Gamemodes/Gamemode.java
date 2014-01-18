@@ -240,7 +240,7 @@ public abstract class Gamemode {
             arena.getArenaPlayerController().leaveGame(arenaPlayer);
         } else {
             //Player was spectator, leave as spectator.
-            arena.leaveSpectate(player, arenaPlayer);
+            arena.getArenaSpectatorController().leaveSpectate(player, arenaPlayer);
         }
         clearTab(player);
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {

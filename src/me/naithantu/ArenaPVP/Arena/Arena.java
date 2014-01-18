@@ -15,10 +15,7 @@ import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.TabController;
-import me.naithantu.ArenaPVP.Util.PlayerConfigUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -39,6 +36,7 @@ public class Arena {
     private ArenaChat arenaChat;
     private ArenaSpectators arenaSpectators;
     private ArenaPlayerController arenaPlayerController;
+    private ArenaSpectatorController arenaSpectatorController;
 
     private List<ArenaTeam> teams = new ArrayList<>();
     private String nickName;
@@ -69,6 +67,7 @@ public class Arena {
         arenaSpectators = new ArenaSpectators(this);
         arenaChat = new ArenaChat(this);
         arenaPlayerController = new ArenaPlayerController(this, settings, arenaSpectators);
+        arenaSpectatorController = new ArenaSpectatorController(this, settings, arenaSpawns, arenaSpectators);
 
         tabController = plugin.getTabController();
 
@@ -125,6 +124,10 @@ public class Arena {
         return arenaPlayerController;
     }
 
+    public ArenaSpectatorController getArenaSpectatorController() {
+        return arenaSpectatorController;
+    }
+
     public YamlStorage getArenaStorage() {
         return arenaStorage;
     }
@@ -144,48 +147,6 @@ public class Arena {
     public void setArenaState(ArenaState arenaState) {
         this.arenaState = arenaState;
     }
-
-    public void joinSpectate(Player player) {
-        //Teleport first to avoid problems with MVInventories
-        ArenaPlayer arenaPlayer = new ArenaPlayer(plugin, player, this, null);
-        arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
-        ArenaManager.addPlayer(arenaPlayer);
-
-        Location location = arenaSpawns.getRespawnLocation(player, arenaPlayer, ArenaSpawns.SpawnType.SPECTATOR);
-        PlayerConfigUtil.savePlayerConfig(player, new YamlStorage("players", player.getName()), location);
-
-        arenaSpectators.getSpectators().put(player, arenaPlayer);
-        changeToSpectate(player, arenaPlayer);
-        gamemode.updateTabs();
-    }
-
-    public void leaveSpectate(Player player, ArenaPlayer arenaPlayer) {
-        YamlStorage playerStorage = new YamlStorage("players", player.getName());
-        ArenaManager.removePlayer(arenaPlayer);
-        arenaSpectators.showSpectator(player);
-        arenaSpectators.getSpectators().remove(player);
-
-        if (player.isDead()) {
-            Configuration playerConfig = playerStorage.getConfig();
-            playerConfig.set("saved.hastoleave", true);
-            playerStorage.saveConfig();
-        } else {
-            PlayerConfigUtil.loadPlayerConfig(player, playerStorage);
-        }
-
-        gamemode.clearTab(player);
-        gamemode.updateTabs();
-    }
-
-    public void changeToSpectate(Player player, ArenaPlayer arenaPlayer) {
-        if (settings.isAllowSpectateFly()) {
-            player.setAllowFlight(true);
-            player.setFlying(true);
-        }
-        arenaSpectators.hideSpectator(player);
-    }
-
-
 
     public void startGame() {
         StartArena startArena = new StartArena(this);
@@ -234,7 +195,7 @@ public class Arena {
         //Let spectators leave the game.
         Set<Entry<Player, ArenaPlayer>> spectators = new HashSet<>(arenaSpectators.getSpectators().entrySet());
         for (Entry<Player, ArenaPlayer> entry : spectators) {
-            leaveSpectate(entry.getKey(), entry.getValue());
+            arenaSpectatorController.leaveSpectate(entry.getKey(), entry.getValue());
         }
 
         //Paste schematic on arena.
@@ -264,10 +225,6 @@ public class Arena {
 
         //Remove arena from arenaManager.
         ArenaManager.removeArena(arenaName);
-    }
-
-    public void addTeam(ArenaTeam team) {
-        teams.add(team);
     }
 
     public List<ArenaTeam> getTeams() {

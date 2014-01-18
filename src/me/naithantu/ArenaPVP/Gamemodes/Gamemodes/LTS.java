@@ -51,7 +51,7 @@ public class LTS extends Gamemode {
 			}
 		}
 		if (arena.getSettings().isAllowSpectate())
-			arena.changeToSpectate(event.getEntity(), arenaPlayer);
+			arena.getArenaSpectatorController().changeToSpectate(event.getEntity(), arenaPlayer);
 		sortLists();
 		updateTabs();
 	}
