@@ -1,17 +1,12 @@
 package me.naithantu.ArenaPVP.Arena.ArenaExtras;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.*;
 
 public class ArenaSpectators {
     Arena arena;
@@ -26,7 +21,7 @@ public class ArenaSpectators {
         return spectators;
     }
 
-    public void addSpectator(Player spectator) {
+    public void hideSpectator(Player spectator) {
         //Hide spectator from players.
         for (ArenaTeam team : arena.getTeams()) {
             List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
@@ -46,7 +41,7 @@ public class ArenaSpectators {
         }
     }
 
-    public void removeSpectator(Player spectator) {
+    public void showSpectator(Player spectator) {
         //Show spectator to other players and show other players to spectator.
         for (ArenaTeam team : arena.getTeams()) {
             List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
@@ -67,7 +62,7 @@ public class ArenaSpectators {
     public void removeAllSpectators() {
         Set<Player> tempSpectator = new HashSet<Player>(spectators.keySet());
         for (Player spectator : tempSpectator) {
-            removeSpectator(spectator);
+            showSpectator(spectator);
         }
     }
 

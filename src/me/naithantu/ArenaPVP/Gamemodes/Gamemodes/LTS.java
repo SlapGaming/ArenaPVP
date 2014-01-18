@@ -85,7 +85,7 @@ public class LTS extends Gamemode {
 		if (!tabController.hasTabAPI())
 			return;
 
-		String status = Util.capaltizeFirstLetter(arena.getArenaState().toString());
+		String status = Util.capitalizeFirstLetter(arena.getArenaState().toString());
 		String arenaName = arena.getArenaName();
 		int nrOfPlayers = 0;
 

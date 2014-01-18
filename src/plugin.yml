@@ -1,7 +1,7 @@
 name: ArenaPVP
 main: me.naithantu.ArenaPVP.ArenaPVP
 author: naithantu
-version: 0.8.2
+version: 0.8.3
 description: Customisable arena pvp system.
 commands:
   pvp:

@@ -2,7 +2,6 @@ package me.naithantu.ArenaPVP.Commands;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;

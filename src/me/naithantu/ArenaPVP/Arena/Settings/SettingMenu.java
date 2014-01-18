@@ -346,7 +346,7 @@ public class SettingMenu {
 
                     if (name.equals("Add")) {
                         String configKey = "spawns." + teamKey + "." + Integer.toString(arena.getArenaSpawns().getSpawns(teamKey).size());
-                        Util.saveLocation(player.getLocation(), arenaStorage, configKey, true);
+                        Util.saveLocation(player.getLocation(), arenaStorage, configKey);
                         Util.msg(player, "Added spawn location to team " + teamName);
                         stopChanging();
                         iconMenu.update(player);
@@ -370,7 +370,7 @@ public class SettingMenu {
 
                     switch (name) {
                         case "Move":
-                            Util.saveLocation(player.getLocation(), arenaStorage, configKey, true);
+                            Util.saveLocation(player.getLocation(), arenaStorage, configKey);
                             Util.msg(player, "Changed spawn location #" + iconMenu.getName(9) + "!");
                             stopChanging();
                             iconMenu.update(player);

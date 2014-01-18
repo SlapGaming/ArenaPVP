@@ -3,7 +3,7 @@ package me.naithantu.ArenaPVP.Events.BukkitEvents.Player;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
-import me.naithantu.ArenaPVP.Util.Util;
+import me.naithantu.ArenaPVP.Util.PlayerConfigUtil;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,10 +22,8 @@ public class RespawnListener implements Listener {
 		YamlStorage playerStorage = new YamlStorage("players", player.getName());
 		if(playerStorage.exists()){
 			Configuration playerConfig = playerStorage.getConfig();
-			if(playerConfig.getBoolean("hastoleave") == true){
-				Util.loadPlayerConfig(player, playerStorage);
-                event.setRespawnLocation(Util.getLocation(playerStorage, "location"));
-				playerConfig.set("location", null);
+			if(playerConfig.getBoolean("saved.hastoleave") == true){
+				PlayerConfigUtil.loadPlayerConfig(player, playerStorage, event);
 			}
 		}
 		

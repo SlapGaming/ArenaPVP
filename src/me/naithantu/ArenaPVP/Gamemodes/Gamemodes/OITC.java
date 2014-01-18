@@ -175,7 +175,7 @@ public class OITC extends Gamemode {
     @Override
     public void updateTabs() {
         if (!tabController.hasTabAPI()) return;
-        String gameStatus = Util.capaltizeFirstLetter(arena.getArenaState().toString());
+        String gameStatus = Util.capitalizeFirstLetter(arena.getArenaState().toString());
         String arenaName = arena.getArenaName();
 
         List<ArenaPlayer> players = arena.getTeams().get(0).getPlayers();

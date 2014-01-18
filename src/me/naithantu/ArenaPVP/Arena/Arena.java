@@ -8,18 +8,18 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.*;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
 import me.naithantu.ArenaPVP.Arena.Runnables.StartArena;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
-import me.naithantu.ArenaPVP.Events.ArenaEvents.EventLeaveArena;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.TabController;
+import me.naithantu.ArenaPVP.Util.PlayerConfigUtil;
 import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -59,7 +59,7 @@ public class Arena {
         arenaStorage = new YamlStorage("maps", arenaName);
         //Make sure config contains all necessary values
         arenaConfig = arenaStorage.getConfig();
-        if(!arenaConfig.contains("teams.0")){
+        if (!arenaConfig.contains("teams.0")) {
             arenaStorage.copyDefaultConfig("arena.yml");
         }
 
@@ -76,11 +76,11 @@ public class Arena {
         initializeArena();
     }
 
-    public void setupArena(){
+    public void setupArena() {
         nickName = arenaConfig.getString("nickname");
     }
 
-    private void initializeArena(){
+    private void initializeArena() {
         // Create teams with proper names.
         for (String teamNumber : arenaConfig.getConfigurationSection("teams").getKeys(false)) {
             ArenaTeam team = new ArenaTeam(arenaConfig, Integer.parseInt(teamNumber));
@@ -143,14 +143,13 @@ public class Arena {
 
     public void joinSpectate(Player player) {
         //Teleport first to avoid problems with MVInventories
-        YamlStorage playerStorage = new YamlStorage("players", player.getName());
-        Util.saveLocation(player.getLocation(), playerStorage, "location");
-        Util.savePlayerConfig(player, playerStorage);
         ArenaPlayer arenaPlayer = new ArenaPlayer(plugin, player, this, null);
         arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
         ArenaManager.addPlayer(arenaPlayer);
-        player.teleport(arenaSpawns.getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
-        arenaSpectators.addSpectator(player);
+
+        Location location = arenaSpawns.getRespawnLocation(player, arenaPlayer, ArenaSpawns.SpawnType.SPECTATOR);
+        PlayerConfigUtil.savePlayerConfig(player, new YamlStorage("players", player.getName()), location);
+
         arenaSpectators.getSpectators().put(player, arenaPlayer);
         changeToSpectate(player, arenaPlayer);
         gamemode.updateTabs();
@@ -159,23 +158,27 @@ public class Arena {
     public void leaveSpectate(Player player, ArenaPlayer arenaPlayer) {
         YamlStorage playerStorage = new YamlStorage("players", player.getName());
         ArenaManager.removePlayer(arenaPlayer);
-        arenaSpectators.removeSpectator(player);
+        arenaSpectators.showSpectator(player);
         arenaSpectators.getSpectators().remove(player);
-        Configuration playerConfig = playerStorage.getConfig();
-        Util.loadPlayerConfig(player, playerStorage);
-        player.teleport(Util.getLocation(playerStorage, "location"));
-        playerConfig.set("location", null);
-        playerStorage.saveConfig();
+
+        if (player.isDead()) {
+            Configuration playerConfig = playerStorage.getConfig();
+            playerConfig.set("saved.hastoleave", true);
+            playerStorage.saveConfig();
+        } else {
+            PlayerConfigUtil.loadPlayerConfig(player, playerStorage);
+        }
+
         gamemode.clearTab(player);
         gamemode.updateTabs();
     }
 
     public void changeToSpectate(Player player, ArenaPlayer arenaPlayer) {
-        if(settings.isAllowSpectateFly()){
+        if (settings.isAllowSpectateFly()) {
             player.setAllowFlight(true);
             player.setFlying(true);
         }
-        arenaSpectators.addSpectator(player);
+        arenaSpectators.hideSpectator(player);
     }
 
     public boolean joinGame(Player player, ArenaTeam teamToJoin) {
@@ -185,12 +188,9 @@ public class Arena {
             Util.msg(player, "You joined team " + event.getTeam().getColoredName() + "!");
 
             //Teleport first to avoid problems with MVInventories
-            YamlStorage playerStorage = new YamlStorage("players", player.getName());
-            Util.saveLocation(player.getLocation(), playerStorage, "location");
+            Location location = event.getTeam().joinTeam(player, this);
+            PlayerConfigUtil.savePlayerConfig(player, new YamlStorage("players", player.getName()), location);
 
-            event.getTeam().joinTeam(player, this);
-
-            Util.savePlayerConfig(player, playerStorage);
             arenaSpectators.onPlayerJoin(player);
             return true;
         }
@@ -198,24 +198,21 @@ public class Arena {
     }
 
     public void leaveGame(final ArenaPlayer arenaPlayer) {
-        EventLeaveArena event = new EventLeaveArena(arenaPlayer);
-        gamemode.onPlayerLeaveArena(event);
-        if (!event.isCancelled()) {
-            Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
-            if (player != null) {
-                YamlStorage playerStorage = new YamlStorage("players", player.getName());
-                Configuration playerConfig = playerStorage.getConfig();
-                if (player.isDead()) {
-                    playerConfig.set("hastoleave", true);
-                } else {
-                    Util.loadPlayerConfig(player, playerStorage);
-                    player.teleport(Util.getLocation(playerStorage, "location"));
-                    playerConfig.set("location", null);
-                }
-                playerStorage.saveConfig();
-            }
-            arenaPlayer.getTeam().leaveTeam(arenaPlayer, player);
+        Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
+
+        YamlStorage playerStorage = new YamlStorage("players", player.getName());
+        if (player.isDead()) {
+            Configuration playerConfig = playerStorage.getConfig();
+            playerConfig.set("saved.hastoleave", true);
+            playerStorage.saveConfig();
+        } else {
+            PlayerConfigUtil.loadPlayerConfig(player, playerStorage);
         }
+
+        arenaPlayer.getTeam().leaveTeam(arenaPlayer, player);
+
+        gamemode.clearTab(player);
+        gamemode.updateTabs();
     }
 
     public void startGame() {

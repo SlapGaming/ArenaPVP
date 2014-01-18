@@ -62,7 +62,7 @@ public class TDM extends Gamemode {
 	public void updateTabs() {
 		if (!tabController.hasTabAPI()) return;
 		
-		String status = Util.capaltizeFirstLetter(arena.getArenaState().toString());
+		String status = Util.capitalizeFirstLetter(arena.getArenaState().toString());
 		String arenaName = arena.getArenaName();
 		String spectators = ChatColor.GRAY + "" + arena.getArenaSpectators().getSpectators().size() + " Spectators";
 		

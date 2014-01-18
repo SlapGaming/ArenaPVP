@@ -6,6 +6,7 @@ import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -85,23 +86,26 @@ public class ArenaTeam {
 		this.score = score;
 	}
 
-	public void joinTeam(Player player, Arena arena) {
+	public Location joinTeam(Player player, Arena arena) {
 		ArenaPlayer arenaPlayer = new ArenaPlayer(plugin, player, arena, this);
 		ArenaManager.addPlayer(arenaPlayer);
-		joinTeam(player, arena, arenaPlayer);
+		return joinTeam(player, arena, arenaPlayer);
 	}
 
-	public void joinTeam(Player player, Arena arena, ArenaPlayer arenaPlayer) {
+	public Location joinTeam(Player player, Arena arena, ArenaPlayer arenaPlayer) {
+        Location location;
 		players.add(arenaPlayer);
 		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() != ArenaPlayerState.SPECTATING) {
 			if (arena.getSettings().getRespawnTime() == 0) {
-				player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
+				location = arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER);
 			} else {
 				arenaPlayer.getTimers().startRespawnTimer(player, SpawnType.PLAYER);
-			}
+                location = arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR);
+            }
 		} else {
-			player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR));
+			location = arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.SPECTATOR);
 		}
+        return location;
 	}
 
 	public void leaveTeam(ArenaPlayer arenaPlayer, Player player) {

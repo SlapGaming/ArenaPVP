@@ -208,7 +208,7 @@ public class CTF extends Gamemode {
         sortLists();
         if (!tabController.hasTabAPI()) return;
 
-        String status = Util.capaltizeFirstLetter(arena.getArenaState().toString());
+        String status = Util.capitalizeFirstLetter(arena.getArenaState().toString());
         String arenaName = arena.getArenaName();
         String spectators = ChatColor.GRAY + "" + arena.getArenaSpectators().getSpectators().size() + " Spectators";
         List<ArenaTeam> teams = arena.getTeams();

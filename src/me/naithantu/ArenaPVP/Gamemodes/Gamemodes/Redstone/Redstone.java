@@ -11,8 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
@@ -78,7 +76,7 @@ public class Redstone extends Gamemode {
         if (!tabController.hasTabAPI())
             return;
 
-        String status = Util.capaltizeFirstLetter(arena.getArenaState().toString());
+        String status = Util.capitalizeFirstLetter(arena.getArenaState().toString());
         String arenaName = arena.getArenaName();
         int nrOfPlayers = 0;
 
