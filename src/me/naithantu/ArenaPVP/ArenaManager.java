@@ -31,7 +31,7 @@ public class ArenaManager {
 
     public static void addArena(String arenaName, Arena arena){
         if(arenas.isEmpty()){
-            plugin.registerListeners();
+            plugin.getListenerHandler().registerArenaListeners();
         }
         arenas.put(arenaName, arena);
     }
@@ -39,7 +39,7 @@ public class ArenaManager {
     public static void removeArena(String arenaName){
         arenas.remove(arenaName);
         if(arenas.isEmpty()){
-            plugin.unRegisterListeners();
+            plugin.getListenerHandler().unregisterArenaListeners();
         }
     }
 
