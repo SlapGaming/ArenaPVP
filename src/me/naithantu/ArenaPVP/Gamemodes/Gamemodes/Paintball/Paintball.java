@@ -1,13 +1,18 @@
 package me.naithantu.ArenaPVP.Gamemodes.Gamemodes.Paintball;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.*;
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Arena.Runnables.KillTimer;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
+import me.naithantu.ArenaPVP.ArenaManager;
+import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
+import me.naithantu.ArenaPVP.Storage.YamlStorage;
+import me.naithantu.ArenaPVP.TabController;
+import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -17,14 +22,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.TabController;
-import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
-import me.naithantu.ArenaPVP.Arena.ArenaTeam;
-import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
-import me.naithantu.ArenaPVP.Storage.YamlStorage;
-import me.naithantu.ArenaPVP.Util.Util;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class Paintball extends Gamemode {
 

@@ -1,11 +1,10 @@
 package me.naithantu.ArenaPVP.Arena;
 
-import org.bukkit.entity.Player;
-
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
 import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerScore;
 import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerTimers;
+import me.naithantu.ArenaPVP.ArenaPVP;
+import org.bukkit.entity.Player;
 
 public class ArenaPlayer {
 	private String playerName;

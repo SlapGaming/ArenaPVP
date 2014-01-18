@@ -1,9 +1,8 @@
 package me.naithantu.ArenaPVP.Events.ArenaEvents;
 
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Events.CustomEvent;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

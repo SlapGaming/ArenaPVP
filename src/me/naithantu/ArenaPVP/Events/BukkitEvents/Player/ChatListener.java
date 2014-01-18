@@ -1,15 +1,14 @@
 package me.naithantu.ArenaPVP.Events.BukkitEvents.Player;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.Settings.SettingMenu;
+import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 public class ChatListener implements Listener {
 

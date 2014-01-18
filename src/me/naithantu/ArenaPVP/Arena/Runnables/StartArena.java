@@ -1,12 +1,11 @@
 package me.naithantu.ArenaPVP.Arena.Runnables;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
-import me.naithantu.ArenaPVP.Arena.ArenaTeam;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns.SpawnType;
-
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

@@ -1,7 +1,6 @@
 package me.naithantu.ArenaPVP.Commands;
 
 import com.google.common.base.Joiner;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;

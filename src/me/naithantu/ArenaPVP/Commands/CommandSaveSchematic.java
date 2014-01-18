@@ -6,8 +6,6 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.command.CommandSender;

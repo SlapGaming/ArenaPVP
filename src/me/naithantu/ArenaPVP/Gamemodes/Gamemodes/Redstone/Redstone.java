@@ -1,8 +1,18 @@
 package me.naithantu.ArenaPVP.Gamemodes.Gamemodes.Redstone;
 
-import java.util.*;
-
+import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
+import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.Arena.ArenaTeam;
+import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.Commands.AbstractCommand;
+import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
+import me.naithantu.ArenaPVP.Storage.YamlStorage;
+import me.naithantu.ArenaPVP.TabController;
+import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -11,18 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
-import me.naithantu.ArenaPVP.TabController;
-import me.naithantu.ArenaPVP.Arena.Arena;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
-import me.naithantu.ArenaPVP.Arena.ArenaTeam;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
-import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaSpawns;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaState;
-import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaUtil;
-import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
-import me.naithantu.ArenaPVP.Storage.YamlStorage;
-import me.naithantu.ArenaPVP.Util.Util;
+import java.util.*;
 
 public class Redstone extends Gamemode {
 

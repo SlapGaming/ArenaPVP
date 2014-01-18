@@ -2,8 +2,6 @@ package me.naithantu.ArenaPVP.Arena.Runnables;
 
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerTimer;
-import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerTimers;
-import me.naithantu.ArenaPVP.ArenaPVP;
 import org.bukkit.entity.Player;
 
 /**

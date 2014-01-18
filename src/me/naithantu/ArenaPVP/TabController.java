@@ -1,7 +1,6 @@
 package me.naithantu.ArenaPVP;
 
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.mcsg.double0negative.tabapi.TabAPI;

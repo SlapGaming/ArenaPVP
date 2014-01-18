@@ -1,6 +1,5 @@
 package me.naithantu.ArenaPVP.Gamemodes.Gamemodes.Paintball;
 
-import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
 import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;

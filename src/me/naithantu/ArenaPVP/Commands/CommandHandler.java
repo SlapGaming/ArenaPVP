@@ -1,11 +1,10 @@
 package me.naithantu.ArenaPVP.Commands;
 
+import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
+import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-
-import me.naithantu.ArenaPVP.ArenaManager;
-import me.naithantu.ArenaPVP.Arena.ArenaPlayer;
 
 public class CommandHandler {
 
