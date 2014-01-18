@@ -70,8 +70,6 @@ public class CommandJoin extends AbstractArenaCommand {
             }
         }
 
-		if(!arena.joinGame(player, team)){
-			this.msg(sender, "You were unable to join arena " + arena.getArenaName() + ", try a different arena!");
-		}
+		arena.getArenaPlayerController().joinGame(player, team);
     }
 }

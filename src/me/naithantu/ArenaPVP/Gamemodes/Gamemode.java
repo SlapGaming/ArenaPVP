@@ -9,7 +9,6 @@ import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Commands.AbstractCommand;
-import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
 import me.naithantu.ArenaPVP.Events.ArenaEvents.EventRespawn;
 import me.naithantu.ArenaPVP.IconMenu;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
@@ -238,7 +237,7 @@ public abstract class Gamemode {
 
         arenaPlayer.getTimers().cancelAllTimers();
         if (arenaPlayer.getTeam() != null) {
-            arena.leaveGame(arenaPlayer);
+            arena.getArenaPlayerController().leaveGame(arenaPlayer);
         } else {
             //Player was spectator, leave as spectator.
             arena.leaveSpectate(player, arenaPlayer);
@@ -311,31 +310,6 @@ public abstract class Gamemode {
         if (settings.isNoHungerLoss()) {
             event.setCancelled(true);
         }
-    }
-
-    // Arena made events.
-    public void onPlayerJoinArena(EventJoinArena event) {
-        ArenaState arenaState = arena.getArenaState();
-        if (arenaState == ArenaState.WARMUP || arenaState == ArenaState.LOBBY) {
-            ArenaTeam teamToJoin = event.getTeam();
-            if (teamToJoin == null || settings.getMaxPlayers() > 0 && teamToJoin.getPlayers().size() >= settings.getMaxPlayers()) {
-                for (ArenaTeam team : arena.getTeams()) {
-                    if (teamToJoin == null || team.getPlayers().size() < teamToJoin.getPlayers().size()) {
-                        teamToJoin = team;
-                    }
-                }
-                event.setTeam(teamToJoin);
-            }
-            updateTabs();
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    updateTabs();
-                }
-            }, 1);
-            return;
-        }
-        event.setCancelled(true);
     }
 
     public void onPlayerArenaRespawn(final EventRespawn event) {

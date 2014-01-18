@@ -12,12 +12,10 @@ import me.naithantu.ArenaPVP.Arena.Runnables.StartArena;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
-import me.naithantu.ArenaPVP.Events.ArenaEvents.EventJoinArena;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Util.PlayerConfigUtil;
-import me.naithantu.ArenaPVP.Util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
@@ -40,8 +38,9 @@ public class Arena {
     private ArenaArea arenaArea;
     private ArenaChat arenaChat;
     private ArenaSpectators arenaSpectators;
+    private ArenaPlayerController arenaPlayerController;
 
-    private List<ArenaTeam> teams = new ArrayList<ArenaTeam>();
+    private List<ArenaTeam> teams = new ArrayList<>();
     private String nickName;
 
     private String arenaName;
@@ -69,6 +68,7 @@ public class Arena {
         arenaArea = new ArenaArea(this, settings, arenaConfig);
         arenaSpectators = new ArenaSpectators(this);
         arenaChat = new ArenaChat(this);
+        arenaPlayerController = new ArenaPlayerController(this, settings, arenaSpectators);
 
         tabController = plugin.getTabController();
 
@@ -119,6 +119,10 @@ public class Arena {
 
     public ArenaChat getArenaChat() {
         return arenaChat;
+    }
+
+    public ArenaPlayerController getArenaPlayerController() {
+        return arenaPlayerController;
     }
 
     public YamlStorage getArenaStorage() {
@@ -181,39 +185,7 @@ public class Arena {
         arenaSpectators.hideSpectator(player);
     }
 
-    public boolean joinGame(Player player, ArenaTeam teamToJoin) {
-        EventJoinArena event = new EventJoinArena(player, teamToJoin);
-        gamemode.onPlayerJoinArena(event);
-        if (!event.isCancelled()) {
-            Util.msg(player, "You joined team " + event.getTeam().getColoredName() + "!");
 
-            //Teleport first to avoid problems with MVInventories
-            Location location = event.getTeam().joinTeam(player, this);
-            PlayerConfigUtil.savePlayerConfig(player, new YamlStorage("players", player.getName()), location);
-
-            arenaSpectators.onPlayerJoin(player);
-            return true;
-        }
-        return false;
-    }
-
-    public void leaveGame(final ArenaPlayer arenaPlayer) {
-        Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
-
-        YamlStorage playerStorage = new YamlStorage("players", player.getName());
-        if (player.isDead()) {
-            Configuration playerConfig = playerStorage.getConfig();
-            playerConfig.set("saved.hastoleave", true);
-            playerStorage.saveConfig();
-        } else {
-            PlayerConfigUtil.loadPlayerConfig(player, playerStorage);
-        }
-
-        arenaPlayer.getTeam().leaveTeam(arenaPlayer, player);
-
-        gamemode.clearTab(player);
-        gamemode.updateTabs();
-    }
 
     public void startGame() {
         StartArena startArena = new StartArena(this);
@@ -255,7 +227,7 @@ public class Arena {
         for (ArenaTeam team : teams) {
             List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
             for (ArenaPlayer arenaPlayer : players) {
-                leaveGame(arenaPlayer);
+                arenaPlayerController.leaveGame(arenaPlayer);
             }
         }
 

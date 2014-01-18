@@ -34,7 +34,7 @@ public class CommandLeave extends AbstractCommand {
 			arenaPlayer.getArena().leaveSpectate((Player) sender, arenaPlayer);
 			this.msg(sender, "You are no longer spectating!");
 		} else {
-			arenaPlayer.getArena().leaveGame(arenaPlayer);
+			arenaPlayer.getArena().getArenaPlayerController().leaveGame(arenaPlayer);
 			this.msg(sender, "You left the game!");
 		}
 		return true;
