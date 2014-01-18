@@ -42,7 +42,7 @@ public class CommandSpectate extends AbstractArenaCommand {
 
     @Override
     protected void runCommand(Arena arena) {
-        if(arena.getArenaStorage().getConfig().getBoolean("allowspectate")){
+        if(arena.getSettings().isAllowSpectate()){
             arena.joinSpectate((Player) sender);
         } else {
             this.msg(sender, "You may not spectate that arena!");

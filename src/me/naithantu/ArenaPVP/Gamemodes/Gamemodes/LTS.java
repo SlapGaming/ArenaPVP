@@ -50,7 +50,7 @@ public class LTS extends Gamemode {
 				arena.stopGame(getWinningTeam());
 			}
 		}
-		if (arena.getArenaStorage().getConfig().getBoolean("allowspectate"))
+		if (arena.getSettings().isAllowSpectate())
 			arena.changeToSpectate(event.getEntity(), arenaPlayer);
 		sortLists();
 		updateTabs();

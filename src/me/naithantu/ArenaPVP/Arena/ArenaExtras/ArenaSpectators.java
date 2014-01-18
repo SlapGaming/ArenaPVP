@@ -68,7 +68,7 @@ public class ArenaSpectators {
 
     public void onPlayerJoin(Player player) {
         //Check if spectating is actually enabled.
-        if (arena.getArenaStorage().getConfig().getBoolean("allowspectate")) { //TODO move allowspectate to settings class
+        if (arena.getSettings().isAllowSpectate()) {
             //Hide spectators
             for (Player spectator : spectators.keySet()) {
                 player.hidePlayer(spectator);

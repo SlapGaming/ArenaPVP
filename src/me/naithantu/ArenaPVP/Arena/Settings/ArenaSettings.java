@@ -9,41 +9,42 @@ import java.util.List;
 
 public class ArenaSettings {
     private YamlStorage arenaStorage;
-    private	FileConfiguration config;
+    private FileConfiguration config;
 
     private SettingMenu settingMenu;
 
     private List<Setting> settings = new ArrayList<Setting>();
 
-    private	Setting<Integer> maxPlayers;
-    private	Setting<Integer> respawnTime;
-    private	Setting<Integer> scoreLimit;
-    private	Setting<Integer> outOfBoundsTime;
-    private	Setting<Integer> spawnProtection;
+    private Setting<Integer> maxPlayers;
+    private Setting<Integer> respawnTime;
+    private Setting<Integer> scoreLimit;
+    private Setting<Integer> outOfBoundsTime;
+    private Setting<Integer> spawnProtection;
 
-    private	Setting<Boolean> friendlyFire;
-    private	Setting<Boolean>  outOfBoundsArea;
-    private Setting<Boolean>  spectatorOutOfBoundsArea;
-    private	Setting<Boolean> autoBalance;
-    private	Setting<Boolean>  allowItemDrop;
-    private	Setting<Boolean>  allowBlockChange;
-    private Setting<Boolean>  allowSpectateFly;
-    private Setting<Boolean>  allowSpectateInArea;
+    private Setting<Boolean> friendlyFire;
+    private Setting<Boolean> outOfBoundsArea;
+    private Setting<Boolean> spectatorOutOfBoundsArea;
+    private Setting<Boolean> autoBalance;
+    private Setting<Boolean> allowItemDrop;
+    private Setting<Boolean> allowBlockChange;
+    private Setting<Boolean> allowSpectate;
+    private Setting<Boolean> allowSpectateFly;
+    private Setting<Boolean> allowSpectateInArea;
     private Setting<Boolean> noHungerLoss;
-	
-	public ArenaSettings(YamlStorage arenaStorage, Arena arena) {
+
+    public ArenaSettings(YamlStorage arenaStorage, Arena arena) {
         this.arenaStorage = arenaStorage;
-		config = arenaStorage.getConfig();
-		initializeSettings();
+        config = arenaStorage.getConfig();
+        initializeSettings();
         settingMenu = new SettingMenu(arenaStorage, arena, this);
     }
 
-    public void reloadSettings(){
+    public void reloadSettings() {
         arenaStorage.reloadConfig();
         initializeSettings();
     }
 
-	public void initializeSettings() {
+    public void initializeSettings() {
         //Make sure settings list is clear.
         settings.clear();
 
@@ -78,65 +79,70 @@ public class ArenaSettings {
         settings.add(outOfBoundsTime);
 
         //Spectate settings
+        allowSpectate = new Setting<>(config.getBoolean("allowspectate"), SettingGroup.SPECTATOR, "allowspectate", "Allow spectate", "Allow players to spectate.");
         allowSpectateInArea = new Setting<>(config.getBoolean("allowspectateinarea"), SettingGroup.SPECTATOR, "allowspectateinarea", "Allow spectate in area", "Allow spectators to get into the pvp out of bounds area.");
-        allowSpectateFly = new Setting<>(config.getBoolean("allowspectatefly"), SettingGroup.SPECTATOR, "allowspectatefly", "Allow spectate fly" , "Allow spectators to fly around.");
+        allowSpectateFly = new Setting<>(config.getBoolean("allowspectatefly"), SettingGroup.SPECTATOR, "allowspectatefly", "Allow spectate fly", "Allow spectators to fly around.");
         spectatorOutOfBoundsArea = new Setting<>(config.getBoolean("spectatoroutofboundsarea"), SettingGroup.SPECTATOR, "spectatoroutofboundsarea", "Spectator out of bounds area", "Have a seperate out of bounds area for spectators.");
         settings.add(allowSpectateInArea);
         settings.add(allowSpectateFly);
         settings.add(spectatorOutOfBoundsArea);
-	}
+    }
 
-    public SettingMenu getSettingMenu(){
+    public SettingMenu getSettingMenu() {
         return settingMenu;
     }
 
-    public List<Setting> getSettings(){
+    public List<Setting> getSettings() {
         return settings;
     }
 
-	public int getMaxPlayers() {
-		return maxPlayers.getSetting();
-	}
+    public int getMaxPlayers() {
+        return maxPlayers.getSetting();
+    }
 
-	public int getRespawnTime() {
-		return respawnTime.getSetting();
-	}
+    public int getRespawnTime() {
+        return respawnTime.getSetting();
+    }
 
-	public int getScoreLimit() {
-		return scoreLimit.getSetting();
-	}
+    public int getScoreLimit() {
+        return scoreLimit.getSetting();
+    }
 
-	public int getOutOfBoundsTime() {
-		return outOfBoundsTime.getSetting();
-	}
-	
-	public int getSpawnProtection() {
-		return spawnProtection.getSetting();
-	}
+    public int getOutOfBoundsTime() {
+        return outOfBoundsTime.getSetting();
+    }
 
-	public boolean isFriendlyFire() {
-		return friendlyFire.getSetting();
-	}
+    public int getSpawnProtection() {
+        return spawnProtection.getSetting();
+    }
 
-	public boolean isOutOfBoundsArea() {
-		return outOfBoundsArea.getSetting();
-	}
+    public boolean isFriendlyFire() {
+        return friendlyFire.getSetting();
+    }
+
+    public boolean isOutOfBoundsArea() {
+        return outOfBoundsArea.getSetting();
+    }
 
     public boolean isSpectatorOutOfBoundsArea() {
         return spectatorOutOfBoundsArea.getSetting();
     }
 
-	public boolean isAutoBalance() {
-		return autoBalance.getSetting();
-	}
-	
-	public boolean isAllowItemDrop() {
-		return allowItemDrop.getSetting();
-	}
-	
-	public boolean isAllowBlockChange() {
-		return allowBlockChange.getSetting();
-	}
+    public boolean isAutoBalance() {
+        return autoBalance.getSetting();
+    }
+
+    public boolean isAllowItemDrop() {
+        return allowItemDrop.getSetting();
+    }
+
+    public boolean isAllowBlockChange() {
+        return allowBlockChange.getSetting();
+    }
+
+    public boolean isAllowSpectate() {
+        return allowSpectate.getSetting();
+    }
 
     public boolean isAllowSpectateFly() {
         return allowSpectateFly.getSetting();
