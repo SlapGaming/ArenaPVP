@@ -29,7 +29,7 @@ public class CommandStop extends AbstractArenaCommand {
 
     @Override
     protected void runCommand(Arena arena) {
-		arena.stopGame();
+		arena.getArenaGameController().stopGame();
 		this.msg(sender, "You have stopped arena " + arena.getArenaName() + "!");
 	}
 }

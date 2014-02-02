@@ -120,10 +120,10 @@ public class OITC extends Gamemode {
         if (checkRemainingPlayers() == 1) {
             List<ArenaPlayer> winningPlayers = getWinningPlayer();
             if (winningPlayers.size() == 1) {
-                arena.stopGame(winningPlayers.get(0));
+                arena.getArenaGameController().stopGame(winningPlayers.get(0));
             } else {
                 arenaUtil.sendMessageAll(Joiner.on(", ").join(winningPlayers) + " have won the game!");
-                arena.stopGame();
+                arena.getArenaGameController().stopGame();
             }
         } else {
             killer.getInventory().addItem(arrow);

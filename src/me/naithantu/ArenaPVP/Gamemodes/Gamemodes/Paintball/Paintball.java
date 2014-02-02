@@ -87,7 +87,7 @@ public class Paintball extends Gamemode {
                         KillTimer killTimer = new KillTimer(arenaPlayer, (Player) event.getEntity());
                         killTimer.runTaskLater(plugin, 1);
                         if (team.getScore() >= settings.getScoreLimit()) {
-                            arena.stopGame(team);
+                            arena.getArenaGameController().stopGame(team);
                         }
                     }
                 }

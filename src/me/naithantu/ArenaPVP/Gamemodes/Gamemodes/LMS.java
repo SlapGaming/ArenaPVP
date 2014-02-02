@@ -40,7 +40,7 @@ public class LMS extends Gamemode {
 		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING) {
 			arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
 			if (checkRemainingPlayers() == 1) {
-				arena.stopGame(getWinningPlayer());
+				arena.getArenaGameController().stopGame(getWinningPlayer());
 			}
 		}
 		sortLists();

@@ -1,6 +1,8 @@
 package me.naithantu.ArenaPVP.Commands;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
+import me.naithantu.ArenaPVP.Util.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,9 +36,14 @@ public class CommandChange extends AbstractArenaCommand {
     }
 
     @Override
-    protected void runCommand(Arena arena) {
-        Player player = (Player) sender;
-        arena.getSettings().getSettingMenu().openMenu(player);
-        this.msg(player, "Opened main setting menu!");
+    protected void runCommand(final Arena arena) {
+        final Player player = (Player) sender;
+        //Delay with one tick to allow opening change menu via arena selection menu.
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            public void run() {
+                arena.getSettings().getSettingMenu().openMenu(player);
+                Util.msg(player, "Opened main setting menu!");
+            }
+        }, 1);
     }
 }

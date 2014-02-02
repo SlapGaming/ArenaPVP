@@ -30,7 +30,7 @@ public class CommandStart extends AbstractArenaCommand {
 
     @Override
     protected void runCommand(Arena arena) {
-		arena.startGame();
+		arena.getArenaGameController().startGame();
 		this.msg(sender, "You have started arena " + arena.getArenaName() + "!");
 	}
 }

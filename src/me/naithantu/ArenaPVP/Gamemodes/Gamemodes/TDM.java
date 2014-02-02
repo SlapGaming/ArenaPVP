@@ -50,7 +50,7 @@ public class TDM extends Gamemode {
 			ArenaTeam team = ArenaManager.getPlayerByName(killer.getName()).getTeam();
 			team.addScore();
 			if(team.getScore() >= settings.getScoreLimit()){
-				arena.stopGame(team);
+				arena.getArenaGameController().stopGame(team);
 			} else {
 				sortLists();
 				updateTabs();

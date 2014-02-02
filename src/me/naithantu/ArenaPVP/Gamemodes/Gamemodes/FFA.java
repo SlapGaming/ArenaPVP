@@ -48,7 +48,7 @@ public class FFA extends Gamemode {
 		if(killer != null){
 			ArenaPlayer arenaKiller = ArenaManager.getPlayerByName(killer.getName());
 			if (arenaKiller.getPlayerScore().getKills() >= settings.getScoreLimit()) {
-				arena.stopGame(arenaKiller);
+				arena.getArenaGameController().stopGame(arenaKiller);
 			} else {
 				sortLists();
 				updateTabs();

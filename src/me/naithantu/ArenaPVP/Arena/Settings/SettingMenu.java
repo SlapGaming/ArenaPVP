@@ -423,7 +423,7 @@ public class SettingMenu {
                         Util.msg(player, "Restarting arena...");
                         final String arenaName = arena.getArenaName();
                         event.setWillClose(true);
-                        arena.stopGame();
+                        arena.getArenaGameController().stopGame();
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             public void run() {
                                 Arena arena = new Arena(arenaName);

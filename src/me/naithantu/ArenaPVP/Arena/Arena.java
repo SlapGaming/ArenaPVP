@@ -1,31 +1,15 @@
 package me.naithantu.ArenaPVP.Arena;
 
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.data.DataException;
-import com.sk89q.worldedit.schematic.SchematicFormat;
 import me.naithantu.ArenaPVP.Arena.ArenaExtras.*;
-import me.naithantu.ArenaPVP.Arena.Runnables.StartArena;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
-import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.TabController;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 public class Arena {
     private ArenaPVP plugin = ArenaPVP.getInstance();
@@ -37,6 +21,7 @@ public class Arena {
     private ArenaSpectators arenaSpectators;
     private ArenaPlayerController arenaPlayerController;
     private ArenaSpectatorController arenaSpectatorController;
+    private ArenaGameController arenaGameController;
 
     private List<ArenaTeam> teams = new ArrayList<>();
     private String nickName;
@@ -66,6 +51,8 @@ public class Arena {
         arenaArea = new ArenaArea(this, settings, arenaConfig);
         arenaSpectators = new ArenaSpectators(this);
         arenaChat = new ArenaChat(this);
+
+        arenaGameController = new ArenaGameController(this);
         arenaPlayerController = new ArenaPlayerController(this, settings, arenaSpectators);
         arenaSpectatorController = new ArenaSpectatorController(this, settings, arenaSpawns, arenaSpectators);
 
@@ -128,8 +115,16 @@ public class Arena {
         return arenaSpectatorController;
     }
 
+    public ArenaGameController getArenaGameController() {
+        return arenaGameController;
+    }
+
     public YamlStorage getArenaStorage() {
         return arenaStorage;
+    }
+
+    public FileConfiguration getArenaConfig() {
+        return arenaConfig;
     }
 
     public String getArenaName() {
@@ -146,85 +141,6 @@ public class Arena {
 
     public void setArenaState(ArenaState arenaState) {
         this.arenaState = arenaState;
-    }
-
-    public void startGame() {
-        StartArena startArena = new StartArena(this);
-        startArena.runTaskTimer(plugin, 0, 20);
-    }
-
-    public void stopGame(ArenaPlayer winPlayer) {
-        if (winPlayer != null) {
-            arenaUtil.sendMessageAll(winPlayer.getTeam().getTeamColor() + winPlayer.getPlayerName() + " has won the game!");
-        }
-        stopGame();
-    }
-
-    public void stopGame(ArenaTeam winTeam) {
-        if (winTeam != null) {
-            arenaUtil.sendMessageAll("Team " + winTeam.getColoredName() + " has won the game!");
-        }
-        stopGame();
-    }
-
-    public void stopGame() {
-        if (plugin.isEnabled()) {
-            //Delay in case last player was killed by arrow (dm gamemodes).
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    stop();
-                }
-            }, 1);
-        } else {
-            stop();
-        }
-    }
-
-    private void stop() {
-        gamemode.onArenaStop();
-
-        //Let online players leave the game.
-        for (ArenaTeam team : teams) {
-            List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
-            for (ArenaPlayer arenaPlayer : players) {
-                arenaPlayerController.leaveGame(arenaPlayer);
-            }
-        }
-
-        //Let spectators leave the game.
-        Set<Entry<Player, ArenaPlayer>> spectators = new HashSet<>(arenaSpectators.getSpectators().entrySet());
-        for (Entry<Player, ArenaPlayer> entry : spectators) {
-            arenaSpectatorController.leaveSpectate(entry.getKey(), entry.getValue());
-        }
-
-        //Paste schematic on arena.
-        File schematic = new File(plugin.getDataFolder() + File.separator + "maps", arenaName + ".schematic");
-        if (schematic.exists()) {
-            EditSession editSession = new EditSession(new BukkitWorld(Bukkit.getWorld(arenaConfig.getString("schematicworld"))), 999999999);
-            SchematicFormat format = SchematicFormat.getFormat(schematic);
-
-            CuboidClipboard cuboidClipboard;
-            try {
-                cuboidClipboard = format.load(schematic);
-            } catch (IOException | DataException e) {
-                e.printStackTrace();
-                return;
-            }
-
-            try {
-                Vector pos = cuboidClipboard.getOrigin();
-                cuboidClipboard.place(editSession, pos, false);
-            } catch (MaxChangedBlocksException e) {
-                e.printStackTrace();
-            }
-        }
-
-        //Destroy iconMenu (otherwise listener will stay loaded)
-        settings.getSettingMenu().destroy();
-
-        //Remove arena from arenaManager.
-        ArenaManager.removeArena(arenaName);
     }
 
     public List<ArenaTeam> getTeams() {

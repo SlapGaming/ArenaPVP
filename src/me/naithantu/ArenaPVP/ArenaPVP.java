@@ -46,7 +46,7 @@ public class ArenaPVP extends JavaPlugin {
     @Override
     public void onDisable() {
         for (Arena arena : ArenaManager.getArenas().values()) {
-            arena.stopGame();
+            arena.getArenaGameController().stopGame();
         }
 
         //Remove static instance

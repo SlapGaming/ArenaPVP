@@ -122,7 +122,7 @@ public class CTF extends Gamemode {
                                 player.getInventory().setArmorContents(arenaPlayer.getTeam().getArmor());
                                 team.addScore();
                                 if (team.getScore() >= settings.getScoreLimit()) {
-                                    arena.stopGame(team);
+                                    arena.getArenaGameController().stopGame(team);
                                 } else {
                                     if (tabController.hasTabAPI()) {
                                         updateTabs();
