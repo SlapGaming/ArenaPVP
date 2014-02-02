@@ -71,59 +71,7 @@
     <favorites_list name="ArenaPVP" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="ArenaSpectatorController.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/ArenaExtras/ArenaSpectatorController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="33" selection-start="869" selection-end="869" vertical-scroll-proportion="0.0" vertical-offset="590" max-vertical-offset="1224">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CommandSpectate.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandSpectate.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="48" selection-start="1364" selection-end="1364" vertical-scroll-proportion="0.0" vertical-offset="284" max-vertical-offset="867">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LTS.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Gamemodes/Gamemodes/LTS.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="53" column="17" selection-start="1857" selection-end="1857" vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="2839">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Arena.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/Arena.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="228" column="0" selection-start="7354" selection-end="7354" vertical-scroll-proportion="0.0" vertical-offset="3191" max-vertical-offset="3774">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ArenaPlayerController.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/ArenaExtras/ArenaPlayerController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="110" selection-start="1380" selection-end="1380" vertical-scroll-proportion="0.40823328" vertical-offset="306" max-vertical-offset="1683">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -630,19 +578,6 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method />
-    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -668,6 +603,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -777,31 +725,31 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Problems" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Problems" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32637364" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25292864" sideWeight="0.42747253" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32918552" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32857144" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32785088" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24920128" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32960597" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25292864" sideWeight="0.57252747" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25292864" sideWeight="0.57252747" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32637364" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39802632" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32967034" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
@@ -833,9 +781,7 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandArenas.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="25" selection-start="244" selection-end="244" vertical-scroll-proportion="0.15582192" vertical-offset="11" max-vertical-offset="595">
-          <folding />
-        </state>
+        <state line="8" column="25" selection-start="244" selection-end="244" vertical-scroll-proportion="0.15582192" vertical-offset="11" max-vertical-offset="595" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandHandler.java">
@@ -870,9 +816,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandMaps.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="0" selection-start="284" selection-end="284" vertical-scroll-proportion="-0.13527398" vertical-offset="164" max-vertical-offset="748">
-          <folding />
-        </state>
+        <state line="11" column="0" selection-start="284" selection-end="284" vertical-scroll-proportion="-0.13527398" vertical-offset="164" max-vertical-offset="748" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandSaveSchematic.java">
@@ -898,9 +842,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandTeams.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="19" selection-start="476" selection-end="476" vertical-scroll-proportion="-0.45547944" vertical-offset="368" max-vertical-offset="952">
-          <folding />
-        </state>
+        <state line="14" column="19" selection-start="476" selection-end="476" vertical-scroll-proportion="-0.45547944" vertical-offset="368" max-vertical-offset="952" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandStart.java">
@@ -912,9 +854,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandSpectators.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="21" selection-start="362" selection-end="362" vertical-scroll-proportion="0.06849315" vertical-offset="62" max-vertical-offset="646">
-          <folding />
-        </state>
+        <state line="12" column="21" selection-start="362" selection-end="362" vertical-scroll-proportion="0.06849315" vertical-offset="62" max-vertical-offset="646" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/AbstractCommand.java">
@@ -975,30 +915,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/PlayerExtras/PlayerTimer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="13" selection-start="109" selection-end="109" vertical-scroll-proportion="0.11643836" vertical-offset="0" max-vertical-offset="584">
-          <folding />
-        </state>
+        <state line="4" column="13" selection-start="109" selection-end="109" vertical-scroll-proportion="0.11643836" vertical-offset="0" max-vertical-offset="584" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/PlayerExtras/PlayerScore.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="13" selection-start="64" selection-end="64" vertical-scroll-proportion="0.0" vertical-offset="34" max-vertical-offset="731">
-          <folding />
-        </state>
+        <state line="2" column="13" selection-start="64" selection-end="64" vertical-scroll-proportion="0.0" vertical-offset="34" max-vertical-offset="731" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/Runnables/OutOfBoundsTimer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="13" selection-start="242" selection-end="242" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="527">
-          <folding />
-        </state>
+        <state line="8" column="13" selection-start="242" selection-end="242" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="527" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/Runnables/KillTimer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="13" selection-start="358" selection-end="358" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="527">
-          <folding />
-        </state>
+        <state line="11" column="13" selection-start="358" selection-end="358" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="527" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/Runnables/StartArena.java">
@@ -1024,16 +956,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandSelect.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="20" selection-start="1147" selection-end="1147" vertical-scroll-proportion="0.65068495" vertical-offset="232" max-vertical-offset="816">
-          <folding />
-        </state>
+        <state line="40" column="20" selection-start="1147" selection-end="1147" vertical-scroll-proportion="0.65068495" vertical-offset="232" max-vertical-offset="816" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/AbstractArenaCommand.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="94" column="41" selection-start="3728" selection-end="3728" vertical-scroll-proportion="0.0" vertical-offset="1253" max-vertical-offset="1836">
-          <folding />
-        </state>
+        <state line="94" column="41" selection-start="3728" selection-end="3728" vertical-scroll-proportion="0.0" vertical-offset="1253" max-vertical-offset="1836" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/plugin.yml">
@@ -1050,9 +978,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Events/BukkitEvents/Player/RespawnListener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="33" selection-start="904" selection-end="904" vertical-scroll-proportion="0.3276644" vertical-offset="0" max-vertical-offset="882">
-          <folding />
-        </state>
+        <state line="25" column="33" selection-start="904" selection-end="904" vertical-scroll-proportion="0.3276644" vertical-offset="0" max-vertical-offset="882" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/ArenaTeam.java">
@@ -1066,9 +992,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Lobby/Lobby.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="0" selection-start="1021" selection-end="1021" vertical-scroll-proportion="0.0" vertical-offset="182" max-vertical-offset="765">
-          <folding />
-        </state>
+        <state line="39" column="0" selection-start="1021" selection-end="1021" vertical-scroll-proportion="0.0" vertical-offset="182" max-vertical-offset="765" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/Settings/SettingMenu.java">
@@ -1080,9 +1004,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/Settings/Setting.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="13" selection-start="60" selection-end="60" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="578">
-          <folding />
-        </state>
+        <state line="2" column="13" selection-start="60" selection-end="60" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="578" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/Settings/ArenaSettings.java">
@@ -1091,10 +1013,7 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#442#451#0" expanded="true" />
-            <element signature="e#5015#5016#0" expanded="true" />
             <element signature="e#5049#5050#0" expanded="true" />
-            <element signature="e#5091#5092#0" expanded="true" />
-            <element signature="e#5122#5123#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1115,9 +1034,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Util/Util.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="55" selection-start="1948" selection-end="1948" vertical-scroll-proportion="1.1299145" vertical-offset="121" max-vertical-offset="1207">
-          <folding />
-        </state>
+        <state line="53" column="55" selection-start="1948" selection-end="1948" vertical-scroll-proportion="1.1299145" vertical-offset="121" max-vertical-offset="1207" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandJoin.java">
@@ -1129,25 +1046,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Util/PlayerConfigUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="10" selection-start="3879" selection-end="3879" vertical-scroll-proportion="0.3327616" vertical-offset="1370" max-vertical-offset="2295">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
+        <state line="92" column="10" selection-start="3879" selection-end="3879" vertical-scroll-proportion="0.3327616" vertical-offset="1370" max-vertical-offset="2295" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="135" column="0" selection-start="1608" selection-end="1608" vertical-scroll-proportion="0.33333334" vertical-offset="2109" max-vertical-offset="3808">
-          <folding />
-        </state>
+        <state line="135" column="0" selection-start="1608" selection-end="1608" vertical-scroll-proportion="0.33333334" vertical-offset="2109" max-vertical-offset="3808" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandPVP.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="20" selection-start="578" selection-end="578" vertical-scroll-proportion="0.5540309" vertical-offset="0" max-vertical-offset="583">
-          <folding />
-        </state>
+        <state line="19" column="20" selection-start="578" selection-end="578" vertical-scroll-proportion="0.5540309" vertical-offset="0" max-vertical-offset="583" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Commands/CommandLeave.java">
@@ -1169,24 +1078,13 @@
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/ArenaExtras/ArenaSpectatorController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="21" column="33" selection-start="869" selection-end="869" vertical-scroll-proportion="0.0" vertical-offset="641" max-vertical-offset="1224">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/Arena.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="228" column="0" selection-start="7354" selection-end="7354" vertical-scroll-proportion="0.0" vertical-offset="3191" max-vertical-offset="3774">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Gamemodes/Gamemodes/LTS.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="17" selection-start="1857" selection-end="1857" vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="2839">
+        <state line="167" column="0" selection-start="4762" selection-end="4762" vertical-scroll-proportion="0.0" vertical-offset="2839" max-vertical-offset="2941">
           <folding />
         </state>
       </provider>
@@ -1200,10 +1098,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Arena/ArenaExtras/ArenaPlayerController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="110" selection-start="1380" selection-end="1380" vertical-scroll-proportion="0.40823328" vertical-offset="306" max-vertical-offset="1683">
+        <state line="32" column="110" selection-start="1380" selection-end="1380" vertical-scroll-proportion="0.0" vertical-offset="544" max-vertical-offset="1734">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/me/naithantu/ArenaPVP/Gamemodes/Gamemodes/LTS.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="53" column="17" selection-start="1882" selection-end="1882" vertical-scroll-proportion="0.0" vertical-offset="901" max-vertical-offset="3247">
+          <folding />
         </state>
       </provider>
     </entry>
