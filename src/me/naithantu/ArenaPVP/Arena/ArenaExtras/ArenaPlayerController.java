@@ -50,6 +50,9 @@ public class ArenaPlayerController {
             PlayerConfigUtil.loadPlayerConfig(player, playerStorage);
         }
 
+        //Make sure player is no longer hidden.
+        arenaSpectators.showSpectator(player);
+
         arenaPlayer.getTeam().leaveTeam(arenaPlayer, player);
 
         arena.getGamemode().clearTab(player);
