@@ -22,16 +22,9 @@ public class PlayerConfigUtil {
     private PlayerConfigUtil() {
     }
 
-    private static boolean checkConfigIntegrity(Player player, FileConfiguration playerConfig) {
+    private static boolean checkConfigIntegrity(FileConfiguration playerConfig) {
         //Check if playerConfig was properly saved.
-        if (!playerConfig.contains("saved.gamemode")) {
-            ArenaPVP.getInstance().getLogger().log(Level.SEVERE, "Unable to load player config for player " + player.getName() + "!");
-            System.out.println();
-            return false;
-        }
-        ArenaPVP.getInstance().getLogger().log(Level.INFO, "Loading config for " + player.getName() + "!");
-        //TODO Remove debug log
-        return true;
+        return playerConfig.contains("saved.gamemode");
     }
 
     @SuppressWarnings("unchecked")
@@ -63,7 +56,7 @@ public class PlayerConfigUtil {
 
     public static void loadPlayerConfig(Player player, YamlStorage playerStorage, PlayerRespawnEvent event) {
         FileConfiguration playerConfig = playerStorage.getConfig();
-        if (checkConfigIntegrity(player, playerConfig)) {
+        if (checkConfigIntegrity(playerConfig)) {
             loadPlayerSaves(player, playerConfig);
 
             //Teleport player back
@@ -77,7 +70,7 @@ public class PlayerConfigUtil {
 
     public static void loadPlayerConfig(Player player, YamlStorage playerStorage) {
         FileConfiguration playerConfig = playerStorage.getConfig();
-        if (checkConfigIntegrity(player, playerConfig)) {
+        if (checkConfigIntegrity(playerConfig)) {
             loadPlayerSaves(player, playerConfig);
 
             //Teleport player back
@@ -86,13 +79,12 @@ public class PlayerConfigUtil {
             //Remove all saved info.
             playerConfig.set("saved", null);
             playerStorage.saveConfig();
+        } else {
+            ArenaPVP.getInstance().getLogger().log(Level.SEVERE, "Was unable to load config for player " + player.getName() + "!");
         }
     }
 
     public static void savePlayerConfig(Player player, YamlStorage playerStorage, Location teleportLocation) {
-        //TODO Remove debug log
-        ArenaPVP.getInstance().getLogger().log(Level.INFO, "Saving config for " + player.getName() + "!");
-
         Configuration playerConfig = playerStorage.getConfig();
 
         //Make sure no previously saved info is in the config.
