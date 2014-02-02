@@ -47,11 +47,11 @@ public class LTS extends Gamemode {
 		if (arena.getArenaState() == ArenaState.PLAYING && arenaPlayer.getPlayerState() == ArenaPlayerState.PLAYING) {
 			arenaPlayer.setPlayerState(ArenaPlayerState.SPECTATING);
 			if (checkRemainingTeams() == 1) {
-				arena.stopGame(getWinningTeam());
+				arena.getArenaGameController().stopGame(getWinningTeam());
 			}
 		}
 		if (arena.getSettings().isAllowSpectate())
-			arena.getArenaSpectatorController().changeToSpectate(event.getEntity(), arenaPlayer);
+			arena.getArenaSpectatorController().changeToSpectate(event.getEntity());
 		sortLists();
 		updateTabs();
 	}

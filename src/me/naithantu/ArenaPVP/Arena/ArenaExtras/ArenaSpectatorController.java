@@ -34,7 +34,7 @@ public class ArenaSpectatorController {
         PlayerConfigUtil.savePlayerConfig(player, new YamlStorage("players", player.getName()), location);
 
         arenaSpectators.getSpectators().put(player, arenaPlayer);
-        changeToSpectate(player, arenaPlayer);
+        changeToSpectate(player);
         arena.getGamemode().updateTabs();
     }
 
@@ -56,7 +56,7 @@ public class ArenaSpectatorController {
         arena.getGamemode().updateTabs();
     }
 
-    public void changeToSpectate(Player player, ArenaPlayer arenaPlayer) {
+    public void changeToSpectate(Player player) {
         if (settings.isAllowSpectateFly()) {
             player.setAllowFlight(true);
             player.setFlying(true);

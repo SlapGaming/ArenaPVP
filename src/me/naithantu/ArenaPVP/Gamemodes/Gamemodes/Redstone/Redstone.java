@@ -10,6 +10,7 @@ import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.Commands.AbstractCommand;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
+import me.naithantu.ArenaPVP.IconMenu;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.TabController;
 import me.naithantu.ArenaPVP.Util.Util;
@@ -25,6 +26,8 @@ import java.util.*;
 
 public class Redstone extends Gamemode {
 
+    private RedstoneMenu redstoneMenu;
+
     private Comparator<ArenaPlayer> comp;
 
     private HashMap<ArenaTeam, Location> redstoneLocations = new HashMap<ArenaTeam, Location>();
@@ -35,7 +38,16 @@ public class Redstone extends Gamemode {
     private boolean hasWinner = false;
 
     public Redstone(Arena arena, ArenaSettings settings, ArenaSpawns arenaSpawns, ArenaUtil arenaUtil, YamlStorage arenaStorage, TabController tabController) {
-        super(arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.LTS);
+        super(arena, settings, arenaSpawns, arenaUtil, arenaStorage, tabController, Gamemodes.REDSTONE);
+        //Make sure config contains all necessary values
+        arenaStorage.copyDefaultConfig("me/naithantu/ArenaPVP/Gamemodes/Gamemodes/Redstone/defaults.yml");
+
+        redstoneMenu = new RedstoneMenu(arena, arenaStorage, this);
+
+        initialize();
+    }
+
+    public void initialize(){
         for (ArenaTeam arenaTeam : arena.getTeams()) {
             redstoneLocations.put(arenaTeam, Util.getLocation(arenaStorage, "gamemodes.redstone.locations." + arenaTeam.getTeamNumber()));
         }
@@ -53,6 +65,21 @@ public class Redstone extends Gamemode {
     }
 
     @Override
+    public boolean hasConfigSettings() {
+        return true;
+    }
+
+    @Override
+    public void setupIconMenu(IconMenu iconMenu){
+        redstoneMenu.setupIconMenu(iconMenu);
+    }
+
+    @Override
+    public void handleMenuClick(IconMenu.OptionClickEvent event){
+        redstoneMenu.handleMenuClick(event);
+    }
+
+    @Override
     public void onRedstoneUpdate(BlockRedstoneEvent event) {
         super.onRedstoneUpdate(event);
         //If haswinner is true, a team has already won but game hasn't stopped yet.
@@ -63,7 +90,7 @@ public class Redstone extends Gamemode {
                 for (ArenaTeam arenaTeam : arena.getTeams()) {
                     if(event.getBlock().getLocation().distanceSquared(redstoneLocations.get(arenaTeam)) < 1){
                         hasWinner = true;
-                        arena.stopGame(arenaTeam);
+                        arena.getArenaGameController().stopGame(arenaTeam);
                     }
                 }
             }
@@ -171,9 +198,6 @@ public class Redstone extends Gamemode {
 
     public AbstractCommand handleGamemodeCommand(CommandSender sender, String command, String[] cmdArgs) {
         AbstractCommand commandObj = null;
-        if (command.equals("setredstone")) {
-            commandObj = new CommandSetRedstone(sender, cmdArgs, arena);
-        }
         return commandObj;
     }
 }

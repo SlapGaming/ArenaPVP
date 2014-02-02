@@ -83,6 +83,7 @@ public class ArenaSettings {
         allowSpectateInArea = new Setting<>(config.getBoolean("allowspectateinarea"), SettingGroup.SPECTATOR, "allowspectateinarea", "Allow spectate in area", "Allow spectators to get into the pvp out of bounds area.");
         allowSpectateFly = new Setting<>(config.getBoolean("allowspectatefly"), SettingGroup.SPECTATOR, "allowspectatefly", "Allow spectate fly", "Allow spectators to fly around.");
         spectatorOutOfBoundsArea = new Setting<>(config.getBoolean("spectatoroutofboundsarea"), SettingGroup.SPECTATOR, "spectatoroutofboundsarea", "Spectator out of bounds area", "Have a seperate out of bounds area for spectators.");
+        settings.add(allowSpectate);
         settings.add(allowSpectateInArea);
         settings.add(allowSpectateFly);
         settings.add(spectatorOutOfBoundsArea);
