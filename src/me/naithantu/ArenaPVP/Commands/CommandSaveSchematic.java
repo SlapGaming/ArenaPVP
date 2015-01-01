@@ -1,10 +1,13 @@
 package me.naithantu.ArenaPVP.Commands;
 
-import com.sk89q.worldedit.CuboidClipboard;
+import com.sk89q.jnbt.NBTOutputStream;
 import com.sk89q.worldedit.EmptyClipboardException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.data.DataException;
+import com.sk89q.worldedit.extent.clipboard.io.SchematicReader;
+import com.sk89q.worldedit.extent.clipboard.io.SchematicWriter;
 import com.sk89q.worldedit.schematic.SchematicFormat;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
@@ -13,6 +16,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -48,10 +52,9 @@ public class CommandSaveSchematic extends AbstractArenaCommand {
         Player player = (Player) sender;
 
         try {
-            CuboidClipboard clipBoard = WorldEdit.getInstance().getSession(player.getName()).getClipboard();
-            SchematicFormat format = SchematicFormat.getFormat("MCEdit");
+            ClipboardHolder clipBoard = WorldEdit.getInstance().getSessionManager().findByName(player.getName()).getClipboard();
             File file = new File(plugin.getDataFolder() + File.separator + "maps", arena.getArenaName() + ".schematic");
-            format.save(clipBoard, file);
+            new SchematicWriter(new NBTOutputStream(new FileOutputStream(file))).write(clipBoard.getClipboard(), clipBoard.getWorldData());
 
             YamlStorage arenaStorage = arena.getArenaStorage();
             Configuration arenaConfig = arenaStorage.getConfig();
@@ -61,8 +64,9 @@ public class CommandSaveSchematic extends AbstractArenaCommand {
             Util.msg(player, "Saved schematic!");
         } catch (EmptyClipboardException e) {
             Util.msg(player, "Your clipboard is empty!");
-        } catch (IOException | DataException e) {
+        } catch (IOException e) {
             e.printStackTrace();
+            Util.msg(player, "Failed to save Schematic. See logs.");
         }
     }
 }

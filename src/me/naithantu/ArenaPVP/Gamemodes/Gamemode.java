@@ -35,6 +35,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.projectiles.ProjectileSource;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
 public abstract class Gamemode {
@@ -142,7 +143,10 @@ public abstract class Gamemode {
     public void onPlayerDamageByEntity(EntityDamageByEntityEvent event, ArenaPlayer arenaPlayer) {
         Entity damager = event.getDamager();
         if (damager instanceof Projectile) {
-            damager = ((Projectile) damager).getShooter();
+            ProjectileSource source = ((Projectile) damager).getShooter();
+            if (source instanceof Entity) {
+                damager = (Entity) source;
+            }
         }
 
         if (arenaSpectators.getSpectators().containsKey(event.getEntity())) {

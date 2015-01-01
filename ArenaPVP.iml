@@ -18,16 +18,25 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module-library">
-      <library name="Bukkit.jar">
+      <library name="TabAPI.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/Bukkit.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/TabAPI.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="WorldEdit.jar">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/SpigotAPI.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/WorldEdit.jar!/" />
         </CLASSES>
@@ -36,18 +45,9 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="WorldGuard.jar">
+      <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/WorldGuard.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="TabAPI.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/TabAPI.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

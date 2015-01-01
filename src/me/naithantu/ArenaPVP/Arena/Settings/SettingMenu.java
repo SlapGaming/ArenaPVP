@@ -72,7 +72,7 @@ public class SettingMenu {
                 ItemStack itemStack = new ItemStack(Material.STAINED_CLAY, 1, (short) 1);
                 String currentSetting;
                 if (setting.getSetting() instanceof Boolean) {
-                    if (setting.getSetting() == true) {
+                    if (setting.getSetting() == Boolean.TRUE) {
                         currentSetting = "Yes";
                     } else {
                         currentSetting = "No";
