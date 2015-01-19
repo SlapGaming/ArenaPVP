@@ -133,6 +133,7 @@ classes:
         damage: -1
         amount: 0
 gamemode: tdm
+enabled: false
 maxplayers: 0
 respawntime: 0
 scorelimit: 30

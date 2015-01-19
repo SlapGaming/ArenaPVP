@@ -21,6 +21,7 @@ public class ArenaSettings {
     private Setting<Integer> outOfBoundsTime;
     private Setting<Integer> spawnProtection;
 
+    private Setting<Boolean> enabled;
     private Setting<Boolean> friendlyFire;
     private Setting<Boolean> outOfBoundsArea;
     private Setting<Boolean> spectatorOutOfBoundsArea;
@@ -49,10 +50,12 @@ public class ArenaSettings {
         settings.clear();
 
         //General settings
+        enabled = new Setting<>(config.getBoolean("enabled", false), SettingGroup.GENERAL, "enabled", "Enabled", "Arena is enabled & playable");
         maxPlayers = new Setting<>(config.getInt("maxplayers"), SettingGroup.GENERAL, "maxplayers", "Max players", "Number of players that can join.");
         scoreLimit = new Setting<>(config.getInt("scorelimit"), SettingGroup.GENERAL, "scorelimit", "Score limit", "Score needed to win.");
         autoBalance = new Setting<>(config.getBoolean("autobalance"), SettingGroup.GENERAL, "autobalance", "Auto balance", "Balance teams before game start.");
         friendlyFire = new Setting<>(config.getBoolean("friendlyfire"), SettingGroup.GENERAL, "friendlyfire", "Friendly fire", "Allow teammates to hit eachother.");
+        settings.add(enabled);
         settings.add(maxPlayers);
         settings.add(scoreLimit);
         settings.add(autoBalance);
@@ -95,6 +98,10 @@ public class ArenaSettings {
 
     public List<Setting> getSettings() {
         return settings;
+    }
+
+    public boolean isEnabled() {
+        return enabled.getSetting();
     }
 
     public int getMaxPlayers() {
