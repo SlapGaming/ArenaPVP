@@ -49,6 +49,7 @@ public class CommandCreate extends AbstractCommand {
 		arenaStorage.saveConfig();
         arena.setupArena();
 		ArenaManager.getArenas().put(arenaName, arena);
+        CommandMaps.wipeCache(true);
 		
 		
 		

@@ -4,6 +4,7 @@ import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Arena.ArenaTeam;
 import me.naithantu.ArenaPVP.ArenaManager;
 import me.naithantu.ArenaPVP.ArenaPVP;
+import me.naithantu.ArenaPVP.Commands.CommandMaps;
 import me.naithantu.ArenaPVP.Gamemodes.Gamemode;
 import me.naithantu.ArenaPVP.IconMenu;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
@@ -217,6 +218,7 @@ public class SettingMenu {
     }
 
     public void stopChanging() {
+        CommandMaps.wipeCache(true);
         arena.getGamemode().stopChanging();
         menuStatus = MenuStatus.NONE;
         nextChange = Change.NONE;
