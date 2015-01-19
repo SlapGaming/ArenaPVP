@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collection;
+import java.util.List;
 
 public class CommandAllowjoin extends AbstractArenaCommand {
 
@@ -27,7 +28,18 @@ public class CommandAllowjoin extends AbstractArenaCommand {
 
     @Override
     protected Collection<Arena> getArenas(){
-        return this.selectArena(args, ArenaState.BEFORE_JOIN);
+        List<Arena> arenas =  this.selectArena(args, ArenaState.BEFORE_JOIN);
+        for (int i = arenas.size() - 1; i >= 0; i--) {
+            if (!arenas.get(i).getSettings().isEnabled()) {
+                arenas.remove(i);
+            }
+        }
+
+        //Check if any arenas left
+        if (arenas.isEmpty()) {
+            msg(sender, "No arena is in the correct state for that command!");
+        }
+        return arenas;
     }
 
     @Override
