@@ -36,8 +36,8 @@ public class StartArena extends BukkitRunnable {
 			for (ArenaTeam team : arena.getTeams()) {
 				for (ArenaPlayer arenaPlayer : team.getPlayers()) {
                     Player player = Bukkit.getPlayerExact(arenaPlayer.getPlayerName());
-					player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
                     ArenaPlayer.resetStats(player);
+					player.teleport(arena.getArenaSpawns().getRespawnLocation(player, arenaPlayer, SpawnType.PLAYER));
                     player.setWalkSpeed(0.2F);
 				}
 			}

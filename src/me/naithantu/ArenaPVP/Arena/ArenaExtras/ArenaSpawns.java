@@ -28,6 +28,7 @@ public class ArenaSpawns {
         arenaConfig = arenaStorage.getConfig();
 	}
 
+    //TODO This function does not what it implies. Separate into multiple functions.
 	public Location getRespawnLocation(Player player, ArenaPlayer arenaPlayer, SpawnType spawnType) {
 		String teamID;
 		if (spawnType == SpawnType.PLAYER) {

@@ -99,15 +99,9 @@ public class ArenaPlayer {
             p.removePotionEffect(potionEffect.getType());
         }
 
-        //Wipe the inventory
-        p.getInventory().clear();
-        p.getInventory().setArmorContents(new ItemStack[4]);
-
-        //Remove Vehicles
+        //Leave/Remove Vehicles
         p.eject();
-        if (p.getPassenger() != null) {
-            p.getPassenger().eject();
-        }
+        p.leaveVehicle();
 
         //Set player stats
         p.setGameMode(GameMode.SURVIVAL);
