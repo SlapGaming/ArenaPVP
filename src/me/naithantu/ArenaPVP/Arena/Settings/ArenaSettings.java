@@ -33,6 +33,9 @@ public class ArenaSettings {
     private Setting<Boolean> allowSpectateInArea;
     private Setting<Boolean> noHungerLoss;
 
+    private Setting<String> outOfBoundsRegion;
+    private Setting<String> spectatorOutOfBoundsRegion;
+
     public ArenaSettings(YamlStorage arenaStorage, Arena arena) {
         this.arenaStorage = arenaStorage;
         config = arenaStorage.getConfig();
@@ -77,8 +80,10 @@ public class ArenaSettings {
 
         //Out of bounds settings
         outOfBoundsArea = new Setting<>(config.getBoolean("outofboundsarea"), SettingGroup.OUT_OF_BOUNDS, "outofboundsarea", "Out of bounds area", "Have an out of bounds area.");
+        outOfBoundsRegion = new Setting<>(config.getString("outofboundsregion", ""), SettingGroup.OUT_OF_BOUNDS, "outofboundsregion", "Out of bounds region", "The regionname for the out of bounds area");
         outOfBoundsTime = new Setting<>(config.getInt("outofboundstime"), SettingGroup.OUT_OF_BOUNDS, "outofboundstime", "Out of bounds time", "Number of seconds before an out of bounds player is killed");
         settings.add(outOfBoundsArea);
+        settings.add(outOfBoundsRegion);
         settings.add(outOfBoundsTime);
 
         //Spectate settings
@@ -86,10 +91,12 @@ public class ArenaSettings {
         allowSpectateInArea = new Setting<>(config.getBoolean("allowspectateinarea"), SettingGroup.SPECTATOR, "allowspectateinarea", "Allow spectate in area", "Allow spectators to get into the pvp out of bounds area.");
         allowSpectateFly = new Setting<>(config.getBoolean("allowspectatefly"), SettingGroup.SPECTATOR, "allowspectatefly", "Allow spectate fly", "Allow spectators to fly around.");
         spectatorOutOfBoundsArea = new Setting<>(config.getBoolean("spectatoroutofboundsarea"), SettingGroup.SPECTATOR, "spectatoroutofboundsarea", "Spectator out of bounds area", "Have a seperate out of bounds area for spectators.");
+        spectatorOutOfBoundsRegion = new Setting<>(config.getString("spectatoroutofboundsregion", ""), SettingGroup.SPECTATOR, "spectatoroutofboundsregion", "Spectator out of bounds region", "The regionname for the specator's out of bounds area");
         settings.add(allowSpectate);
         settings.add(allowSpectateInArea);
         settings.add(allowSpectateFly);
         settings.add(spectatorOutOfBoundsArea);
+        settings.add(spectatorOutOfBoundsRegion);
     }
 
     public SettingMenu getSettingMenu() {
@@ -132,8 +139,16 @@ public class ArenaSettings {
         return outOfBoundsArea.getSetting();
     }
 
+    public String getOutOfBoundsRegion() {
+        return outOfBoundsRegion.getSetting();
+    }
+
     public boolean isSpectatorOutOfBoundsArea() {
         return spectatorOutOfBoundsArea.getSetting();
+    }
+
+    public String getSpectatorOutOfBoundsRegion() {
+        return spectatorOutOfBoundsRegion.getSetting();
     }
 
     public boolean isAutoBalance() {

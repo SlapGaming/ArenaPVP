@@ -241,7 +241,7 @@ public class SettingMenu {
                 //Clicked a setting group.
                 stopChanging();
 
-                SettingGroup settingGroup = SettingGroup.valueOf(name.toUpperCase());
+                SettingGroup settingGroup = SettingGroup.parseTitle(name);
                 if (settingGroup != null) {
                     setupMenu(settingGroup);
                     iconMenu.update(player);
@@ -441,7 +441,7 @@ public class SettingMenu {
                                 changingSetting = setting;
                                 iconMenu.update(player);
                             } else {
-                                changeStatus = ChangeStatus.INTEGER;
+                                changeStatus = (setting.getSetting() instanceof Integer ? ChangeStatus.INTEGER : ChangeStatus.STRING);
                                 changingPlayer = player.getName();
                                 changingSetting = setting;
                                 iconMenu.clearMenu();
@@ -483,6 +483,16 @@ public class SettingMenu {
                 openMenuDelayed(player);
             } else {
                 Util.msg(player, "Enter a valid chatcolor!");
+            }
+        } else {
+            if (changingSetting != null) {
+                arenaConfig.set(changingSetting.getConfigKey(), string);
+                arenaStorage.saveConfig();
+                arenaSettings.initializeSettings();
+
+                Util.msg(player, "Changed " + changingSetting.getName() + " to " + string + "!");
+                stopChanging();
+                openMenuDelayed(player);
             }
         }
     }

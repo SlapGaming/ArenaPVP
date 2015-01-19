@@ -12,4 +12,19 @@ public enum SettingGroup {
     public String getTitle() {
         return title;
     }
+
+    /**
+     * Get a SettingGroup based on it's title
+     * @param title The title
+     * @return The group or null
+     */
+    public static SettingGroup parseTitle(String title) {
+        for (SettingGroup settingGroup : values()) {
+            if (settingGroup.getTitle().equalsIgnoreCase(title)) {
+                return settingGroup;
+            }
+        }
+        return null;
+    }
+
 }
