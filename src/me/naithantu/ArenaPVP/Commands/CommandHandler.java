@@ -23,48 +23,68 @@ public class CommandHandler {
             for (int i = 0; i < args.length - 1; i++) {
                 cmdArgs[i] = args[i + 1];
             }
-
-            if (command.equals("allowjoin")) {
-                commandObj = new CommandAllowjoin(sender, cmdArgs);
-            } else if (command.equals("arenas")) {
-                commandObj = new CommandArenas(sender, cmdArgs);
-            } else if (command.equals("arenamanager")) {
-                commandObj = new CommandArenaManager(sender, cmdArgs);
-            } else if (command.equals("chat")) {
-                commandObj = new CommandChat(sender, cmdArgs);
-            } else if (command.equals("chatspy")) {
-                commandObj = new CommandChatspy(sender, cmdArgs);
-            } else if (command.equals("create")) {
-                commandObj = new CommandCreate(sender, cmdArgs);
-            } else if (command.equals("change")) {
-                commandObj = new CommandChange(sender, cmdArgs);
-            } else if (command.equals("join")) {
-                commandObj = new CommandJoin(sender, cmdArgs);
-            } else if (command.equals("leave")) {
-                commandObj = new CommandLeave(sender, cmdArgs);
-            } else if (command.equals("maps")) {
-                commandObj = new CommandMaps(sender, cmdArgs);
-            } else if (command.equals("saveschematic")) {
-                commandObj = new CommandSaveSchematic(sender, cmdArgs);
-            } else if (command.equals("score")) {
-                commandObj = new CommandScore(sender, cmdArgs);
-            } else if (command.equals("select")) {
-                commandObj = new CommandSelect(sender, cmdArgs);
-            } else if (command.equals("spectate")) {
-                commandObj = new CommandSpectate(sender, cmdArgs);
-            } else if (command.equals("spectators")) {
-                commandObj = new CommandSpectators(sender, cmdArgs);
-            } else if (command.equals("start")) {
-                commandObj = new CommandStart(sender, cmdArgs);
-            } else if (command.equals("stop")) {
-                commandObj = new CommandStop(sender, cmdArgs);
-            } else if (command.equals("teams")) {
-                commandObj = new CommandTeams(sender, cmdArgs);
-            } else {
-                ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(sender.getName());
-                if (arenaPlayer != null) {
-                    commandObj = arenaPlayer.getArena().getGamemode().handleGamemodeCommand(sender, command, cmdArgs);
-                }
+            
+            switch (command.toLowerCase()) {
+                case "allowjoin":
+                    commandObj = new CommandAllowjoin(sender, cmdArgs);
+                    break;
+                case "arenas":
+                    commandObj = new CommandArenas(sender, cmdArgs);
+                    break;
+                case "arenamanager":
+                    commandObj = new CommandArenaManager(sender, cmdArgs);
+                    break;
+                case "chat":
+                    commandObj = new CommandChat(sender, cmdArgs);
+                    break;
+                case "chatspy":
+                    commandObj = new CommandChatspy(sender, cmdArgs);
+                    break;
+                case "create":
+                    commandObj = new CommandCreate(sender, cmdArgs);
+                    break;
+                case "change":
+                    commandObj = new CommandChange(sender, cmdArgs);
+                    break;
+                case "join":
+                    commandObj = new CommandJoin(sender, cmdArgs);
+                    break;
+                case "leave":
+                    commandObj = new CommandLeave(sender, cmdArgs);
+                    break;
+                case "maps":
+                    commandObj = new CommandMaps(sender, cmdArgs);
+                    break;
+                case "saveschematic":
+                    commandObj = new CommandSaveSchematic(sender, cmdArgs);
+                    break;
+                case "score":
+                    commandObj = new CommandScore(sender, cmdArgs);
+                    break;
+                case "select":
+                    commandObj = new CommandSelect(sender, cmdArgs);
+                    break;
+                case "spectate":
+                    commandObj = new CommandSpectate(sender, cmdArgs);
+                    break;
+                case "spectators":
+                    commandObj = new CommandSpectators(sender, cmdArgs);
+                    break;
+                case "start":
+                    commandObj = new CommandStart(sender, cmdArgs);
+                    break;
+                case "stop":
+                    commandObj = new CommandStop(sender, cmdArgs);
+                    break;
+                case "teams":
+                    commandObj = new CommandTeams(sender, cmdArgs);
+                    break;
+                    
+                default:
+                    ArenaPlayer arenaPlayer = ArenaManager.getPlayerByName(sender.getName());
+                    if (arenaPlayer != null) {
+                        commandObj = arenaPlayer.getArena().getGamemode().handleGamemodeCommand(sender, command, cmdArgs);
+                    }
             }
         }
 
