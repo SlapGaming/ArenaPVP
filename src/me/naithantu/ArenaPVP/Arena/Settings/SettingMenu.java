@@ -91,7 +91,7 @@ public class SettingMenu {
         //Add setting groups.
         for (SettingGroup settingGroup : SettingGroup.values()) {
             ItemStack itemStack = new ItemStack(Material.STAINED_GLASS, 1);
-            iconMenu.setOption(i, itemStack, settingGroup.name().substring(0, 1) + settingGroup.name().substring(1).toLowerCase());
+            iconMenu.setOption(i, itemStack, settingGroup.getTitle());
             i++;
         }
 

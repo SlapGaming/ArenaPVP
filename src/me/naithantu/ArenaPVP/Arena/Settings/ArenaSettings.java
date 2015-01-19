@@ -76,8 +76,8 @@ public class ArenaSettings {
         settings.add(spawnProtection);
 
         //Out of bounds settings
-        outOfBoundsArea = new Setting<>(config.getBoolean("outofboundsarea"), SettingGroup.OUTOFBOUNDS, "outofboundsarea", "Out of bounds area", "Have an out of bounds area.");
-        outOfBoundsTime = new Setting<>(config.getInt("outofboundstime"), SettingGroup.OUTOFBOUNDS, "outofboundstime", "Out of bounds time", "Number of seconds before an out of bounds player is killed");
+        outOfBoundsArea = new Setting<>(config.getBoolean("outofboundsarea"), SettingGroup.OUT_OF_BOUNDS, "outofboundsarea", "Out of bounds area", "Have an out of bounds area.");
+        outOfBoundsTime = new Setting<>(config.getInt("outofboundstime"), SettingGroup.OUT_OF_BOUNDS, "outofboundstime", "Out of bounds time", "Number of seconds before an out of bounds player is killed");
         settings.add(outOfBoundsArea);
         settings.add(outOfBoundsTime);
 
