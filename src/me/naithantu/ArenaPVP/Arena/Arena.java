@@ -45,7 +45,7 @@ public class Arena {
             arenaStorage.copyDefaultConfig("arena.yml");
         }
 
-        settings = new ArenaSettings(arenaStorage, this);
+        settings = new ArenaSettings(arenaStorage, this, true);
         arenaSpawns = new ArenaSpawns(this, settings, arenaStorage);
         arenaUtil = new ArenaUtil(this);
         arenaArea = new ArenaArea(this, settings, arenaConfig);

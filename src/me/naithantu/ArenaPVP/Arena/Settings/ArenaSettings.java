@@ -33,14 +33,18 @@ public class ArenaSettings {
     private Setting<Boolean> allowSpectateInArea;
     private Setting<Boolean> noHungerLoss;
 
+    private Setting<String> nickname;
+    private Setting<String> gamemode;
     private Setting<String> outOfBoundsRegion;
     private Setting<String> spectatorOutOfBoundsRegion;
 
-    public ArenaSettings(YamlStorage arenaStorage, Arena arena) {
+    public ArenaSettings(YamlStorage arenaStorage, Arena arena, boolean createMenu) {
         this.arenaStorage = arenaStorage;
         config = arenaStorage.getConfig();
         initializeSettings();
-        settingMenu = new SettingMenu(arenaStorage, arena, this);
+        if (createMenu) {
+            settingMenu = new SettingMenu(arenaStorage, arena, this);
+        }
     }
 
     public void reloadSettings() {
@@ -52,8 +56,12 @@ public class ArenaSettings {
         //Make sure settings list is clear.
         settings.clear();
 
+        //Unassigned
+        nickname = new Setting<>(config.getString("nickname", ""), null, "nickname", "Nickname", "The arena's nickname.");
+        gamemode = new Setting<>(config.getString("gamemode"), null, "gamemode", "Gamemode", "The gamemode of this arena.");
+
         //General settings
-        enabled = new Setting<>(config.getBoolean("enabled", false), SettingGroup.GENERAL, "enabled", "Enabled", "Arena is enabled & playable");
+        enabled = new Setting<>(config.getBoolean("enabled", false), SettingGroup.GENERAL, "enabled", "Enabled", "Arena is enabled & playable.");
         maxPlayers = new Setting<>(config.getInt("maxplayers"), SettingGroup.GENERAL, "maxplayers", "Max players", "Number of players that can join.");
         scoreLimit = new Setting<>(config.getInt("scorelimit"), SettingGroup.GENERAL, "scorelimit", "Score limit", "Score needed to win.");
         autoBalance = new Setting<>(config.getBoolean("autobalance"), SettingGroup.GENERAL, "autobalance", "Auto balance", "Balance teams before game start.");
@@ -105,6 +113,14 @@ public class ArenaSettings {
 
     public List<Setting> getSettings() {
         return settings;
+    }
+
+    public String getNickname() {
+        return nickname.getSetting();
+    }
+
+    public String getGamemode() {
+        return gamemode.getSetting();
     }
 
     public boolean isEnabled() {
