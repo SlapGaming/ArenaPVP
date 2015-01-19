@@ -4,7 +4,12 @@ import me.naithantu.ArenaPVP.Arena.ArenaExtras.ArenaPlayerState;
 import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerScore;
 import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerTimers;
 import me.naithantu.ArenaPVP.ArenaPVP;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+
+import java.util.HashSet;
 
 public class ArenaPlayer {
 	private String playerName;
@@ -73,4 +78,41 @@ public class ArenaPlayer {
     public boolean isDying(){
         return dying;
     }
+
+    /**
+     * Reset a players params.
+     * This includes health etc
+     * @param p The player
+     */
+    public static void resetStats(Player p) {
+        if (p.isDead()) return;
+        //Wipe XP
+        p.setExp(0);
+        p.setLevel(0);
+
+        //Health etc
+        p.setHealth(20);
+        p.setFoodLevel(20);
+
+        //Wipe all potions
+        for (PotionEffect potionEffect : new HashSet<>(p.getActivePotionEffects())) {
+            p.removePotionEffect(potionEffect.getType());
+        }
+
+        //Wipe the inventory
+        p.getInventory().clear();
+        p.getInventory().setArmorContents(new ItemStack[4]);
+
+        //Remove Vehicles
+        p.eject();
+        if (p.getPassenger() != null) {
+            p.getPassenger().eject();
+        }
+
+        //Set player stats
+        p.setGameMode(GameMode.SURVIVAL);
+        p.setFlying(false);
+        p.setAllowFlight(false);
+    }
+
 }
