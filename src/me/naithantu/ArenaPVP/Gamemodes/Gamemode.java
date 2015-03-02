@@ -325,6 +325,12 @@ public abstract class Gamemode {
 
             inventory.setContents(team.getInventory());
             inventory.setArmorContents(team.getArmor());
+
+            //Add potions
+            final Player p = event.getPlayer();
+            event.getArenaPlayer().getArena().getSettings().getPotions().forEach(potion -> {
+                p.addPotionEffect(potion.getType().createEffect(Integer.MAX_VALUE, potion.getPower()), true);
+            });
         }
     }
 

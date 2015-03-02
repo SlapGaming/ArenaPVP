@@ -11,6 +11,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 public class ArenaPlayerController {
     private Arena arena;
@@ -47,6 +51,16 @@ public class ArenaPlayerController {
             playerConfig.set("saved.hastoleave", true);
             playerStorage.saveConfig();
         } else {
+            //Wipe potions
+            Collection<PotionEffect> potionEffects = player.getActivePotionEffects();
+            if (!potionEffects.isEmpty()) {
+                potionEffects = new HashSet<>(potionEffects);
+                potionEffects.forEach(p -> {
+                    player.removePotionEffect(p.getType());
+                });
+            }
+
+            //Restore old settings
             PlayerConfigUtil.loadPlayerConfig(player, playerStorage);
         }
 

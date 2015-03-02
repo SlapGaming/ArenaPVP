@@ -9,6 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public class Util {
 
     private Util(){
@@ -26,10 +29,6 @@ public class Util {
 		} else {
 			sender.sendMessage("[PVP] " + msg);
 		}
-	}
-	
-	public static String capitalizeFirstLetter(String s) {
-		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 	}
 
     public static Location getLocation(YamlStorage storage, String key) {
@@ -68,5 +67,29 @@ public class Util {
         location.setYaw(45 * (Math.round(location.getYaw() / 45)));
         location.setPitch(45 * (Math.round(location.getPitch() / 45)));
         return location;
+    }
+
+    /**
+     * Capitalize the first letter of a String
+     * This lowercases the rest
+     * @param s The string
+     * @return the capitalized string
+     */
+    public static String capitalizeFirstLetter(String s) {
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+    }
+
+    /**
+     * Capitalize the first letters of each word
+     * This will also replace _'s with spaces
+     * @param val The string
+     * @return The capitalized string
+     */
+    public static String capitalizeFirstLetters(String val) {
+        String[] arr = val.replace("_", " ").split(" ");
+        return Arrays.stream(arr)
+                .map(Util::capitalizeFirstLetter)
+                .collect(Collectors.joining(" "));
+
     }
 }

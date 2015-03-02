@@ -16,9 +16,13 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SettingMenu {
     private ArenaPVP plugin = ArenaPVP.getInstance();
@@ -32,6 +36,7 @@ public class SettingMenu {
     private ChangeStatus changeStatus;
     private MenuStatus menuStatus;
     private Change nextChange;
+    private PotionSetting potionChange;
     private Setting changingSetting;
     private String changingPlayer;
 
@@ -60,6 +65,11 @@ public class SettingMenu {
     }
 
     private void setupMenu(SettingGroup settingGroup) {
+        if (settingGroup == SettingGroup.POTIONS) {
+            setupPotionsMenu();
+            return;
+        }
+
         //Empty menu
         iconMenu.clearMenu();
 
@@ -205,16 +215,48 @@ public class SettingMenu {
         menuStatus = MenuStatus.GAMEMODES;
     }
 
+    /** Setup the menu with all enabled potions */
+    private void setupPotionsMenu() {
+        iconMenu.clearMenu();
+        setupMenu();
+
+        //Get current potions
+        int i = 9;
+        for (PotionSetting potionSetting : arenaSettings.getPotions()) {
+            //Make the name presentable
+            String potion = Util.capitalizeFirstLetters(potionSetting.getType().getName());
+            iconMenu.setOption(i++, new ItemStack(Material.POTION, 1), potion, "Power: " + potionSetting.getPower());
+        }
+
+        //Add button
+        iconMenu.setOption(35, new ItemStack(Material.STAINED_CLAY, 1, (short) 13), "Add potion");
+
+        //Set menu state
+        menuStatus = MenuStatus.POTIONS;
+    }
+
+    /** Setup the menu with all available potion types */
+    private void setupPotionTypesMenu() {
+        iconMenu.clearMenu();
+        setupMenu();
+
+        //List all available potions
+        int i = 9;
+        for (PotionEffectType type : PotionEffectType.values()) {
+            if (type == null) continue;
+            iconMenu.setOption(i++, new ItemStack(Material.POTION, 1), Util.capitalizeFirstLetters(type.getName()));
+        }
+
+        //Set menu state
+        menuStatus = MenuStatus.NEW_POTION;
+    }
+
     public void openMenu(Player player) {
         iconMenu.open(player);
     }
 
     public void openMenuDelayed(final Player player) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            public void run() {
-                openMenu(player);
-            }
-        }, 1);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {openMenu(player);}, 1);
     }
 
     public void stopChanging() {
@@ -222,6 +264,7 @@ public class SettingMenu {
         arena.getGamemode().stopChanging();
         menuStatus = MenuStatus.NONE;
         nextChange = Change.NONE;
+        potionChange = null;
         changingSetting = null;
         changingPlayer = null;
         changingTeam = null;
@@ -434,6 +477,43 @@ public class SettingMenu {
                             }
                         }, 2);
                     }
+                } else if (menuStatus == MenuStatus.POTIONS) {
+                    if (name.equalsIgnoreCase("Add potion")) {
+                        //Add a new potion
+                        setupPotionTypesMenu();
+                        iconMenu.update(player);
+                    } else {
+                        //Removing a potion
+                        PotionEffectType type = PotionEffectType.getByName(name.replace(" ", "_"));
+                        List<PotionSetting> potions = arenaSettings.getPotions().stream()
+                                .filter(s -> s.getType() != type)
+                                .collect(Collectors.toList());
+
+                        //Set the potions
+                        arenaSettings.setPotions(potions);
+                    }
+                } else if (menuStatus == MenuStatus.NEW_POTION) {
+                    //Adding a potion
+                    PotionEffectType type = PotionEffectType.getByName(name.replace(" ", "_"));
+                    Optional<PotionSetting> foundSetting = arenaSettings.getPotions().stream()
+                            .filter(s -> s.getType() == type).findFirst();
+
+                    //Check if already set
+                    if (foundSetting.isPresent()) {
+                        //Just changing the power
+                        potionChange = foundSetting.get();
+                    } else {
+                        potionChange = new PotionSetting(type);
+                    }
+
+                    //Set change status
+                    nextChange = Change.POTION_POWER;
+                    changeStatus = ChangeStatus.INTEGER;
+                    changingPlayer = player.getName();
+
+                    //Message
+                    Util.msg(player, "Enter the power of the " + type.getName().toLowerCase().replace("_", " ") + " potion effect (-10 <-> 10)!");
+                    event.setWillClose(true);
                 } else {
                     for (Setting setting : arenaSettings.getSettings()) {
                         if (name.contains(setting.getName())) {
@@ -501,20 +581,49 @@ public class SettingMenu {
 
     public void handleChatInput(Player player, Integer integer) {
         //Check if a setting is being changed.
-        if (changingSetting != null) {
-            arenaConfig.set(changingSetting.getConfigKey(), integer);
-            arenaStorage.saveConfig();
-            arenaSettings.initializeSettings();
+        if (nextChange == Change.POTION_POWER) {
+            if (integer < -10 || integer > 10) {
+                Util.msg(player, "The value needs to be between -10 and 10!");
+            } else {
+                //Get the list with potions
+                List<PotionSetting> potions = arenaSettings.getPotions();
 
-            Util.msg(player, "Changed " + changingSetting.getName() + " to " + integer + "!");
-            stopChanging();
-            openMenuDelayed(player);
+                //Add if a new one
+                if (potionChange.getPower() == Integer.MIN_VALUE) {
+                    //New effect
+                    potions = new ArrayList<>(potions);
+                    potions.add(potionChange);
+
+                    Util.msg(player, "Added new Potion " + Util.capitalizeFirstLetters(potionChange.getType().getName()) + " with power " + integer + "!");
+                } else {
+                    Util.msg(player, "Modified power of " + Util.capitalizeFirstLetters(potionChange.getType().getName()) + " to " + integer + "!");
+                }
+
+                //Set the new power
+                potionChange.setPower(integer);
+
+                //Set the potions
+                arenaSettings.setPotions(potions);
+
+                stopChanging();
+                openMenuDelayed(player);
+            }
+        } else {
+            if (changingSetting != null) {
+                arenaConfig.set(changingSetting.getConfigKey(), integer);
+                arenaStorage.saveConfig();
+                arenaSettings.initializeSettings();
+
+                Util.msg(player, "Changed " + changingSetting.getName() + " to " + integer + "!");
+                stopChanging();
+                openMenuDelayed(player);
+            }
         }
     }
 
     //MenuStatus is how the iconmenu currently looks.
     public enum MenuStatus {
-        NONE, BOOLEAN, ARENA, TEAMS, TEAM, SPECTATOR, SPAWNS, SPECTATORSPAWNS, SPAWN, SPECTATORSPAWN, GAMEMODES, GAMEMODE
+        NONE, BOOLEAN, ARENA, TEAMS, TEAM, SPECTATOR, SPAWNS, SPECTATORSPAWNS, SPAWN, SPECTATORSPAWN, GAMEMODES, GAMEMODE, POTIONS, NEW_POTION
     }
 
     //ChangeStatus is the next expected chat input.
@@ -523,6 +632,6 @@ public class SettingMenu {
     }
 
     public enum Change {
-        NONE, ARENANAME, TEAMNAME, TEAMCOLOR
+        NONE, ARENANAME, TEAMNAME, TEAMCOLOR, POTION_POWER
     }
 }

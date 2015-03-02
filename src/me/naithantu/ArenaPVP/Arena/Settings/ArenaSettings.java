@@ -2,9 +2,12 @@ package me.naithantu.ArenaPVP.Arena.Settings;
 
 import me.naithantu.ArenaPVP.Arena.Arena;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ArenaSettings {
@@ -32,6 +35,9 @@ public class ArenaSettings {
     private Setting<Boolean> allowSpectateFly;
     private Setting<Boolean> allowSpectateInArea;
     private Setting<Boolean> noHungerLoss;
+
+    /** List of potions that will be given when a player spawns */
+    private List<PotionSetting> potions;
 
     private Setting<String> nickname;
     private Setting<String> gamemode;
@@ -79,6 +85,25 @@ public class ArenaSettings {
         settings.add(allowItemDrop);
         settings.add(allowBlockChange);
         settings.add(noHungerLoss);
+
+        //=> List with potions
+        potions = new ArrayList<>();
+        if (config.contains("potions")) {
+            ConfigurationSection section = config.getConfigurationSection("potions");
+            for (String key : section.getKeys(false)) {
+                //Get data from section
+                String typeName = section.getString(key + ".type");
+                int power = section.getInt(key + ".power");
+
+                //Parse into PotionEffectType
+                PotionEffectType type = PotionEffectType.getByName(typeName);
+                if (type == null) continue;
+
+                //Add to list of potions
+                potions.add(new PotionSetting(type, power));
+            }
+        }
+
 
         //Respawn settings
         respawnTime = new Setting<>(config.getInt("respawntime"), SettingGroup.RESPAWN, "respawntime", "Respawn time", "Number of seconds before a player respawns");
@@ -193,5 +218,33 @@ public class ArenaSettings {
 
     public boolean isNoHungerLoss() {
         return noHungerLoss.getSetting();
+    }
+
+    /**
+     * Get a list of potions on this map
+     * @return the list of potions
+     */
+    public List<PotionSetting> getPotions() {
+        return potions;
+    }
+
+    /**
+     * Set a new list of potions
+     * This also sorts them & saves them in the config file
+     * @param potions the list of potions
+     */
+    public void setPotions(List<PotionSetting> potions) {
+        this.potions = potions;
+        Collections.sort(this.potions);
+
+        //Save the potions in the config
+        config.set("potions", null);
+        for (int i = 0; i < this.potions.size(); i++) {
+            PotionSetting setting = this.potions.get(i);
+            String key = "potions." + i + ".";
+            config.set(key + "type", setting.getType().getName());
+            config.set(key + "power", setting.getPower());
+        }
+        arenaStorage.saveConfig();
     }
 }
