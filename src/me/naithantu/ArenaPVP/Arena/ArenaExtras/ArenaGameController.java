@@ -65,7 +65,7 @@ public class ArenaGameController {
         arena.getGamemode().onArenaStop();
 
         //Let online players leave the game.
-        for (ArenaTeam team : arena.getTeams()) {
+        for (ArenaTeam team : new HashSet<>(arena.getTeams())) {
             List<ArenaPlayer> players = new ArrayList<ArenaPlayer>(team.getPlayers());
             for (ArenaPlayer arenaPlayer : players) {
                 arena.getArenaPlayerController().leaveGame(arenaPlayer);
