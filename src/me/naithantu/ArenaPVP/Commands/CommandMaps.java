@@ -1,6 +1,5 @@
 package me.naithantu.ArenaPVP.Commands;
 
-import com.google.common.base.Joiner;
 import me.naithantu.ArenaPVP.Arena.Settings.ArenaSettings;
 import me.naithantu.ArenaPVP.Storage.YamlStorage;
 import me.naithantu.ArenaPVP.Util.Util;
@@ -12,7 +11,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class CommandMaps extends AbstractCommand {
 

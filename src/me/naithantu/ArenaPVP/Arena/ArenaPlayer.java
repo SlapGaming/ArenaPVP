@@ -6,7 +6,6 @@ import me.naithantu.ArenaPVP.Arena.PlayerExtras.PlayerTimers;
 import me.naithantu.ArenaPVP.ArenaPVP;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.HashSet;
